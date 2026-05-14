@@ -1,0 +1,13 @@
+.cursor/
+.DS_Store
+*.swp
+*.swo
+*~
+node_modules/
+
+# Secrets and local overrides
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
