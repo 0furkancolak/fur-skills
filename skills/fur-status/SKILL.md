@@ -6,62 +6,73 @@ disable-model-invocation: true
 
 # fur-status
 
-Use this skill to orient quickly without loading old context.
+Orients humans and agents in **<30 seconds** without rereading old task bodies.
 
 ## Goal
 
-Answer where the project stands and what should happen next.
+Summarize queue depth, latest `fur refresh` snapshot, workspace registration, and **one** concrete next action.
 
 ## When to Use
 
-- The user asks "where are we?", "what remains?", or "what next?"
-- A task was completed and the next step is needed
-- A long session needs context compaction
-- The agent needs a quick project orientation
+- “Where are we?”, “what’s next?”, “what’s in ready?”
+- Right after `fur-done` to pick the next task.
+- Long session: quick re-ground before more edits.
 
 ## When NOT to Use
 
-- You need to create or select a task from messy input — use `fur-task`
-- You need to implement — use `fur-do`
-- You need to verify/review — use `fur-check`
-- You need to close completed work — use `fur-done`
+- Need to **create** or **reshape** tasks from raw notes → `fur-task`.
+- Need implementation → `fur-do`.
+- Need verification or closure → `fur-check` / `fur-done`.
 
 ## Workflow
 
-1. Run or emulate `fur progress`.
-2. Read `.fur.planning/progress/latest.md` if available.
-3. Summarize counts, latest snapshot, ready tasks, and workspace tracker sync state.
-4. Do not load old done task bodies unless directly relevant.
-5. Recommend exactly one next action.
+### Phase 1: CLI snapshot
+
+1. From project root, run `fur progress` (or replicate its behavior if the shell is unavailable: count `*.md` in `tasks/{backlog,ready,done}` and `plans/`).
+2. If `.fur.planning` is missing, report “run `fur init`” and stop.
+
+### Phase 2: Read latest markdown snapshot
+
+1. If `progress/latest.md` exists, read only the **head** (~80–120 lines): git snippet, counts, tracker hints, newest ready filenames.
+2. Do **not** load archived snapshots or full `done/` histories unless the user asked for archaeology.
+
+### Phase 3: Workspace awareness
+
+1. If parent `.fur.workspace/config.json` exists, note `defaultTaskSource`, write policy, and whether this repo path appears under `repositories[]`.
+2. If not registered, the next external import/write may be blocked — say so plainly.
+
+### Phase 4: Recommend a single next step
+
+Pick exactly **one** of: `fur-task`, `fur-do` (name the ready file), `fur-check`, `fur-done`, `fur refresh`, `fur compact`, `fur workspace doctor`, `fur-init`.
 
 ## Rules
 
-- Do not change files.
-- Do not claim work is done without task and verification evidence.
-- Prefer links/paths over pasted content.
-- Keep the status short enough to preserve context.
-- If snapshots are bloated, suggest `fur compact`.
+- Read-only: **no** file mutations in this skill.
+- Never claim work is complete without matching task location + verification trail.
+- Prefer paths and counts over pasting markdown.
+- If `progress/` is huge, suggest `fur compact` and mention `FUR_PROGRESS_KEEP` override (default keep is `8` in `bin/fur`).
 
 ## Output
 
 ```md
 ## Status
 
-- Backlog:
-- Ready:
-- Done:
-- Plans:
-- Tracker sync:
+- Backlog: [n]
+- Ready: [n]
+- Done: [n]
+- Plans: [n]
+- Workspace: found | missing
+- Repo registered: yes [id] | no
 
-## Latest
+## Latest snapshot
 
-[brief latest snapshot summary]
+[2–5 bullets distilled from progress/latest.md]
 
 ## Next
 
-[one recommended next action]
+[exactly one recommended action]
 ```
 
 ## Suggested Next Step
 
-`fur-task`, `fur-do`, `fur-done`, or `fur compact`, depending on the status.
+Whatever the **Next** line names — usually `fur-do` on the top ready task or `fur-task` when the queue is empty/stale.

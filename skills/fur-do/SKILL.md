@@ -5,63 +5,83 @@ description: Implement one selected Fur task or clearly scoped mini fix with min
 
 # fur-do
 
-Use this skill to execute a ready task.
+Execute **exactly** the scoped work described in the active task — no parallel product design or tracker housekeeping.
 
 ## Goal
 
-Make the smallest complete implementation that satisfies the task acceptance criteria.
+Deliver the smallest **complete** change set that satisfies every acceptance criterion the task defines, with evidence from cheap checks when available.
 
 ## When to Use
 
-- A task in `.fur.planning/tasks/ready/` or `.fur.planning/tasks/backlog/` is selected
-- The user gives a tiny unambiguous fix
-- Recent code needs behavior-preserving cleanup directly related to the selected task
+- A markdown task exists in `.fur.planning/tasks/ready/` (preferred) or the user explicitly points at one `backlog/` task to implement now.
+- A **tiny** unambiguous fix (one file / one symbol) with implicit AC given inline by the user.
+- Follow-up code tweaks right after partial implementation **within the same task scope**.
 
 ## When NOT to Use
 
-- Requirements are unclear — use `fur-task`
-- Root cause is unknown — use `fur-debug`
-- The change needs a quality gate — use `fur-check`
-- Work is complete and ready to close — use `fur-done`
+- Requirements or AC are missing or contradictory → `fur-task`.
+- Failure mode unknown → `fur-debug` until the cause is known.
+- Implementation done; need review → `fur-check`.
+- Verified and ready to archive → `fur-done`.
 
 ## Workflow
 
-1. Read the selected task and relevant plan/context only.
-2. Inspect existing code patterns before editing.
-3. Implement the narrowest complete change.
-4. Keep cleanup limited to touched code and preserve behavior.
-5. Run targeted checks when obvious and cheap.
-6. Summarize changed files, checks, and remaining risk.
+### Phase 1: Load scope
+
+1. Read the selected task file end-to-end: Context, Goal, Non-goals, Acceptance criteria, Implementation notes, Verification.
+2. Pull only **linked** plan snippets or files referenced in the task — avoid loading entire repo history.
+3. Read `.fur.planning/context/verification.md` for project-default commands when the task does not override them.
+
+### Phase 2: Align with codebase
+
+1. Locate touched modules; match existing patterns (naming, error handling, tests, formatting).
+2. If the task references a tracker issue, sync intent mentally — do not expand scope beyond the local task text.
+
+### Phase 3: Implement
+
+1. Apply the **narrowest** diff that meets AC; co-locate small refactors only when they touch the same lines for clarity.
+2. Preserve behavior outside the stated scope; no drive-by renames across the tree.
+3. For TypeScript, avoid `any`; if unavoidable, document why in the task or PR notes (not inside unrelated files).
+
+### Phase 4: Verify (cheap → broad)
+
+1. Run commands from the task’s **Verification** section, or from `context/verification.md`, narrowest first (`typecheck` / `lint` on touched package, then tests targeting changed modules).
+2. If a command does not exist, say so and list what you ran manually instead — never fabricate green results.
+
+### Phase 5: Report (do not close)
+
+1. Summarize files, risks, and commands with real output snippets where helpful.
+2. Do **not** move the task to `done/` or update trackers — that is `fur-done`.
 
 ## Rules
 
-- Do not broaden scope or redesign unrelated code.
-- Do not make tracker updates.
-- Do not mark tasks done.
-- Do not use `any` or weaken types unless unavoidable and explained.
-- If scope grows or requirements become unclear, stop and return to `fur-task`.
-- If a failure needs diagnosis, switch to `fur-debug`.
+- No scope creep, no product redesign, no speculative features.
+- No tracker comments, transitions, or GitHub/Jira writes — `fur-task` / `fur-done` own that boundary.
+- Do **not** mark the task complete in markdown; `fur-check` + `fur-done` do.
+- **Commits and PRs** always need explicit user approval (AGENTS.md); do not `git commit` or open PRs unless asked.
+- If halfway through the work you discover missing requirements, **stop** and hand back to `fur-task`.
+- Context hygiene: if the session is huge, suggest summarizing via `fur compact` / `progress/latest.md` per `references/context-window.md`.
 
 ## Output
 
 ```md
 ## Implemented
 
-[summary]
+[1–3 sentences tied to AC IDs or bullets]
 
-## Files Changed
+## Files changed
 
-- `path` — [what changed]
+- `path` — [intent of change]
 
 ## Checks
 
-[commands/results]
+[commands + exit codes / key log lines, or honest "not run" + reason]
 
-## Risks
+## Risks / follow-ups
 
-[remaining risk or "none known"]
+[known gaps, or "none"; call out missing tests explicitly]
 ```
 
 ## Suggested Next Step
 
-`fur-check` for review and verification, or `fur-debug` if verification exposes an unknown root cause.
+`fur-check` before any celebration; if checks fail with unknown cause, `fur-debug`.

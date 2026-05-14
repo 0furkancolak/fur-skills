@@ -6,48 +6,62 @@ disable-model-invocation: true
 
 # fur-init
 
-Use this skill when starting the Fur workflow inside a project.
+Bootstrap the Fur planning workspace so later skills (`fur-task`, `fur-do`, …) have a consistent on-disk contract.
 
 ## Goal
 
-Create a clean `.fur.planning` workspace and configure how much the agent should ask before creating tasks.
+Create a clean `.fur.planning/` tree, write `config.json` with `questionLevel` and `projectMaturity`, seed `context/` stubs, and surface workspace (`/.fur.workspace/`) registration status — without implementing product code.
 
 ## When to Use
 
-- Starting work in a new project repo
-- Setting up the Fur workflow for the first time
-- After cloning a repo that doesn't have `.fur.planning/` yet
+- Starting the Fur loop in a **new** project repository.
+- Cloning a repo that has no `.fur.planning/` yet.
+- Re-orienting after deleting a broken planning folder (only if the user explicitly wants a fresh init).
 
 ## When NOT to Use
 
-- If `.fur.planning/` already exists and is functional
-- If you need to implement code (use `fur-do` instead)
-- If you need to create tasks (use `fur-task` after init)
+- `.fur.planning/` already exists and is valid — report status; do not blindly overwrite `config.json` without user consent.
+- You need tasks or implementation — use `fur-task` / `fur-do` after init.
+- You only need a progress summary — use `fur-status` or `fur progress`.
 
 ## Workflow
 
-1. Choose git mode, project maturity, and question level.
-2. From the project root, run `fur init`. In a TTY, it prompts for defaults. In non-TTY/CI, it defaults to `--gitignore`, `--project-maturity new`, and `--question-level high`.
+### Phase 1: Preconditions
 
-Common explicit command:
+1. Operate from the **project git root** (or the root the user treats as the repo).
+2. If `.fur.planning/` exists, list `config.json`, `tasks/*`, and `progress/latest.md`; stop unless the user asked to re-init or repair.
+3. Read `references/planning-layout.md` if you need the full layout rationale.
+
+### Phase 2: Run the CLI
+
+1. Choose `questionLevel` and `projectMaturity` using AGENTS.md defaults: **new → `high`**, **established → `normal`** unless the user overrides.
+2. Run `fur init` from the project root. In TTY it prompts; in non-TTY/CI it defaults to `--gitignore`, `--project-maturity new`, `--question-level high`.
+
+Non-interactive examples:
 
 ```bash
 fur init --gitignore --project-maturity new --question-level high
 ```
 
-For established projects:
-
 ```bash
 fur init --gitignore --project-maturity established --question-level normal
 ```
 
-3. Confirm the layout matches **Created Structure**.
-4. Confirm `.fur.planning/config.json` includes `questionLevel`, `projectMaturity`, and `questionPolicy`.
-5. Check for a parent `.fur.workspace/config.json`.
-6. If no workspace config exists, suggest `fur workspace init` for tracker-aware multi-repo work.
-7. If workspace config exists but this repo is not registered, report that tracker-aware imports/writes need a `repositories[]` entry.
+3. If the user must not ignore planning in git, use `--no-gitignore` and explain the tradeoff (commits may include `.fur.planning/`).
 
-## Created Structure
+### Phase 3: Verify layout and config
+
+1. Confirm the **Created structure** below exists (folders + `README.md` + `context/*.md` stubs).
+2. Open `.fur.planning/config.json` and confirm keys: `questionLevel`, `projectMaturity`, `questionPolicy`, `localTaskMode`, `gitignore` (boolean reflects CLI).
+3. Optionally run `fur progress` — it may say no snapshot yet; that is OK until the first `fur refresh`.
+
+### Phase 4: Workspace discovery
+
+1. Walk parent directories for `.fur.workspace/config.json` (same behavior as `fur` CLI).
+2. If missing: suggest `fur workspace init` from the **workspace root** when multi-repo tracker routing is desired.
+3. If present: if this repo path is **not** in `repositories[]`, report that external imports/writes stay blocked until registered.
+
+## Created structure
 
 ```txt
 .fur.planning/
@@ -59,15 +73,15 @@ fur init --gitignore --project-maturity established --question-level normal
     done/
   plans/
   progress/
-    archive/     # created when you run fur compact
+    archive/     # populated by `fur compact`
   context/
-    archive/     # optional long digests (see references/context-window.md)
+    archive/     # optional long digests — see references/context-window.md
     issue-tracker.md
     mcp.md
     verification.md
 ```
 
-## Question Levels
+## Question levels
 
 - `low`: ask only for blocker ambiguity, unsafe tracker routing, or high-risk irreversible choices.
 - `normal`: ask when scope, acceptance criteria, tracker target, or verification is missing.
@@ -75,27 +89,27 @@ fur init --gitignore --project-maturity established --question-level normal
 
 ## Rules
 
-- Do not implement code.
-- Do not create Jira/GitHub issues.
-- Do not over-design the planning system.
-- Only initialize the workspace.
-- If `.fur.planning/` already exists, report its status instead of reinitializing.
-- Repo-local `.fur.planning/config.json` stores local planning metadata only; tracker source selection belongs in `.fur.workspace/config.json`.
-- New projects should default to `questionLevel: high`; established projects should usually use `normal`.
+- Do not implement application code or create tracker issues during init.
+- Do not over-design folders beyond what `fur init` creates unless the user asks.
+- Never delete an existing `.fur.planning/` tree without explicit user approval.
+- Repo-local `config.json` is for planning behavior only; tracker routing lives in `.fur.workspace/config.json`.
+- Point long explanations to `plans/` or `context/archive/` per `references/context-window.md` instead of bloating chat.
 
 ## Output
 
 ```md
-## Initialization Complete
+## Initialization complete
 
-- Created folders: [list]
-- .gitignore updated: yes/no
-- Planning mode: personal / team
-- Question level: low / normal / high
-- Project maturity: new / established
-- Workspace config: found / not found / repo not registered
+- Project root: [path]
+- Created or verified folders: [list]
+- .gitignore updated (fur planning): yes / no / skipped
+- questionLevel: low | normal | high
+- projectMaturity: new | established
+- Workspace config: found [path] | not found
+- Repo registered in workspace: yes [id] | no (action: add repositories[] entry)
+- Next CLI hints: fur refresh | fur task (skill)
 ```
 
 ## Suggested Next Step
 
-`fur-task` for local work or external Jira/GitHub references. For multi-repo tracker routing, first run `fur workspace init` from the workspace root.
+`fur-task` to capture the first unit of work, or `fur workspace init` + `fur workspace doctor` if tracker-aware multi-repo setup is needed.

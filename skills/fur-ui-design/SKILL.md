@@ -5,86 +5,109 @@ description: Produce or refine UI design direction before coding — layout, typ
 
 # fur-ui-design
 
-Use **before** substantial UI implementation when the user wants a clear visual direction.
+Produce a **design contract** short enough to paste into a `fur-task` / `fur-do` handoff without re-negotiating basics in code review.
 
 ## Goal
 
-Deliver a concise **design contract** the implementer can follow without guessing.
+Lock layout, type scale, semantic color roles, motion rules, and copy voice **before** implementation so `fur-do` does not improvise product identity.
 
 ## When to Use
 
-- Before coding a new screen or page
-- When the visual direction is unclear or undecided
-- When the user asks "how should this look?"
-- When defining or extending a design system
+- New screen / flow / marketing surface and visual language is not frozen.
+- Extending a design system (new component families, states, tokens).
+- “How should this look?” with no Figma link but constraints exist (brand, competitors, accessibility).
 
 ## When NOT to Use
 
-- The UI is already designed and just needs implementation — use `fur-do`
-- You need to clone a reference site — use `fur-ui-clone`
-- You need to review implemented UI — use `fur-ui-review`
-- You need to review code quality — use `fur-check`
+- Spec already frozen (Figma + tokens) → `fur-task` + `fur-do`.
+- Pixel recreation of an existing public URL → `fur-ui-clone`.
+- Post-build polish / hierarchy review → `fur-ui-review`.
+- Non-UI engineering work → other `fur-*` skills.
 
-## Inputs
+## Inputs (collect first)
 
-- Product audience and primary job-to-be-done (1–3 sentences).
-- Constraints: brand guidelines, design system, dark mode, RTL, platform (web/mobile).
-- Optional: reference links or screenshots (respect rights; see `fur-ui-clone` for deep reference breakdown).
+- Audience + job-to-be-done (1–3 sentences).
+- Hard constraints: brand PDF, existing DS, dark mode, RTL, target breakpoints, performance (e.g. no heavy video hero).
+- References: moodboard links or screenshots — respect rights; deep DOM/CSS extraction belongs to `fur-ui-clone`, not here.
 
 ## Workflow
 
-1. **Define user flows**: Identify 1–2 hero user flows this UI must support.
-2. **Propose layout**: Grid, key sections, navigation pattern, content hierarchy.
-3. **Typography**: Define roles (display/title/body/caption), font sizes, max widths, line heights.
-4. **Color**: Define semantic roles (bg/surface/text/muted/border/primary/danger), not 50 arbitrary swatches.
-5. **Components**: List critical UI blocks and their interaction rules (states, transitions).
-6. **Motion**: Define only where it clarifies hierarchy; respect reduced motion preferences.
-7. **Copy tone**: Provide examples for headings, buttons, errors, empty states.
+### Phase 1: Flows + information architecture
+
+1. Pick **1–2 hero flows** (primary user success paths).
+2. Sketch navigation model (tabs vs side-nav vs stacked), page regions, and scroll vs modal boundaries.
+
+### Phase 2: Layout + density
+
+1. Grid: columns, gutters, max width, sticky regions.
+2. Content hierarchy: primary CTA, secondary actions, destructive actions separated.
+3. Density mode (marketing airy vs data-dense) — pick one adjective + reference vibe to avoid generic “AI polish”.
+
+### Phase 3: Typography
+
+1. Roles: display / H1 / H2 / body / caption / mono if needed.
+2. Sizes + weights + line-height + max line length for body copy.
+3. Mention webfont vs system stack decision.
+
+### Phase 4: Semantic color
+
+1. Map roles: `background`, `surface`, `text`, `muted`, `border`, `primary`, `danger`, optional `success/warning`.
+2. Tie roles to tokens (CSS variables / Tailwind theme) — raw hex only inside token table, not scattered prose.
+3. Note contrast intent (WCAG AA target) for text on surfaces.
+
+### Phase 5: Components + states
+
+1. List critical components (cards, tables, nav, forms, toasts).
+2. For each interactive control document: default, hover, focus-visible, active, disabled, invalid — keyboard path included.
+
+### Phase 6: Motion
+
+1. Use motion only for **orientation** (page transitions, expand/collapse, success feedback) — not decoration spam.
+2. Specify durations (ms), easing names, what property animates; provide **reduced-motion** fallback (`prefers-reduced-motion: reduce`).
+3. If the stack will be Tailwind-heavy, say whether keyframes live in CSS vs a motion library (Framer Motion, etc.) — implementation picks later, intent is fixed here.
+
+### Phase 7: Copy tone
+
+1. Examples: hero headline, primary CTA, destructive confirm, inline error, empty state.
+2. Voice adjectives (e.g. “confident, concise, never cute”).
+
+### Phase 8: Storage + handoff
+
+1. Keep this artifact **short**; if rationale runs long, add `plans/<topic>-ui-design.md` and link it here (see `references/planning-layout.md`).
+2. End with explicit **Open questions** the user must answer before `fur-do`.
 
 ## Rules
 
-- Avoid generic "AI slop" aesthetics; pick a **clear** direction (one adjective + one reference vibe is enough).
-- Keep the artifact **short**; long rationale goes to `plans/` or `.fur.planning/context/` with a link.
-- Do not implement code in this skill unless the user explicitly asks for a spike.
-- All color definitions must use semantic roles, not raw hex values with no context.
-- Every interactive element must have its states defined (default, hover, focus, active, disabled).
+- One coherent direction — no A/B/C menu of unrelated styles unless user asked for options.
+- Do not ship code in this skill unless the user explicitly requests a spike — even then keep it disposable and labeled.
+- Every interactive element needs documented states (incl. focus-visible).
+- Avoid undifferentiated purple gradients / interchangeable sans-serif “AI slop”; name influences (product references, era, geography).
+- Accessibility and motion preferences are first-class, not stretch goals.
 
 ## Output
 
 ```md
-## Intent & Audience
+## Intent & audience
 
-[1–3 sentences about who this is for and what they need to accomplish]
-
-## Layout
-
-[grid, sections, navigation pattern]
+## Layout & IA
 
 ## Typography
 
-[roles, sizes, weights, max widths]
+## Color (semantic roles → tokens)
 
-## Color (Semantic)
+## Key components & states
 
-[semantic color roles with values]
+## Motion (incl. reduced-motion)
 
-## Key Components
+## Copy tone (examples)
 
-[list of components with interaction rules]
+## Open questions
 
-## Motion
+## Linked deep-dive (optional)
 
-[where and why motion is used; reduced-motion fallback]
-
-## Copy Tone
-
-[examples for headings, buttons, errors]
-
-## Open Questions for User
-
-[unresolved design decisions]
+`plans/...` path if used
 ```
 
 ## Suggested Next Step
 
-`fur-task` (link the design summary to a task) → `fur-do` → `fur-ui-review` → `fur-check`. If detailed reference breakdown from a site is needed first, use `fur-ui-clone`.
+`fur-task` referencing this doc → `fur-do` → `fur-ui-review` + `fur-check`. If the source of truth is an external site, run `fur-ui-clone` **before** coding.
