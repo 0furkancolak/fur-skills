@@ -15,6 +15,47 @@ echo "Source skills:"
 find "$ROOT/skills" -maxdepth 2 -name SKILL.md | sort | sed "s#^$ROOT/##"
 echo ""
 
+echo "Frontmatter validation:"
+if command -v ruby >/dev/null 2>&1; then
+  ruby -ryaml - "$ROOT/skills" <<'RUBY'
+root = ARGV[0]
+errors = 0
+Dir.glob(File.join(root, "fur-*/SKILL.md")).sort.each do |path|
+  text = File.read(path)
+  fm = text[/\A---\n(.*?)\n---\n/m, 1]
+  name = File.basename(File.dirname(path))
+  unless fm
+    puts "- #{name}: missing frontmatter"
+    errors += 1
+    next
+  end
+  begin
+    data = YAML.safe_load(fm)
+    desc = data["description"]
+    if desc.nil? || desc.to_s.strip.empty?
+      puts "- #{name}: missing description"
+      errors += 1
+    else
+      puts "- #{name}: ok"
+    end
+  rescue StandardError => e
+    puts "- #{name}: invalid YAML (#{e.message})"
+    errors += 1
+  end
+end
+exit(errors.positive? ? 1 : 0)
+RUBY
+  yaml_status=$?
+  if [ "$yaml_status" -ne 0 ]; then
+    echo ""
+    echo "Fix unquoted colons in description with a quoted or folded scalar (description: >-)."
+    exit 1
+  fi
+else
+  echo "ruby not found; skipping frontmatter validation"
+fi
+echo ""
+
 echo "Installed skills:"
 for d in "$HOME/.claude/skills" "$HOME/.agents/skills" "$HOME/.cursor/skills"; do
   echo "## $d"

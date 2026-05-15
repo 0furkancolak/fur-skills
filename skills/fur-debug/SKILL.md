@@ -1,6 +1,10 @@
 ---
 name: fur-debug
-description: Diagnose a failing test, runtime error, stack trace, broken behavior, regression, or production bug when the root cause is unknown. Follow a disciplined phase-based approach: build loop → reproduce → hypothesize → instrument → fix → regression-test.
+description: >-
+  Diagnose a failing test, runtime error, stack trace, broken behavior,
+  regression, or production bug when the root cause is unknown. Follow a
+  disciplined phase-based approach: build loop → reproduce → hypothesize →
+  instrument → fix → regression-test.
 ---
 
 # fur-debug

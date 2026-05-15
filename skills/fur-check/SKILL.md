@@ -1,6 +1,9 @@
 ---
 name: fur-check
-description: Quality gate for completed Fur work: verify acceptance criteria, run relevant checks, review changed code for correctness/security/maintainability, and report blockers before task closure.
+description: >-
+  Quality gate for completed Fur work: verify acceptance criteria, run relevant
+  checks, review changed code for correctness/security/maintainability, and
+  report blockers before task closure.
 ---
 
 # fur-check
