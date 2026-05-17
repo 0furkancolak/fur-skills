@@ -1,13 +1,43 @@
 ---
 name: fur-ui-clone
-description: Reverse-engineer and clone one or more websites in one shot — extracts assets, CSS, and content section-by-section and proactively dispatches parallel builder agents in worktrees as it goes. Use whenever the user wants to clone, replicate, rebuild, reverse-engineer, or copy any permitted public website. Defaults to Tailwind-first layout, motion parity with the source, and small composable React components. Triggers on phrases like "make a copy of this site", "rebuild this page", "pixel-perfect clone". Provide one or more target URLs as arguments.
+skill_class: executor
+skill_version: 2
+default_response_depth: deep
+description: >-
+  Reverse-engineer and clone one or more websites in one shot — extracts assets, CSS, and content section-by-section
+  and proactively dispatches parallel builder agents in worktrees as it goes.
+  Use whenever the user wants to clone, replicate, rebuild, reverse-engineer, or copy any permitted public website.
+  Defaults to Tailwind-first layout, motion parity with the source, and small composable React components.
+  Triggers on phrases like "make a copy of this site", "rebuild this page", "pixel-perfect clone".
+  Provide one or more target URLs as arguments.
 argument-hint: "<url1> [<url2> ...]"
 user-invocable: true
+requires:
+  - target_url
+  - browser_mcp
+optional:
+  - existing_project_stack
+  - reference_screenshots
+quality_contract:
+  must_map_every_ac: true
+  must_report_assumptions: true
+  must_report_verification_truthfully: true
+  must_call_out_risks: true
+  must_include_user_facing_explanation: true
+  self_check_required: true
+handoff:
+  success_next: fur-ui-review
+  ambiguous_scope_next: fur-task
+  unknown_failure_next: fur-debug
 ---
 
 # fur-ui-clone
 
 Behavior parity: [JCodesMore/ai-website-cloner-template](https://github.com/JCodesMore/ai-website-cloner-template) (upstream `clone-website` skill). Fur repo uses the `fur-` skill name and AGENTS.md section layout below.
+
+## Identity
+
+You are a senior front-end architect and extraction engineer. Your job is to reverse-engineer a public website with pixel-perfect fidelity, using auditable spec files, incremental builds, and parallel builder agents.
 
 ## Goal
 
@@ -16,26 +46,30 @@ Rebuild whatever is visible at the target URL(s) as a pixel-perfect front-end cl
 ## When to Use
 
 - The user wants to clone, recreate, or reverse-engineer a **permitted public** website or page.
-
 - The target fidelity is close to the reference, not a loose redesign.
-
 - The project can adopt or already matches the template stack (Next.js App Router, shadcn/ui, Tailwind CSS v4, TypeScript) and artifact layout (`docs/research/`, `docs/design-references/`, `scripts/`, `public/`).
-
 - Multiple URLs should use per-host isolation and may run in parallel when resources allow.
 
 ## When NOT to Use
 
 - Original product UI direction is needed — use `fur-ui-design`.
-
 - A scoped implementation task is already defined — use `fur-do`.
-
 - The reference is private, paywalled, DRM-limited, or you lack rights to reuse its assets or structure.
-
 - Browser automation is unavailable and no screenshots or reference bundle were provided.
+
+## Context Loading Contract
+
+Load in this order:
+1. Target URL(s) and any user-provided constraints.
+2. Existing project stack (`package.json`, `next.config.js`, etc.).
+3. `docs/research/` and `docs/design-references/` if they already exist from a prior run.
+4. Browser MCP availability check.
+
+Do not load unrelated project code or history.
 
 ## Stack: Tailwind, motion, and multi-component structure
 
-- **Tailwind CSS** — Prefer Tailwind v4 utilities plus tokens in `globals.css` / shadcn CSS variables. Map extracted colors and spacing to tokens; use arbitrary values (for example `[17px]`) or custom properties when computed styles do not map cleanly. Never pick a utility name because it “looks close” if `font-size`, `line-height`, or spacing differ from `getComputedStyle()`.
+- **Tailwind CSS** — Prefer Tailwind v4 utilities plus tokens in `globals.css` / shadcn CSS variables. Map extracted colors and spacing to tokens; use arbitrary values (for example `[17px]`) or custom properties when computed styles do not map cleanly. Never pick a utility name because it "looks close" if `font-size`, `line-height`, or spacing differ from `getComputedStyle()`.
 
 - **Motion** — Mirror the source: native CSS `transition` / `animation` / `@keyframes`, scroll-driven APIs, or the same JS libraries the page uses (Framer Motion, GSAP, Lenis, Lottie, and so on). Specs must list duration, easing, trigger, and which properties animate. Do not replace the interaction or motion model without documenting the substitution.
 
@@ -481,6 +515,22 @@ After assembly, do NOT declare the clone complete. Take side-by-side comparison 
 
 Only after this visual QA pass is the clone complete.
 
+### Phase 6: Self-review
+
+Before finalizing, verify:
+- Did I extract every section with a spec file?
+- Did every CSS value come from `getComputedStyle()`, not estimation?
+- Did I identify the interaction model for every interactive section?
+- Did I capture all states (tabs, scroll, hover) for stateful components?
+- Did I download all assets including overlays and layered compositions?
+- Did I test responsive behavior at 1440px, 768px, and 390px?
+- Did `npm run build` pass after assembly?
+- Did I perform the visual QA diff?
+- Did I match the output contract for this skill class?
+- Did I suggest the correct next skill?
+
+If any answer is no, continue working before responding.
+
 ### Pre-Dispatch Checklist
 
 Before dispatching ANY builder agent, verify you can check every box. If you can't, go back and extract more.
@@ -518,17 +568,7 @@ External writes (remote repos, issue trackers, and similar) require explicit use
 
 ## Output
 
-When done, report:
-
-- Total sections built
-- Total components created
-- Total spec files written (should match components)
-- Total assets downloaded (images, videos, SVGs, fonts)
-- Build status (`npm run build` result)
-- Visual QA results (any remaining discrepancies)
-- Any known gaps or limitations
-
-Optional structured summary:
+### Presentation Plane
 
 ```md
 ## Clone Summary
@@ -541,7 +581,47 @@ Optional structured summary:
 - Build/typecheck:
 - Visual QA:
 - Known gaps:
+
+## Implementation Details
+
+Explain the main architectural decisions.
+Cover trade-offs, edge cases, and why the chosen approach was preferable.
+
+## Files Changed
+
+- `path` — exact purpose of the change
+- `path` — exact purpose of the change
+
+## Verification
+
+- Command
+- Result
+- What it proves
+- What it does not prove
+
+## Risks and Follow-ups
+
+Include residual technical risk, missing coverage, and any suggested follow-up task.
 ```
+
+### Control Plane
+
+```yaml
+status: implemented | blocked | needs-clarification
+next_skill: fur-ui-review | fur-check | fur-task
+scope_respected: true | false
+verification_state: complete | partial | not-run
+risk_level: none | low | medium | high
+```
+
+## Anti-patterns
+
+- Do not say "done" without performing the visual QA diff.
+- Do not hide uncertainty behind vague language ("looks close enough").
+- Do not dispatch builders without a spec file.
+- Do not approximate CSS values; extract exact computed styles.
+- Do not skip responsive extraction.
+- Do not build everything in one monolithic commit.
 
 ## Suggested Next Step
 

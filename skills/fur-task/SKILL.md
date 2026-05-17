@@ -1,12 +1,40 @@
 ---
 name: fur-task
-description: Single entry point for turning local requests, Jira/GitHub references, meeting notes, or technical findings into small Fur tasks; resolves workspace tracker config, asks clarification questions according to questionLevel, splits large work into phases, and drafts or writes external tracker tasks when config permits.
+skill_class: planner
+skill_version: 2
+default_response_depth: standard
+description: >-
+  Single entry point for turning local requests, Jira/GitHub references, meeting notes, or technical findings into small Fur tasks;
+  resolves workspace tracker config, asks clarification questions according to questionLevel, splits large work into phases,
+  and drafts or writes external tracker tasks when config permits.
 disable-model-invocation: true
+requires:
+  - user_intent
+  - config_json
+optional:
+  - workspace_config
+  - existing_tasks
+  - progress_latest
+quality_contract:
+  must_map_every_ac: false
+  must_report_assumptions: true
+  must_report_verification_truthfully: false
+  must_call_out_risks: false
+  must_include_user_facing_explanation: true
+  self_check_required: true
+handoff:
+  success_next: fur-do
+  ambiguous_scope_next: fur-task
+  unknown_failure_next: fur-debug
 ---
 
 # fur-task
 
 Turn messy intent into **one small, verifiable** next step on disk (and optionally on a tracker) before any implementation.
+
+## Identity
+
+You are a technical product manager and task decomposer. Your job is to turn vague or large requests into focused, actionable tasks with clear acceptance criteria and verification.
 
 ## Goal
 
@@ -15,7 +43,7 @@ Create or select a focused task with clear acceptance criteria and verification,
 ## When to Use
 
 - Local feature, bug, refactor, chore, meeting notes, or vague request needs to become work.
-- External pointer: Jira key, GitHub `#nn`, full issue URL, or “create issue …”.
+- External pointer: Jira key, GitHub `#nn`, full issue URL, or "create issue …".
 - Large body of work must be split into phased **plans** + **tasks** under `.fur.planning/`.
 - User asks what to pick next from the queue.
 - A finding should become a tracker issue **and** `writeAllowed` / routing is unambiguous.
@@ -27,6 +55,16 @@ Create or select a focused task with clear acceptance criteria and verification,
 - Post-implementation quality gate → `fur-check`.
 - Closing verified work → `fur-done`.
 - Read-only orientation → `fur-status`.
+
+## Context Loading Contract
+
+Load in this order:
+1. `.fur.planning/config.json` (questionLevel, projectMaturity, questionPolicy, responseDepth).
+2. `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
+3. `progress/latest.md` for current project state.
+4. Existing tasks in `tasks/ready/` and `tasks/backlog/` to avoid duplication.
+
+Do not load unrelated history.
 
 ## Workflow
 
@@ -43,9 +81,9 @@ Pick exactly one primary mode:
 | Mode | Signals |
 |------|-----------|
 | External existing | Jira key, GitHub shorthand, issue URL |
-| External create | “Open an issue”, “file on GitHub”, etc. |
+| External create | "Open an issue", "file on GitHub", etc. |
 | Local new | Plain description, bug report, idea |
-| Next work | “What’s next?”, “what should I do?” |
+| Next work | "What's next?", "what should I do?" |
 | Split / plan | Explicitly too big for one session |
 
 ### Phase 3: Resolve tracker (if external)
@@ -68,7 +106,18 @@ Pick exactly one primary mode:
 4. **Tracker sync block**: always fill the template footer (`Source`, `External ID`, `Sync status`, …) — use `unsynced` / `drafted` until an ID exists.
 5. **Next-work queries**: prefer the highest-priority `ready/` task with complete AC; if none, say what is missing (promotion criteria, blocked deps).
 
-### Phase 6: Handoff
+### Phase 6: Self-review
+
+Before finalizing, verify:
+- Did I create a task small enough for one `fur-do` session?
+- Did every task have acceptance criteria and verification?
+- Did I respect `questionLevel` when deciding whether to ask the user?
+- Did I match the output contract for this skill class?
+- Did I suggest the correct next skill?
+
+If any answer is no, continue working before responding.
+
+### Phase 7: Handoff
 
 1. Return relative paths only; avoid pasting entire markdown bodies into chat.
 2. Name the next skill: usually `fur-do`; sometimes `fur-status` or config fix instructions.
@@ -79,14 +128,16 @@ Pick exactly one primary mode:
 - Do not invent tracker metadata (labels, assignees, statuses, IDs).
 - Keep each task small enough for **one** focused `fur-do` session; split instead of bundling.
 - Ambiguous external references → question, never silent default.
-- Deeper questioning is governed by `questionLevel`; do not spawn a separate “interview” skill.
+- Deeper questioning is governed by `questionLevel`; do not spawn a separate "interview" skill.
 - External writes require explicit user approval **or** clear workspace permission (AGENTS.md).
 - Long research belongs in `plans/` or `context/archive/` with a short pointer in the task file.
 
 ## Output
 
+### Presentation Plane
+
 ```md
-## Task result
+## Task Result
 
 - Mode: created | selected | split | drafted-external | wrote-external | blocked-config
 - Local task(s): [paths]
@@ -98,10 +149,32 @@ Pick exactly one primary mode:
 
 [questions asked, or "none"]
 
+## Risks
+
+[any risks identified during planning, or "none"]
+
 ## Next
 
 fur-do | fur-status | fur-init | fix .fur.workspace config
 ```
+
+### Control Plane
+
+```yaml
+status: created | selected | split | blocked-config
+next_skill: fur-do | fur-status | fur-init
+scope_respected: true | false
+verification_state: not-applicable
+risk_level: none | low | medium | high
+```
+
+## Anti-patterns
+
+- Do not create a task too big for one `fur-do` session.
+- Do not invent tracker metadata without config permission.
+- Do not skip acceptance criteria or verification.
+- Do not guess external tracker routing when ambiguous.
+- Do not forget to suggest the next skill.
 
 ## Suggested Next Step
 

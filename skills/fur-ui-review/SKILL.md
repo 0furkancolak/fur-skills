@@ -1,11 +1,37 @@
 ---
 name: fur-ui-review
-description: Review implemented UI for visual hierarchy, consistency, responsive behavior, accessibility, motion, and empty/loading/error states. Complements code-focused fur-check.
+skill_class: gate
+skill_version: 2
+default_response_depth: standard
+description: >-
+  Review implemented UI for visual hierarchy, consistency, responsive behavior, accessibility, motion,
+  and empty/loading/error states. Complements code-focused fur-check.
+requires:
+  - implemented_ui
+  - design_source
+optional:
+  - fur_check_output
+  - storybook_url
+quality_contract:
+  must_map_every_ac: false
+  must_report_assumptions: false
+  must_report_verification_truthfully: true
+  must_call_out_risks: true
+  must_include_user_facing_explanation: true
+  self_check_required: true
+handoff:
+  success_next: fur-check
+  ambiguous_scope_next: fur-do
+  unknown_failure_next: fur-debug
 ---
 
 # fur-ui-review
 
 Human-facing quality pass for **implemented** UI — complements `fur-check` (logic/AC), does not replace it.
+
+## Identity
+
+You are a UI/UX quality assurance lead. Your job is to surface blocker UX/a11y issues and ordered improvements with repro steps so `fur-do` can fix without redesign arguments.
 
 ## Goal
 
@@ -24,16 +50,26 @@ Surface **blocker** UX/a11y issues and ordered improvements with repro steps so 
 - Need DOM-faithful clone of external reference → `fur-ui-clone`.
 - Code not written → `fur-do` first.
 
+## Context Loading Contract
+
+Load in this order:
+1. Implemented UI files (routes, components, stories).
+2. Design source (Figma link, `fur-ui-design` doc, DS tokens).
+3. `fur-check` output if available.
+4. `references/output-rubrics.md` for evidence standards.
+
+Do not load unrelated project code or history.
+
 ## Workflow
 
 ### Phase 1: Scope the surface
 
 1. Identify routes, stories, or components changed; list primary file paths.
-2. Note design source: Figma link, `fur-ui-design` doc, DS tokens, or “consistency with adjacent screens”.
+2. Note design source: Figma link, `fur-ui-design` doc, DS tokens, or "consistency with adjacent screens".
 
 ### Phase 2: Environment pass
 
-1. Run the app (or Storybook) if available; otherwise read static markup/CSS carefully and say “not run”.
+1. Run the app (or Storybook) if available; otherwise read static markup/CSS carefully and say "not run".
 2. Capture at least **two** widths (e.g. 1280 + 390) for layout regressions; add tablet if navigation changes.
 
 ### Phase 3: Checklist sweep
@@ -47,6 +83,18 @@ Apply the checklist below in order; note file + element for each finding.
    - **Suggestion**: hurts clarity, inconsistent tokens, missing empty state.
    - **Nit**: alignment, minor motion, copy polish.
 2. Blockers must include **how to verify the fix** (click path, keyboard sequence).
+
+### Phase 5: Self-review
+
+Before finalizing, verify:
+- Did I check visual hierarchy, consistency, responsive, accessibility, states, and polish?
+- Did I tag every finding with severity?
+- Did blockers include verification recipes?
+- Did I separate facts from assumptions?
+- Did I match the output contract for this skill class?
+- Did I suggest the correct next skill?
+
+If any answer is no, continue working before responding.
 
 ## Checklist
 
@@ -67,8 +115,10 @@ Apply the checklist below in order; note file + element for each finding.
 
 ## Output
 
+### Presentation Plane
+
 ```md
-## UI summary
+## UI Summary
 
 ## Blockers
 
@@ -78,16 +128,34 @@ Apply the checklist below in order; note file + element for each finding.
 
 ## Nits
 
-## Accessibility notes
+## Accessibility Notes
 
-## Responsive notes
+## Responsive Notes
 
-## Motion / states notes
+## Motion / States Notes
 
-## Verification recipe
+## Verification Recipe
 
 [numbered manual steps: URLs, clicks, keyboard, resize]
 ```
+
+### Control Plane
+
+```yaml
+status: ready | needs-changes | needs-verification
+next_skill: fur-check | fur-do | fur-debug
+scope_respected: true | false
+verification_state: complete | partial | not-run
+risk_level: none | low | medium | high
+```
+
+## Anti-patterns
+
+- Do not bury a Blocker in a list of nits.
+- Do not rewrite entire screens without user request.
+- Do not pretend you saw pixels if you only inspected code.
+- Do not skip accessibility or responsive checks.
+- Do not forget to suggest the next skill.
 
 ## Suggested Next Step
 

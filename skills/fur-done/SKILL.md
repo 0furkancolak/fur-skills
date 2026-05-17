@@ -1,12 +1,38 @@
 ---
 name: fur-done
-description: Close a verified Fur task by moving it to done, creating a progress snapshot, and syncing Jira/GitHub completion only when workspace config permits close or transition.
+skill_class: orchestrator
+skill_version: 2
+default_response_depth: standard
+description: >-
+  Close a verified Fur task by moving it to done, creating a progress snapshot,
+  and syncing Jira/GitHub completion only when workspace config permits close or transition.
 disable-model-invocation: true
+requires:
+  - active_task
+  - fur_check_output
+optional:
+  - fur_workspace_config
+  - progress_latest
+quality_contract:
+  must_map_every_ac: false
+  must_report_assumptions: false
+  must_report_verification_truthfully: true
+  must_call_out_risks: true
+  must_include_user_facing_explanation: true
+  self_check_required: true
+handoff:
+  success_next: fur-status
+  ambiguous_scope_next: fur-task
+  unknown_failure_next: fur-debug
 ---
 
 # fur-done
 
 Archive **verified** work locally and optionally mirror completion to a tracker — never the other way around.
+
+## Identity
+
+You are a project coordinator. Your job is to close verified tasks cleanly, create a paper trail, and respect external-write permissions.
 
 ## Goal
 
@@ -23,6 +49,16 @@ Move the task markdown to `tasks/done/`, refresh `progress/latest.md` via `fur r
 - Implementation incomplete → `fur-do`.
 - Verification missing / failed → `fur-check` or `fur-debug`.
 - User has not approved external close when policy requires approval → stay local-only and say why.
+
+## Context Loading Contract
+
+Load in this order:
+1. Active task file.
+2. Latest `fur-check` output or user waiver.
+3. `.fur.workspace/config.json` if tracker sync is in play.
+4. `progress/latest.md` for continuity.
+
+Do not load unrelated tasks or history.
 
 ## Workflow
 
@@ -48,7 +84,19 @@ Move the task markdown to `tasks/done/`, refresh `progress/latest.md` via `fur r
 3. **Jira transition**: only if `transitionAllowed` true and transition name/ID is configured; never guess transitions.
 4. If anything is ambiguous, complete **local** steps only and document the manual tracker action for the user.
 
-### Phase 5: Report
+### Phase 5: Self-review
+
+Before finalizing, verify:
+- Did I confirm the task passed `fur-check` or user waiver?
+- Did I move the task file to `done/`?
+- Did I run `fur refresh` for a new snapshot?
+- Did I respect external-write permissions?
+- Did I match the output contract for this skill class?
+- Did I suggest the correct next skill?
+
+If any answer is no, continue working before responding.
+
+### Phase 6: Report
 
 1. Summarize paths, snapshot file, tracker outcome.
 2. Do **not** `git commit` or open PRs unless the user explicitly asked (AGENTS.md).
@@ -62,6 +110,8 @@ Move the task markdown to `tasks/done/`, refresh `progress/latest.md` via `fur r
 
 ## Output
 
+### Presentation Plane
+
 ```md
 ## Done
 
@@ -69,14 +119,32 @@ Move the task markdown to `tasks/done/`, refresh `progress/latest.md` via `fur r
 - Progress snapshot: [timestamped file] + latest symlink updated: yes/no
 - Tracker sync: closed | transitioned | drafted-manual-steps | local-only | skipped (reason)
 
-## Verification summary
+## Verification Summary
 
 [one paragraph from fur-check]
 
-## Follow-ups
+## Risks and Follow-ups
 
 [risks / debt, or "none"]
 ```
+
+### Control Plane
+
+```yaml
+status: closed | local-only | blocked
+next_skill: fur-status | fur-task
+scope_respected: true | false
+verification_state: complete | partial
+risk_level: none | low | medium | high
+```
+
+## Anti-patterns
+
+- Do not close a task without verification or user waiver.
+- Do not fabricate tracker sync results.
+- Do not skip `fur refresh`.
+- Do not forget to suggest the next skill.
+- Do not git commit or open PRs without explicit user request.
 
 ## Suggested Next Step
 

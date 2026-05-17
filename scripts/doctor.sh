@@ -20,6 +20,7 @@ if command -v ruby >/dev/null 2>&1; then
   ruby -ryaml - "$ROOT/skills" <<'RUBY'
 root = ARGV[0]
 errors = 0
+warns = 0
 Dir.glob(File.join(root, "fur-*/SKILL.md")).sort.each do |path|
   text = File.read(path)
   fm = text[/\A---\n(.*?)\n---\n/m, 1]
@@ -35,14 +36,55 @@ Dir.glob(File.join(root, "fur-*/SKILL.md")).sort.each do |path|
     if desc.nil? || desc.to_s.strip.empty?
       puts "- #{name}: missing description"
       errors += 1
-    else
-      puts "- #{name}: ok"
+      next
     end
+
+    version = data["skill_version"] || data["skillVersion"]
+    if version.nil?
+      puts "- #{name}: ok (v1, consider migrating to v2)"
+      warns += 1
+      next
+    end
+
+    unless version.to_s == "2"
+      puts "- #{name}: ok (v#{version})"
+      next
+    end
+
+    required = %w[skill_class default_response_depth quality_contract handoff]
+    missing = required.reject { |k| data[k] }
+    unless missing.empty?
+      puts "- #{name}: v2 missing fields: #{missing.join(', ')}"
+      errors += 1
+      next
+    end
+
+    qc = data["quality_contract"]
+    qc_required = %w[must_map_every_ac must_report_assumptions must_report_verification_truthfully must_call_out_risks must_include_user_facing_explanation self_check_required]
+    qc_missing = qc_required.reject { |k| qc && qc.key?(k) }
+    unless qc_missing.empty?
+      puts "- #{name}: v2 quality_contract missing: #{qc_missing.join(', ')}"
+      errors += 1
+      next
+    end
+
+    ho = data["handoff"]
+    ho_required = %w[success_next ambiguous_scope_next unknown_failure_next]
+    ho_missing = ho_required.reject { |k| ho && ho.key?(k) }
+    unless ho_missing.empty?
+      puts "- #{name}: v2 handoff missing: #{ho_missing.join(', ')}"
+      errors += 1
+      next
+    end
+
+    puts "- #{name}: ok (v2)"
   rescue StandardError => e
     puts "- #{name}: invalid YAML (#{e.message})"
     errors += 1
   end
 end
+puts ""
+puts "Warnings: #{warns}, Errors: #{errors}"
 exit(errors.positive? ? 1 : 0)
 RUBY
   yaml_status=$?
@@ -53,6 +95,65 @@ RUBY
   fi
 else
   echo "ruby not found; skipping frontmatter validation"
+fi
+echo ""
+
+echo "Skill lint (v2 sections):"
+if command -v ruby >/dev/null 2>&1; then
+  ruby -ryaml - "$ROOT/skills" <<'RUBY'
+root = ARGV[0]
+errors = 0
+warns = 0
+required_sections = [
+  /##\s*Identity/i,
+  /##\s*Goal/i,
+  /##\s*When to Use/i,
+  /##\s*When NOT to Use/i,
+  /##\s*Workflow/i,
+  /##\s*Rules/i,
+  /##\s*Output/i,
+  /##\s*Anti-patterns/i,
+  /##\s*Suggested Next Step/i
+]
+Dir.glob(File.join(root, "fur-*/SKILL.md")).sort.each do |path|
+  text = File.read(path)
+  fm = text[/\A---\n(.*?)\n---\n/m, 1]
+  name = File.basename(File.dirname(path))
+  unless fm
+    puts "- #{name}: skipped (no frontmatter)"
+    next
+  end
+  begin
+    data = YAML.safe_load(fm)
+    version = data["skill_version"] || data["skillVersion"]
+    if version.nil? || version.to_s != "2"
+      puts "- #{name}: skipped (not v2)"
+      next
+    end
+    missing = required_sections.reject { |re| text.match?(re) }
+    if missing.empty?
+      puts "- #{name}: ok (all sections present)"
+    else
+      section_names = missing.map { |re| re.source.gsub(/\\s\*\?/, ' ').gsub(/##\s*/, '') }
+      puts "- #{name}: missing sections: #{section_names.join(', ')}"
+      errors += 1
+    end
+  rescue StandardError => e
+    puts "- #{name}: lint error (#{e.message})"
+    errors += 1
+  end
+end
+puts ""
+puts "Warnings: #{warns}, Errors: #{errors}"
+exit(errors.positive? ? 1 : 0)
+RUBY
+  lint_status=$?
+  if [ "$lint_status" -ne 0 ]; then
+    echo ""
+    echo "Some v2 skills are missing mandatory sections. See references/skill-spec-v2.md for the required list."
+  fi
+else
+  echo "ruby not found; skipping skill lint"
 fi
 echo ""
 

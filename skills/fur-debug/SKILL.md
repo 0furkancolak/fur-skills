@@ -1,15 +1,40 @@
 ---
 name: fur-debug
+skill_class: diagnostic
+skill_version: 2
+default_response_depth: deep
 description: >-
   Diagnose a failing test, runtime error, stack trace, broken behavior,
   regression, or production bug when the root cause is unknown. Follow a
   disciplined phase-based approach: build loop → reproduce → hypothesize →
   instrument → fix → regression-test.
+requires:
+  - symptom_description
+  - active_task
+optional:
+  - logs
+  - traces
+  - reproduction_artifacts
+quality_contract:
+  must_map_every_ac: false
+  must_report_assumptions: true
+  must_report_verification_truthfully: true
+  must_call_out_risks: true
+  must_include_user_facing_explanation: true
+  self_check_required: true
+handoff:
+  success_next: fur-check
+  ambiguous_scope_next: fur-task
+  unknown_failure_next: fur-debug
 ---
 
 # fur-debug
 
 Treat debugging as **experiment design**, not guess-and-edit.
+
+## Identity
+
+You are a systems debugger and root-cause analyst. Your job is to produce a falsifiable root-cause story, a minimal fix, and a regression guard without scope creep.
 
 ## Goal
 
@@ -18,7 +43,7 @@ Produce a **falsifiable** root-cause story, a minimal fix, and a regression guar
 ## When to Use
 
 - Tests fail for non-obvious reasons; stack traces or logs point nowhere stable.
-- Runtime errors, flaky behavior, perf cliffs, “works on my machine” gaps.
+- Runtime errors, flaky behavior, perf cliffs, "works on my machine" gaps.
 - Regressions after refactors or dependency bumps.
 
 ## When NOT to Use
@@ -27,6 +52,16 @@ Produce a **falsifiable** root-cause story, a minimal fix, and a regression guar
 - Style / maintainability only → `fur-check`.
 - Greenfield feature design → `fur-task` then `fur-do`.
 - Requirements unclear → `fur-task` (use `questionLevel` there, not infinite debug).
+
+## Context Loading Contract
+
+Load in this order:
+1. Symptom description and active task.
+2. Relevant logs, traces, or error messages.
+3. Code paths directly related to the symptom.
+4. Recent changes (git log, dependency bumps) if the symptom is a regression.
+
+Do not load unrelated code paths.
 
 ## Workflow
 
@@ -52,7 +87,7 @@ Spend disproportionate effort here. Be aggressive. Be creative. Refuse to give u
 #### Iterate on the loop itself
 
 - Faster? (cache setup, skip unrelated init, narrow scope.)
-- Sharper signal? (assert exact symptom, not “no crash”.)
+- Sharper signal? (assert exact symptom, not "no crash".)
 - More deterministic? (pin time, seed RNG, isolate FS/network.)
 
 A 30-second flaky loop is barely better than no loop. A 2-second deterministic loop is a debugging superpower.
@@ -83,7 +118,7 @@ If you cannot state the prediction, sharpen or discard. **Show the ranked list**
 
 Map each probe to one hypothesis. **One variable at a time.**
 
-Tool preference: debugger / REPL > targeted logs > “log everything”. Tag logs with a unique prefix (e.g. `[DEBUG-a4f2]`) and remove them in cleanup.
+Tool preference: debugger / REPL > targeted logs > "log everything". Tag logs with a unique prefix (e.g. `[DEBUG-a4f2]`) and remove them in cleanup.
 
 **Performance:** measure first, bisect second — logs alone often lie.
 
@@ -106,6 +141,18 @@ If no seam exists, **document that architectural gap** as part of the outcome �
 
 Ask: **what would have prevented this class of bug?** If architecture, note a future `fur-task`.
 
+### Phase 7: Self-review
+
+Before finalizing, verify:
+- Did I build a trusted feedback loop before proposing a fix?
+- Did I test 3–5 falsifiable hypotheses?
+- Did I separate facts from assumptions?
+- Did I document the regression guard or explain why it is impossible?
+- Did I match the output contract for this skill class?
+- Did I suggest the correct next skill?
+
+If any answer is no, continue working before responding.
+
 ## Rules
 
 - No fix before a trusted loop + repro signal.
@@ -118,16 +165,18 @@ Ask: **what would have prevented this class of bug?** If architecture, note a fu
 
 ## Output
 
+### Presentation Plane
+
 ```md
-## Root cause
+## Root Cause
 
-[concise]
+[concise, falsifiable]
 
-## Feedback loop
+## Feedback Loop
 
-[how you reproduced]
+[how you reproduced; include loop characteristics: speed, determinism, signal quality]
 
-## Hypotheses tested
+## Hypotheses Tested
 
 1. … → ruled out / confirmed
 2. …
@@ -141,7 +190,7 @@ Ask: **what would have prevented this class of bug?** If architecture, note a fu
 
 [tests / loop reruns]
 
-## Remaining risk
+## Remaining Risk
 
 [flakes, missing coverage, architectural debt]
 
@@ -149,6 +198,24 @@ Ask: **what would have prevented this class of bug?** If architecture, note a fu
 
 [what would have caught this earlier]
 ```
+
+### Control Plane
+
+```yaml
+status: diagnosed | blocked | needs-clarification
+next_skill: fur-check | fur-task | fur-debug
+scope_respected: true | false
+verification_state: complete | partial | not-run
+risk_level: none | low | medium | high
+```
+
+## Anti-patterns
+
+- Do not fix before building a trusted feedback loop.
+- Do not test a single hypothesis; explore at least 3–5.
+- Do not skip the regression guard without explicit documentation.
+- Do not mix unrelated refactors with diagnosis.
+- Do not silence errors without explaining why.
 
 ## Suggested Next Step
 

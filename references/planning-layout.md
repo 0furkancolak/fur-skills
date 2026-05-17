@@ -26,12 +26,20 @@
 
 ```json
 {
-  "version": 1,
+  "version": 2,
   "planningDir": ".fur.planning",
   "gitignore": true,
   "localTaskMode": "local-markdown",
   "questionLevel": "high",
   "projectMaturity": "new",
+  "responseDepth": "standard",
+  "evidenceStyle": "inline",
+  "verificationStrictness": "normal",
+  "modelHints": {
+    "provider": "generic",
+    "structuredOutput": false,
+    "reasoningEffort": "medium"
+  },
   "questionPolicy": {
     "askBeforeSplittingLargeTasks": true,
     "askWhenAcceptanceCriteriaMissing": true,
@@ -44,7 +52,12 @@
 
 - `questionLevel`: `low`, `normal`, or `high`.
 - `projectMaturity`: `new` or `established`.
+- `responseDepth`: `concise`, `standard`, or `deep`. Controls output richness independently of question frequency.
+- `evidenceStyle`: `paths-only`, `inline`, or `inline-plus-paths`. Controls how much evidence is inlined.
+- `verificationStrictness`: `loose`, `normal`, or `strict`. Controls how hard to enforce verification steps.
+- `modelHints`: optional hints for the host model (provider, structured output support, reasoning effort).
 - New projects default to `high`; established projects usually use `normal`.
+- `responseDepth` defaults to `standard` and is independent of `questionLevel`.
 - Tracker source selection does not live here; it lives in workspace config.
 
 ## Workspace Config

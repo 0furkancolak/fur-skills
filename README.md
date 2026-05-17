@@ -13,6 +13,35 @@ fur-init -> fur-task -> fur-do -> fur-check -> fur-done -> fur-status
 
 UI-specific work stays separate in the UI skills.
 
+## Architecture (v2)
+
+fur-skills v2 is a **contract-first, provider-aware, eval-driven** skill platform. Every skill has:
+
+- **Frontmatter contract** — `skill_class`, `skill_version`, `default_response_depth`, `quality_contract`, `handoff`
+- **Dual-plane output** — `presentation_plane` (human-readable markdown) + `control_plane` (machine-parseable YAML)
+- **Self-check requirement** — mandatory internal verification before final output
+- **Provider overlays** — Claude (`skills/_shared/overlays/claude.md`), OpenAI reasoning (`openai-reasoning.md`), generic (`generic.md`)
+- **Eval fixtures** — prompt sets, golden outputs, deterministic graders under `evals/`
+
+### Skill Classes
+
+| Class | Responsibility | Default Depth |
+|---|---|---|
+| **orchestrator** | Orient, summarize, archive | concise |
+| **planner** | Decompose, clarify, design | standard |
+| **executor** | Implement one scoped task | deep |
+| **gate** | Verify, review, accept/reject | standard |
+| **diagnostic** | Unknown root cause | deep |
+
+### Quality Constitution
+
+Every skill follows the shared contract in `AGENTS.md`:
+- Scope is small; explanation is deep
+- Evidence before claims
+- Config over convention (`responseDepth`, `evidenceStyle`, `verificationStrictness`)
+- Provider-aware, not provider-locked
+- Eval-driven improvement
+
 ## Principles
 
 - All custom skills start with `fur-`.
@@ -20,8 +49,10 @@ UI-specific work stays separate in the UI skills.
 - External resources (Jira, GitHub, MCP) are optional; local markdown is the fallback.
 - Multi-repo tracker routing lives in `.fur.workspace/config.json`.
 - Repo-local behavior lives in `.fur.planning/config.json`.
-- Question asking is controlled by `questionLevel`, not a separate planning skill.
+- Question asking is controlled by `questionLevel`; answer depth is controlled by `responseDepth`.
 - Old context should stay in files, not in chat; use `progress/latest.md` and `fur compact`.
+- Evidence before claims: every non-trivial assertion ties to a source.
+- Config over convention: `responseDepth`, `evidenceStyle`, and `verificationStrictness` live in config.
 
 ## Installation
 
@@ -75,23 +106,23 @@ fur workspace doctor
 
 ## Core Skills
 
-| Skill | Purpose |
-|---|---|
-| **fur-init** | Create `.fur.planning/`, local behavior config, question level, and workspace hints. |
-| **fur-task** | Create/select/split local tasks; import Jira/GitHub references; draft/write external tasks when config permits. |
-| **fur-do** | Implement one selected task or tiny clear fix. |
-| **fur-check** | Review and verify acceptance criteria, tests, risk, and changed code. |
-| **fur-done** | Move verified task to done, snapshot progress, and sync tracker completion when config permits. |
-| **fur-status** | Show task counts, latest snapshot, tracker sync state, and one next action. |
-| **fur-debug** | Diagnose unknown root cause with a phase-based debugging loop. |
+| Skill | Class | Purpose |
+|---|---|---|
+| **fur-init** | orchestrator | Create `.fur.planning/`, local behavior config, question level, and workspace hints. |
+| **fur-task** | planner | Create/select/split local tasks; import Jira/GitHub references; draft/write external tasks when config permits. |
+| **fur-do** | executor | Implement one selected task or tiny clear fix. |
+| **fur-check** | gate | Review and verify acceptance criteria, tests, risk, and changed code. |
+| **fur-done** | orchestrator | Move verified task to done, snapshot progress, and sync tracker completion when config permits. |
+| **fur-status** | orchestrator | Show task counts, latest snapshot, tracker sync state, and one next action. |
+| **fur-debug** | diagnostic | Diagnose unknown root cause with a phase-based debugging loop. |
 
 ## UI Skills
 
-| Skill | Purpose |
-|---|---|
-| **fur-ui-design** | Decide UI direction before implementation. |
-| **fur-ui-clone** | Pixel-perfect website clone pipeline based on browser extraction, specs, builders, assets, and visual QA. |
-| **fur-ui-review** | Review implemented UI/UX quality. |
+| Skill | Class | Purpose |
+|---|---|---|
+| **fur-ui-design** | planner | Decide UI direction before implementation. |
+| **fur-ui-clone** | executor | Pixel-perfect website clone pipeline based on browser extraction, specs, builders, assets, and visual QA. |
+| **fur-ui-review** | gate | Review implemented UI/UX quality. |
 
 ## Question Levels
 
@@ -107,6 +138,32 @@ Defaults:
 
 - New project: `projectMaturity: "new"`, `questionLevel: "high"`.
 - Established project: `projectMaturity: "established"`, `questionLevel: "normal"`.
+
+## Response Depth
+
+`responseDepth` controls how rich each skill's output is, independently of `questionLevel`.
+
+| Level | Behavior |
+|---|---|
+| `concise` | Operational handoff only. 1-3 sentences + file list + next step. |
+| `standard` | Default. Covers acceptance criteria, files changed, checks, and risks in structured markdown. |
+| `deep` | Full audit trail. Includes task restatement, assumption labeling, trade-off analysis, edge-case discussion, and explicit self-check. |
+
+## Evidence Style
+
+| Style | Behavior |
+|---|---|
+| `paths-only` | List touched files only. |
+| `inline` | Include short inline snippets (≤5 lines) where helpful. |
+| `inline-plus-paths` | Full inline snippets + permanent file paths for audit. |
+
+## Verification Strictness
+
+| Level | Behavior |
+|---|---|
+| `loose` | Manual checks acceptable; skip if tooling is missing. |
+| `normal` | Run available checks; note gaps honestly. |
+| `strict` | All verification steps must run; missing tooling is a blocker to report. |
 
 ## CLI Commands
 
@@ -160,6 +217,10 @@ Workspace-level config routes external references:
 - `references/planning-layout.md` — `.fur.planning` and `.fur.workspace` layout
 - `references/task-template.md` — task file template
 - `references/context-window.md` — context budget rules
+- `references/skill-spec-v2.md` — mandatory shared skill contract (frontmatter, sections, output schema)
+- `references/output-rubrics.md` — depth, quality, evidence, and risk rubrics
+- `references/context-pack-rules.md` — rich / standard / lean context loading rules
+- `references/eval-design.md` — golden data sets, trace grading, and grader rules
 
 ## Turkish Translations
 

@@ -1,0 +1,20 @@
+{"input": "Implement a dark mode toggle in the settings page. Acceptance criteria: toggle exists, persists, applies immediately, light default.", "expected_routing": "fur-check", "min_scores": {"depth": 10, "quality": 7, "evidence": 2, "risk": 1}}
+{"input": "Fix a TypeScript type error in src/utils.ts where any is used.", "expected_routing": "fur-check", "min_scores": {"depth": 5, "quality": 7, "evidence": 2, "risk": 1}}
+{"input": "Add a new API endpoint /users that returns a list of users. No tests exist yet.", "expected_routing": "fur-check", "min_scores": {"depth": 10, "quality": 7, "evidence": 2, "risk": 2}}
+{"input": "Refactor the auth module to use JWT instead of session cookies. This affects login, logout, and middleware.", "expected_routing": "fur-task", "min_scores": {"depth": 0, "quality": 0, "evidence": 0, "risk": 0}}
+{"input": "Update the README with installation instructions.", "expected_routing": "fur-check", "min_scores": {"depth": 5, "quality": 7, "evidence": 1, "risk": 1}}
+{"input": "The tests are failing with TimeoutError in CI but pass locally. Root cause unknown.", "expected_routing": "fur-debug", "min_scores": {"depth": 0, "quality": 0, "evidence": 0, "risk": 0}}
+{"input": "Create a task to add email notifications for new signups.", "expected_routing": "fur-do", "min_scores": {"depth": 0, "quality": 0, "evidence": 0, "risk": 0}}
+{"input": "Add form validation to the contact page. Fields: name, email, message.", "expected_routing": "fur-check", "min_scores": {"depth": 8, "quality": 7, "evidence": 2, "risk": 1}}
+{"input": "Migrate the database from SQLite to PostgreSQL.", "expected_routing": "fur-task", "min_scores": {"depth": 0, "quality": 0, "evidence": 0, "risk": 0}}
+{"input": "Fix CSS layout bug where sidebar overlaps content on mobile.", "expected_routing": "fur-check", "min_scores": {"depth": 5, "quality": 7, "evidence": 2, "risk": 1}}
+{"input": "Implement real-time chat using WebSockets.", "expected_routing": "fur-task", "min_scores": {"depth": 0, "quality": 0, "evidence": 0, "risk": 0}}
+{"input": "Add unit tests for the payment service.", "expected_routing": "fur-check", "min_scores": {"depth": 8, "quality": 7, "evidence": 2, "risk": 1}}
+{"input": "The production site is returning 500 errors after the last deploy. Logs show a null pointer in userService.ts:42.", "expected_routing": "fur-debug", "min_scores": {"depth": 0, "quality": 0, "evidence": 0, "risk": 0}}
+{"input": "Update dependencies to latest versions.", "expected_routing": "fur-check", "min_scores": {"depth": 5, "quality": 7, "evidence": 1, "risk": 1}}
+{"input": "Add a loading skeleton to the dashboard while data is fetching.", "expected_routing": "fur-check", "min_scores": {"depth": 5, "quality": 7, "evidence": 2, "risk": 1}}
+{"input": "Create a new landing page with hero section, features, and CTA.", "expected_routing": "fur-task", "min_scores": {"depth": 0, "quality": 0, "evidence": 0, "risk": 0}}
+{"input": "Fix memory leak in the useEffect hook on the dashboard.", "expected_routing": "fur-check", "min_scores": {"depth": 8, "quality": 7, "evidence": 2, "risk": 2}}
+{"input": "Add pagination to the users list API.", "expected_routing": "fur-check", "min_scores": {"depth": 8, "quality": 7, "evidence": 2, "risk": 1}}
+{"input": "The build is failing with 'Module not found: ./Button'. Button.tsx exists in src/components/.", "expected_routing": "fur-debug", "min_scores": {"depth": 0, "quality": 0, "evidence": 0, "risk": 0}}
+{"input": "Refactor duplicated validation logic into a shared utility.", "expected_routing": "fur-check", "min_scores": {"depth": 5, "quality": 7, "evidence": 2, "risk": 1}}

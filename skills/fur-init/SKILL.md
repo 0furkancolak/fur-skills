@@ -1,12 +1,37 @@
 ---
 name: fur-init
-description: Initialize `.fur.planning` in the current project with task folders, local behavior config, questionLevel, projectMaturity, and workspace tracker hints. Use when starting the simplified Fur loop in a repo.
+skill_class: orchestrator
+skill_version: 2
+default_response_depth: concise
+description: >-
+  Initialize `.fur.planning` in the current project with task folders, local behavior config,
+  questionLevel, projectMaturity, and workspace tracker hints. Use when starting the simplified Fur loop in a repo.
 disable-model-invocation: true
+requires:
+  - project_root
+optional:
+  - existing_fur_planning
+  - fur_workspace_config
+quality_contract:
+  must_map_every_ac: false
+  must_report_assumptions: true
+  must_report_verification_truthfully: true
+  must_call_out_risks: false
+  must_include_user_facing_explanation: true
+  self_check_required: true
+handoff:
+  success_next: fur-task
+  ambiguous_scope_next: fur-task
+  unknown_failure_next: fur-debug
 ---
 
 # fur-init
 
 Bootstrap the Fur planning workspace so later skills (`fur-task`, `fur-do`, …) have a consistent on-disk contract.
+
+## Identity
+
+You are a project coordinator. Your job is to set up the planning workspace correctly and hand off to the next skill without implementing product code.
 
 ## Goal
 
@@ -23,6 +48,15 @@ Create a clean `.fur.planning/` tree, write `config.json` with `questionLevel` a
 - `.fur.planning/` already exists and is valid — report status; do not blindly overwrite `config.json` without user consent.
 - You need tasks or implementation — use `fur-task` / `fur-do` after init.
 - You only need a progress summary — use `fur-status` or `fur progress`.
+
+## Context Loading Contract
+
+Load in this order:
+1. Project root directory.
+2. Existing `.fur.planning/` if present (to avoid overwriting).
+3. Parent directories for `.fur.workspace/config.json`.
+
+Do not load unrelated project code or history.
 
 ## Workflow
 
@@ -61,6 +95,17 @@ fur init --gitignore --project-maturity established --question-level normal
 2. If missing: suggest `fur workspace init` from the **workspace root** when multi-repo tracker routing is desired.
 3. If present: if this repo path is **not** in `repositories[]`, report that external imports/writes stay blocked until registered.
 
+### Phase 5: Self-review
+
+Before finalizing, verify:
+- Did I create the full `.fur.planning/` tree without errors?
+- Did I set `questionLevel` and `projectMaturity` correctly?
+- Did I check for existing config before overwriting?
+- Did I match the output contract for this skill class?
+- Did I suggest the correct next skill?
+
+If any answer is no, continue working before responding.
+
 ## Created structure
 
 ```txt
@@ -97,8 +142,10 @@ fur init --gitignore --project-maturity established --question-level normal
 
 ## Output
 
+### Presentation Plane
+
 ```md
-## Initialization complete
+## Initialization Complete
 
 - Project root: [path]
 - Created or verified folders: [list]
@@ -109,6 +156,23 @@ fur init --gitignore --project-maturity established --question-level normal
 - Repo registered in workspace: yes [id] | no (action: add repositories[] entry)
 - Next CLI hints: fur refresh | fur task (skill)
 ```
+
+### Control Plane
+
+```yaml
+status: initialized | already-exists | blocked
+next_skill: fur-task | fur-status
+scope_respected: true | false
+verification_state: complete | not-run
+risk_level: none | low
+```
+
+## Anti-patterns
+
+- Do not overwrite an existing `.fur.planning/` without user consent.
+- Do not implement product code during init.
+- Do not skip workspace registration check.
+- Do not forget to suggest the next skill.
 
 ## Suggested Next Step
 
