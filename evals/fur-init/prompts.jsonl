@@ -1,0 +1,20 @@
+{"input": "Initialize the fur planning system in this new repository.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Set up .fur.planning with questionLevel: high and projectMaturity: new.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Init fur workflow in an established project with existing task trackers.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Run fur-init but the directory already has a .fur.planning folder with config.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Initialize fur planning with custom workspace tracker routing in config.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "fur-init in a monorepo with multiple packages. Which root should it use?", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 2}}
+{"input": "Run fur-init with responseDepth: concise. Expect short summary and next action only.", "expected_routing": "fur-task", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Run fur-init with responseDepth: deep. Expect full explanation of layout, config, and tracker hints.", "expected_routing": "fur-task", "min_scores": {"depth": 3, "quality": 3, "evidence": 2, "risk": 1}}
+{"input": "Initialize fur but the user has no write permissions in the current directory.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Run fur-init in a repository that is not a git repo.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "fur-init with an invalid questionLevel value in user preferences.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Initialize and set projectMaturity to established when there are no existing tests.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 2}}
+{"input": "Run init with evidenceStyle: paths-only preference.", "expected_routing": "fur-task", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Run init with verificationStrictness: strict preference.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Init in a repo that already has old v1 fur-skills installed. Should detect and suggest migration.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 2, "risk": 2}}
+{"input": "fur-init called with a target directory that does not exist.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Initialize and immediately request a task import from a Jira project URL.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Run fur-init twice in a row. Second run should be idempotent or report existing state.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Init with a config.json that contains unknown keys. Should validate or warn.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "fur-init on a read-only filesystem. Should report failure gracefully.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}

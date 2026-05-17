@@ -140,6 +140,15 @@ risk_level: none | low
 - Do not load full archived snapshots.
 - Do not forget to suggest the next skill.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/orchestrator-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/orchestrator.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 Whatever the **Next Action** line names — usually `fur-do` on the top ready task or `fur-task` when the queue is empty/stale.

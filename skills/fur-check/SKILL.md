@@ -167,6 +167,15 @@ risk_level: none | low | medium | high
 - Do not report checks without explaining coverage.
 - Do not downgrade severity to avoid follow-up work.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/gate-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/gate.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 **Ready** → `fur-done`. **Needs changes** → `fur-do`. **Unknown failure** → `fur-debug`.

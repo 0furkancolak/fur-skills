@@ -176,6 +176,15 @@ risk_level: none | low | medium | high
 - Do not use vague "AI polish" descriptions; be specific.
 - Do not forget open questions before handoff.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/planner-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/planner.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 `fur-task` referencing this doc → `fur-do` → `fur-ui-review` + `fur-check`. If the source of truth is an external site, run `fur-ui-clone` **before** coding.

@@ -50,6 +50,15 @@ for skill in "$ROOT"/skills/fur-*; do
   echo "Installed skill: $name"
 done
 
+# Install shared skill resources (provider overlays, examples, anti-patterns)
+if [ -d "$ROOT/skills/_shared" ]; then
+  ln -sfn "$ROOT/skills/_shared" "$HOME/.claude/skills/_shared"
+  ln -sfn "$ROOT/skills/_shared" "$HOME/.agents/skills/_shared"
+  ln -sfn "$ROOT/skills/_shared" "$HOME/.cursor/skills/_shared"
+
+  echo "Installed shared skill resources: _shared"
+fi
+
 ln -sfn "$ROOT/bin/fur" "$HOME/bin/fur"
 
 if [ -f "$ROOT/.opencode/commands/clone-website.md" ]; then

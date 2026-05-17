@@ -138,6 +138,11 @@ Dir.glob(File.join(root, "fur-*/SKILL.md")).sort.each do |path|
       puts "- #{name}: missing sections: #{section_names.join(', ')}"
       errors += 1
     end
+
+    unless text.match?(/##\s*Examples/i)
+      puts "- #{name}: missing Examples section"
+      errors += 1
+    end
   rescue StandardError => e
     puts "- #{name}: lint error (#{e.message})"
     errors += 1
@@ -182,6 +187,62 @@ else
 fi
 
 echo ""
+echo "Shared source resources:"
+for path in \
+  "$ROOT/skills/_shared/overlays/claude.md" \
+  "$ROOT/skills/_shared/overlays/openai-reasoning.md" \
+  "$ROOT/skills/_shared/overlays/generic.md" \
+  "$ROOT/skills/_shared/examples/executor-example.md" \
+  "$ROOT/skills/_shared/examples/gate-example.md" \
+  "$ROOT/skills/_shared/examples/diagnostic-example.md" \
+  "$ROOT/skills/_shared/examples/planner-example.md" \
+  "$ROOT/skills/_shared/examples/orchestrator-example.md" \
+  "$ROOT/skills/_shared/anti-patterns/global.md" \
+  "$ROOT/skills/_shared/anti-patterns/executor.md" \
+  "$ROOT/skills/_shared/anti-patterns/gate.md" \
+  "$ROOT/skills/_shared/anti-patterns/diagnostic.md" \
+  "$ROOT/skills/_shared/anti-patterns/planner.md" \
+  "$ROOT/skills/_shared/anti-patterns/orchestrator.md"; do
+  if [ -f "$path" ]; then
+    echo "- ok: ${path#$ROOT/}"
+  else
+    echo "- missing: ${path#$ROOT/}"
+    exit 1
+  fi
+done
+echo ""
+
+echo "Installed shared resources:"
+for d in "$HOME/.claude/skills" "$HOME/.agents/skills" "$HOME/.cursor/skills"; do
+  if [ -L "$d/_shared" ] || [ -d "$d/_shared" ]; then
+    echo "- ok: $d/_shared"
+  else
+    echo "- missing: $d/_shared"
+  fi
+done
+echo ""
+
+echo "Core eval readiness:"
+for skill in fur-task fur-do fur-check fur-debug; do
+  if "$ROOT/scripts/run-eval.sh" "$skill" 2>/dev/null; then
+    echo "- $skill: eval ready"
+  else
+    echo "- $skill: eval NOT ready"
+    exit 1
+  fi
+done
+echo ""
+
+echo "Remaining skill eval status:"
+for skill in fur-init fur-done fur-status fur-ui-design fur-ui-review fur-ui-clone; do
+  if [ -d "$ROOT/evals/$skill" ]; then
+    echo "- $skill eval: present"
+  else
+    echo "- $skill eval: missing (warning)"
+  fi
+done
+echo ""
+
 if command -v fur >/dev/null 2>&1; then
   echo "fur CLI: $(command -v fur)"
 else

@@ -1,0 +1,31 @@
+name: fur-skills-quality
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  doctor:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Show tools
+        run: |
+          ruby --version
+          python3 --version
+          bash --version
+
+      - name: Run doctor
+        run: ./scripts/doctor.sh
+
+      - name: Run core eval metadata checks
+        run: |
+          ./scripts/run-eval.sh fur-task
+          ./scripts/run-eval.sh fur-do
+          ./scripts/run-eval.sh fur-check
+          ./scripts/run-eval.sh fur-debug

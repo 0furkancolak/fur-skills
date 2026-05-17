@@ -174,6 +174,15 @@ risk_level: none | low
 - Do not skip workspace registration check.
 - Do not forget to suggest the next skill.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/orchestrator-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/orchestrator.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 `fur-task` to capture the first unit of work, or `fur workspace init` + `fur workspace doctor` if tracker-aware multi-repo setup is needed.

@@ -176,6 +176,15 @@ risk_level: none | low | medium | high
 - Do not guess external tracker routing when ambiguous.
 - Do not forget to suggest the next skill.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/planner-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/planner.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 `fur-do` on the chosen `ready/` task, or `fur-status` if the user only needed queue orientation.

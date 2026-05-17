@@ -1,0 +1,20 @@
+{"input": "Close the current task after verification passed.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Mark the task as done and create a progress snapshot.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Done the auth refactor task and sync completion to GitHub.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Close task but the workspace config does not permit external tracker sync.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "fur-done on a task that is still in progress with open subtasks.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Mark done a task where one of the acceptance criteria is still unverified.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Done with responseDepth: concise. Expect short operational handoff only.", "expected_routing": "fur-status", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Done with responseDepth: deep. Expect rich summary with full audit trail.", "expected_routing": "fur-status", "min_scores": {"depth": 3, "quality": 3, "evidence": 2, "risk": 1}}
+{"input": "Close a task that has no linked tracker issue. Should skip sync step.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "fur-done on a task that was already marked done previously. Should report idempotency.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Done and request Jira transition but the Jira API token is missing.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Close a task with a blocker that has not been resolved.", "expected_routing": "fur-debug", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 3}}
+{"input": "Mark done with evidenceStyle: inline. Expect inline snippets in the snapshot.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 2, "risk": 1}}
+{"input": "fur-done after a task that required user approval for a commit that was never given.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Close task and the snapshot directory is not writable.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Done on a task where the user explicitly asked not to sync with external trackers.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Close multiple tasks at once. Should handle batching or refuse.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 2}}
+{"input": "fur-done with a task that has a verificationState: partial. Should flag for follow-up.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Done after a security fix. Should verify no secrets were committed in the snapshot.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 2, "evidence": 2, "risk": 2}}
+{"input": "Mark task done and the progress snapshot should reference the correct skill version.", "expected_routing": "fur-status", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}

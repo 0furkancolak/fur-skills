@@ -217,6 +217,15 @@ risk_level: none | low | medium | high
 - Do not mix unrelated refactors with diagnosis.
 - Do not silence errors without explaining why.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/diagnostic-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/diagnostic.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 Green path: fold fix into normal flow → `fur-check` → `fur-done`. If new scope opened → `fur-task` for the debt, then `fur-do`.

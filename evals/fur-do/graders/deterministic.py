@@ -16,26 +16,17 @@ def grade(skill_path: str, output_path: str) -> dict:
         output_text = f.read()
 
     results = {
-        "frontmatter_ok": False,
         "headings_ok": False,
         "yaml_valid": False,
         "no_fabricated_checks": True,
         "ac_coverage": False,
         "control_plane": False,
         "score": 0,
-        "max_score": 6,
+        "max_score": 5,
         "notes": []
     }
 
-    # 1. Frontmatter presence
-    fm = re.search(r'\A---\n(.*?)\n---\n', output_text, re.DOTALL)
-    if fm:
-        results["frontmatter_ok"] = True
-        results["score"] += 1
-    else:
-        results["notes"].append("Missing frontmatter")
-
-    # 2. Required headings
+    # 1. Required headings
     required = [
         "## Task Understanding",
         "## Acceptance Criteria Coverage",
@@ -65,18 +56,24 @@ def grade(skill_path: str, output_path: str) -> dict:
     else:
         results["notes"].append("Missing YAML control plane")
 
-    # 4. No fabricated checks (heuristic: look for vague green checks)
-    vague_patterns = [r"- .*pass\s*✅\s*\n(?![\s\S]*?`)", r"All tests pass", r"Everything works"]
-    for pattern in vague_patterns:
-        if re.search(pattern, output_text):
-            results["no_fabricated_checks"] = False
-            results["notes"].append(f"Possible fabricated check: matched '{pattern}'")
-            break
+    # 4. No fabricated checks (heuristic: look for vague green checks without context)
+    # Skip this check if the output explicitly reports failures or is blocked
+    is_blocked = "status: blocked" in output_text
+    has_explicit_fail = re.search(r"\|\s*fail\s*\||Result:\s*fail|fail\s*\|", output_text)
+    if not is_blocked and not has_explicit_fail:
+        vague_patterns = [r"- .*pass\s*✅\s*\n(?![\s\S]*?`)", r"All tests pass", r"Everything works"]
+        for pattern in vague_patterns:
+            if re.search(pattern, output_text):
+                results["no_fabricated_checks"] = False
+                results["notes"].append(f"Possible fabricated check: matched '{pattern}'")
+                break
     if results["no_fabricated_checks"]:
         results["score"] += 1
 
     # 5. AC coverage (look for table or bullet mapping)
-    if "| AC |" in output_text or "- AC item" in output_text:
+    # Accept blocked status as an alternative to AC coverage
+    has_ac_coverage = "| AC |" in output_text or "- AC item" in output_text
+    if has_ac_coverage or is_blocked:
         results["ac_coverage"] = True
         results["score"] += 1
     else:

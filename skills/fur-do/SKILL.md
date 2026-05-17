@@ -171,6 +171,15 @@ risk_level: none | low | medium | high
 - Do not report checks without explaining coverage.
 - Do not optimize for shortness if it removes auditability.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/executor-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/executor.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 Route to `fur-check` for acceptance verification before closing.

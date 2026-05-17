@@ -1,0 +1,20 @@
+{"input": "Show me the current project status and what is next.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "What is the status of all open tasks?", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "List ready tasks and the latest progress snapshot.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Check tracker sync state and whether there are pending external transitions.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Show counts of tasks by state: todo, in-progress, blocked, done.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Status on a project with no tasks created yet. Should report empty state.", "expected_routing": "fur-init", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Show status when the .fur.planning directory is missing. Should suggest init.", "expected_routing": "fur-init", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Status with a corrupted progress snapshot file that cannot be parsed.", "expected_routing": "fur-debug", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Show status with responseDepth: concise. Expect counts and next action only.", "expected_routing": "fur-task", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Show status with responseDepth: deep. Expect rich summary, recent history, and detailed routing.", "expected_routing": "fur-task", "min_scores": {"depth": 3, "quality": 3, "evidence": 2, "risk": 1}}
+{"input": "Status on a project with 100+ tasks. Should summarize without flooding output.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Show status when the workspace tracker config points to an unreachable Jira instance.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Status with evidenceStyle: paths-only. Expect file paths, no long descriptions.", "expected_routing": "fur-task", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Show status and recommend the next skill based on current project state.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Status when the git repo has uncommitted changes that might affect task tracking.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 2}}
+{"input": "Show status with a specific task ID filter. Only show tasks matching that ID.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Status in a project where all tasks are done. Should suggest fur-init or new fur-task.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Show latest progress snapshot and compare it to the previous one.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 2, "risk": 1}}
+{"input": "Status when the task folder contains files with invalid names or formats.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
+{"input": "Request status with a custom filter: only blocked tasks and their blockers.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}

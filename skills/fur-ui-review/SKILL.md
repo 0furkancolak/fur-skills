@@ -157,6 +157,15 @@ risk_level: none | low | medium | high
 - Do not skip accessibility or responsive checks.
 - Do not forget to suggest the next skill.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/gate-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/gate.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 Fix blockers via `fur-do`, then rerun this review. When clean, run `fur-check` for logic/tests and `fur-done` when the whole task is ready to close.

@@ -623,6 +623,15 @@ risk_level: none | low | medium | high
 - Do not skip responsive extraction.
 - Do not build everything in one monolithic commit.
 
+## Examples
+
+Reference examples:
+- `../_shared/examples/executor-example.md`
+- `../_shared/anti-patterns/global.md`
+- `../_shared/anti-patterns/executor.md`
+
+Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+
 ## Suggested Next Step
 
 Run `fur-ui-review` for visual QA, then `fur-check` and `fur-done` when the clone is verified.

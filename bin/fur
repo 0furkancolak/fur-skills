@@ -11,7 +11,12 @@ fur - simple personal AI agent workflow helper
 
 Usage:
   fur help
-  fur init [--gitignore|--no-gitignore] [--question-level low|normal|high] [--project-maturity new|established]
+  fur init [--gitignore|--no-gitignore] \
+           [--question-level low|normal|high] \
+           [--project-maturity new|established] \
+           [--response-depth concise|standard|deep] \
+           [--evidence-style paths-only|inline|inline-plus-paths] \
+           [--verification-strictness loose|normal|strict]
   fur workspace init
   fur workspace doctor
   fur refresh
@@ -20,7 +25,7 @@ Usage:
   fur doctor
 
 Commands:
-  init                  Create .fur.planning; TTY prompts, non-TTY defaults to --gitignore/high/new
+  init                  Create .fur.planning; TTY prompts, non-TTY defaults to --gitignore/high/new/standard/inline/normal
   workspace init         Create .fur.workspace/config.json in the current directory
   workspace doctor       Validate .fur.workspace/config.json
   refresh                Create a progress snapshot
@@ -44,6 +49,27 @@ valid_question_level() {
 valid_project_maturity() {
   case "$1" in
     new | established) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+valid_response_depth() {
+  case "$1" in
+    concise | standard | deep) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+valid_evidence_style() {
+  case "$1" in
+    paths-only | inline | inline-plus-paths) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+valid_verification_strictness() {
+  case "$1" in
+    loose | normal | strict) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -243,17 +269,23 @@ write_config() {
   local gitignore="$1"
   local question_level="$2"
   local project_maturity="$3"
+  local response_depth="$4"
+  local evidence_style="$5"
+  local verification_strictness="$6"
   local created_at
   created_at="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
   cat > "$PLANNING_DIR/config.json" <<EOF_CONFIG
 {
-  "version": 1,
+  "version": 2,
   "planningDir": ".fur.planning",
   "gitignore": ${gitignore},
   "localTaskMode": "local-markdown",
   "questionLevel": "${question_level}",
   "projectMaturity": "${project_maturity}",
+  "responseDepth": "${response_depth}",
+  "evidenceStyle": "${evidence_style}",
+  "verificationStrictness": "${verification_strictness}",
   "questionPolicy": {
     "askBeforeSplittingLargeTasks": true,
     "askWhenAcceptanceCriteriaMissing": true,
@@ -289,6 +321,9 @@ cmd_init() {
   local mode=""
   local question_level=""
   local project_maturity=""
+  local response_depth=""
+  local evidence_style=""
+  local verification_strictness=""
 
   while [ "$#" -gt 0 ]; do
     case "$1" in
@@ -312,10 +347,34 @@ cmd_init() {
         project_maturity="${2:-}"
         shift 2
         ;;
+      --response-depth)
+        if [ "$#" -lt 2 ]; then
+          echo "Missing value for --response-depth"
+          exit 1
+        fi
+        response_depth="${2:-}"
+        shift 2
+        ;;
+      --evidence-style)
+        if [ "$#" -lt 2 ]; then
+          echo "Missing value for --evidence-style"
+          exit 1
+        fi
+        evidence_style="${2:-}"
+        shift 2
+        ;;
+      --verification-strictness)
+        if [ "$#" -lt 2 ]; then
+          echo "Missing value for --verification-strictness"
+          exit 1
+        fi
+        verification_strictness="${2:-}"
+        shift 2
+        ;;
       *)
         echo "Unknown init option: $1"
         echo "Usage:"
-        echo "  fur init [--gitignore|--no-gitignore] [--question-level low|normal|high] [--project-maturity new|established]"
+        echo "  fur init [--gitignore|--no-gitignore] [--question-level low|normal|high] [--project-maturity new|established] [--response-depth concise|standard|deep] [--evidence-style paths-only|inline|inline-plus-paths] [--verification-strictness loose|normal|strict]"
         exit 1
         ;;
     esac
@@ -374,20 +433,65 @@ cmd_init() {
     exit 1
   fi
 
+  if [ -z "$response_depth" ]; then
+    if is_tty; then
+      response_depth="$(prompt_choice "Response depth (concise/standard/deep)" "standard")"
+    else
+      response_depth="standard"
+    fi
+  fi
+
+  if ! valid_response_depth "$response_depth"; then
+    echo "Invalid response depth: $response_depth"
+    echo "Expected: concise, standard, or deep"
+    exit 1
+  fi
+
+  if [ -z "$evidence_style" ]; then
+    if is_tty; then
+      evidence_style="$(prompt_choice "Evidence style (paths-only/inline/inline-plus-paths)" "inline")"
+    else
+      evidence_style="inline"
+    fi
+  fi
+
+  if ! valid_evidence_style "$evidence_style"; then
+    echo "Invalid evidence style: $evidence_style"
+    echo "Expected: paths-only, inline, or inline-plus-paths"
+    exit 1
+  fi
+
+  if [ -z "$verification_strictness" ]; then
+    if is_tty; then
+      verification_strictness="$(prompt_choice "Verification strictness (loose/normal/strict)" "normal")"
+    else
+      verification_strictness="normal"
+    fi
+  fi
+
+  if ! valid_verification_strictness "$verification_strictness"; then
+    echo "Invalid verification strictness: $verification_strictness"
+    echo "Expected: loose, normal, or strict"
+    exit 1
+  fi
+
   ensure_planning_dirs
   write_planning_files
 
   if [ "$mode" = "--gitignore" ]; then
     add_gitignore_entry
-    write_config "true" "$question_level" "$project_maturity"
+    write_config "true" "$question_level" "$project_maturity" "$response_depth" "$evidence_style" "$verification_strictness"
     echo "Initialized .fur.planning and added it to .gitignore"
   else
-    write_config "false" "$question_level" "$project_maturity"
+    write_config "false" "$question_level" "$project_maturity" "$response_depth" "$evidence_style" "$verification_strictness"
     echo "Initialized .fur.planning without adding it to .gitignore"
   fi
 
   echo "Question level: $question_level"
   echo "Project maturity: $project_maturity"
+  echo "Response depth: $response_depth"
+  echo "Evidence style: $evidence_style"
+  echo "Verification strictness: $verification_strictness"
 
   echo ""
   report_workspace_hint

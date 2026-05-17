@@ -1,0 +1,1 @@
+{"skill": "fur-init", "skillVersion": 2, "baselineDate": "2026-05-17", "promptCount": 20, "goldenOutputCount": 0, "scores": {"triggerAccuracy": 0, "formatCompliance": 0, "acCoverage": 0, "evidenceSufficiency": 0, "userVisibleDepth": 0, "residualRiskQuality": 0, "efficiency": 0}, "notes": ["Placeholder baseline. Calibrate manually."]}
