@@ -6,6 +6,7 @@ import { cmdInit } from "./init.ts";
 import { cmdInstall, cmdUninstall } from "./install.ts";
 import { cmdCompact } from "./compact.ts";
 import { cmdDoctorLocal } from "./doctor-local.ts";
+import { cmdPlan } from "./plan.ts";
 import { cmdProgress, cmdRefresh } from "./progress.ts";
 import { cmdRepoDoctor } from "./repo-doctor.ts";
 import {
@@ -31,6 +32,7 @@ function buildCommands(): FurCommand[] {
     defineCommand("workspace", runWorkspace),
     defineCommand("refresh", async () => cmdRefresh()),
     defineCommand("progress", async () => cmdProgress()),
+    defineCommand("plan", cmdPlan),
     defineCommand("compact", async () => cmdCompact()),
     defineCommand("doctor", async () => cmdDoctorLocal()),
     defineCommand("install", cmdInstall),

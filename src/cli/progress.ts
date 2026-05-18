@@ -2,6 +2,13 @@ import { existsSync } from "node:fs";
 import { mkdir, symlink, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import {
+  formatPlanSummary,
+  listPlans,
+  loadPlan,
+  reconcilePlanFromDisk,
+  sumManifestHours,
+} from "../lib/plan-manifest.ts";
+import {
   countMd,
   ensurePlanningDirs,
   planningDir,
@@ -91,6 +98,30 @@ export async function cmdRefresh(): Promise<number> {
   }
   const latestReady = readyFiles.slice(-10).map((f) => `- ${f}`).join("\n");
 
+  let plansSection = "";
+  const planPaths = await listPlans(projectRoot);
+  if (planPaths.length > 0) {
+    const lines: string[] = [];
+    for (const planPath of planPaths) {
+      const report = await loadPlan(planPath, projectRoot);
+      if (!report) continue;
+      const reconciled = await reconcilePlanFromDisk(report, projectRoot);
+      const fm = reconciled.frontmatter;
+      const manifestHours = sumManifestHours(reconciled.rows);
+      const hours =
+        fm.estimated_hours != null && fm.estimated_hours > 0
+          ? fm.estimated_hours
+          : manifestHours;
+      lines.push(
+        `- ${reconciled.slug}: ${reconciled.percentDone}% complete (${reconciled.doneCount}/${reconciled.totalCount})` +
+          ` · progress ${reconciled.percentProgress}%` +
+          ` · ${hours}h` +
+          (fm.target_end ? ` · due ${fm.target_end}` : ""),
+      );
+    }
+    plansSection = lines.join("\n");
+  }
+
   let gitSection = "";
   if (git.isGit) {
     gitSection = `- Branch: ${git.branch}
@@ -120,6 +151,10 @@ ${gitSection}
 - Ready: ${await countMd(join(planning, "tasks", "ready"))}
 - Done: ${await countMd(join(planning, "tasks", "done"))}
 - Plans: ${await countMd(join(planning, "plans"))}
+
+## Active plans
+
+${plansSection || "_none_"}
 
 ## Tracker sync
 
@@ -163,6 +198,19 @@ export async function cmdProgress(): Promise<number> {
   console.log(`- Ready: ${await countMd(join(planning, "tasks", "ready"))}`);
   console.log(`- Done: ${await countMd(join(planning, "tasks", "done"))}`);
   console.log(`- Plans: ${await countMd(join(planning, "plans"))}`);
+  const planPaths = await listPlans(projectRoot);
+  if (planPaths.length > 0) {
+    console.log("");
+    console.log("Active plans");
+    console.log("-------------");
+    for (const planPath of planPaths) {
+      const report = await loadPlan(planPath, projectRoot);
+      if (!report) continue;
+      const reconciled = await reconcilePlanFromDisk(report, projectRoot);
+      console.log(formatPlanSummary(reconciled));
+      console.log("");
+    }
+  }
   console.log("");
   console.log("Tracker sync");
   console.log("------------");

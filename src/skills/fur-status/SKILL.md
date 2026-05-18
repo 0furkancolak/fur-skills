@@ -62,10 +62,13 @@ Do not load full task bodies or archived snapshots.
 
 ## Workflow
 
-### Phase 1: CLI snapshot
+### Phase 1: Read planning state (chat-first)
 
-1. From project root, run `fur progress` (or replicate its behavior if the shell is unavailable: count `*.md` in `tasks/{backlog,ready,done}` and `plans/`).
-2. If `.fur.planning` is missing, report "run `fur init`" and stop.
+1. Count `*.md` in `tasks/{backlog,ready,done}` and list `plans/*.md`.
+2. For **each** plan file: read manifest + reconcile task folder statuses; render **`## Plan summary`** in chat per `src/references/plan-ai-output.md` (completion %, progress %, net hours, `target_end`, bar, manifest table, next task).
+3. Do **not** stop at "run `fur plan status`" — the user interacts via AI; the dashboard must appear in this message.
+4. Optional shell: `fur progress` / `fur plan status` for cross-check only.
+5. If `.fur.planning` is missing, report "run `fur init`" and stop.
 
 ### Phase 2: Read latest markdown snapshot
 
@@ -112,6 +115,10 @@ If any answer is no, continue working before responding.
 - Plans: [n]
 - Workspace: found | missing
 - Repo registered: yes [id] | no
+
+## Plan summary
+
+[MANDATORY for each plan in plans/ — full dashboard per src/references/plan-ai-output.md]
 
 ## Latest Snapshot
 

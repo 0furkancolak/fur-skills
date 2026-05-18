@@ -41,6 +41,13 @@ What should NOT be changed or affected by this task. Scope boundaries.
 
 Technical notes, affected files, constraints, approach suggestions.
 
+When the task belongs to a multi-task plan, include:
+
+```md
+Plan: plans/<slug>.md
+Plan task ID: T1
+```
+
 ## Suggested Files
 
 - `path/to/file1`

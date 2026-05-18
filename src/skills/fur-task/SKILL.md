@@ -102,7 +102,16 @@ Pick exactly one primary mode:
 
 1. **Filename**: follow `src/references/task-template.md` (`YYYYMMDD-HHMM-short-slug.md`).
 2. **Default placement**: `tasks/backlog/` unless the user and evidence show it is immediately actionable → `tasks/ready/`.
-3. **Large work**: add `plans/<slug>.md` with phases; create **one** backlog task per next slice; link plan path inside each task under Implementation notes.
+3. **Large work (split / plan mode)** — mandatory visibility contract:
+   - Create `plans/<slug>.md` from `src/references/plan-template.md` **before** task files.
+   - Fill YAML frontmatter: `estimated_tasks`, `estimated_sessions` (integer), `session_hours`, `estimated_hours`, `target_start`, `target_end`. **No ranges** (`2-3 weeks`, `8-12 sessions` forbidden).
+   - `estimated_hours` = sum of manifest Est. (S=1.5h, M=3h, L=6h per `plan-template.md`).
+   - Fill the **Task manifest** table with **every** planned slice (use `planned` until a file exists).
+   - Phases table: per-phase task count, **Hours** as one number, **Target end** as ISO date.
+   - Create only the **next** actionable task file(s) now; do not silently drop future slices from the manifest.
+   - Each created task must include `Plan: plans/<slug>.md` and `Plan task ID: Tn` under Implementation notes.
+   - In chat, give a one-line rollup: `N tasks · Hh · M sessions · due YYYY-MM-DD · X% complete (done Y/N) · next: T1 <title>`.
+   - Render full `## Plan summary` in chat per `src/references/plan-ai-output.md` (mandatory).
 4. **Tracker sync block**: always fill the template footer (`Source`, `External ID`, `Sync status`, …) — use `unsynced` / `drafted` until an ID exists.
 5. **Next-work queries**: prefer the highest-priority `ready/` task with complete AC; if none, say what is missing (promotion criteria, blocked deps).
 
@@ -117,10 +126,16 @@ Before finalizing, verify:
 
 If any answer is no, continue working before responding.
 
-### Phase 7: Handoff
+### Phase 7: Show plan in chat (primary UX)
 
-1. Return relative paths only; avoid pasting entire markdown bodies into chat.
-2. Name the next skill: usually `fur-do`; sometimes `fur-status` or config fix instructions.
+1. **Always render `## Plan summary` in the assistant message** when split mode created/updated a plan — follow `src/references/plan-ai-output.md` exactly (completion %, progress %, hours, sessions, target end, progress bar, manifest table).
+2. Compute metrics by reading `plans/<slug>.md` + `tasks/{backlog,ready,done}/` on disk; do **not** tell the user to run CLI instead of showing this block.
+3. Optional cross-check: `fur plan status <slug>` in shell — never a substitute for the chat block.
+4. Return relative paths only for artifacts; avoid pasting full plan bodies outside the dashboard block.
+
+### Phase 8: Handoff
+
+1. Name the next skill: usually `fur-do`; sometimes `fur-status` or config fix instructions.
 
 ## Rules
 
@@ -144,6 +159,11 @@ If any answer is no, continue working before responding.
 - Plan: [path or none]
 - Tracker: local | jira | github | none
 - questionLevel / projectMaturity: …
+
+## Plan summary
+
+[MANDATORY when split or active plan — full block per src/references/plan-ai-output.md:
+ completion %, progress %, hours, sessions, target end, ASCII bar, manifest table, next task]
 
 ## Clarifications
 

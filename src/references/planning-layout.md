@@ -110,7 +110,7 @@ Example:
 - `tasks/backlog`: draft or not-yet-ready tasks.
 - `tasks/ready`: ready-to-implement tasks.
 - `tasks/done`: completed tasks.
-- `plans`: phase plans and parallel slices.
+- `plans`: phase plans with a **task manifest** (see `src/references/plan-template.md`). Agents show progress in chat via `src/references/plan-ai-output.md`; CLI `fur plan status` is optional.
 - `progress`: snapshots from `fur refresh`; old files can move to `progress/archive/`.
 - `context`: project-specific notes; archive long digests under `context/archive/`.
 

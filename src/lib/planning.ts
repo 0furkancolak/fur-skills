@@ -12,7 +12,7 @@ Project-local planning workspace for AI agents.
 tasks/backlog/  Draft tasks (not yet ready for implementation)
 tasks/ready/    Ready-to-implement tasks (prioritized)
 tasks/done/     Completed tasks (kept for reference)
-plans/          Implementation plans (include parallel slices / worktree notes when needed)
+plans/          Implementation plans with task manifest (see src/references/plan-template.md; fur plan status)
 progress/       Progress snapshots (fur compact -> progress/archive/)
 context/        Project context: MCP, issue tracker, verification, domain notes
 \`\`\`

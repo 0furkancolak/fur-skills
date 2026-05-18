@@ -13,6 +13,8 @@ Usage:
   fur workspace doctor
   fur refresh
   fur progress
+  fur plan list
+  fur plan status <slug>
   fur compact
   fur doctor
   fur install [--yes] [--hosts claude,agents,cursor] [--no-cli] [--no-opencode]
@@ -27,6 +29,8 @@ Commands:
   workspace doctor      Validate .fur.workspace/config.json
   refresh               Create a progress snapshot
   progress              Show current progress summary
+  plan list             List plans with task/duration rollup
+  plan status <slug>    Show manifest progress for one plan
   compact               Archive old progress snapshots
   doctor                Check installation and local state
   install               Interactive install (clack prompts) + pre/post checks

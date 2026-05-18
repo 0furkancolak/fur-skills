@@ -96,7 +96,13 @@ Before finalizing, verify:
 
 If any answer is no, continue working before responding.
 
-### Phase 6: Report
+### Phase 6: Update plan visibility in chat
+
+1. If the closed task references `Plan:` / `Plan task ID:`, update that row to `done` in `plans/<slug>.md` manifest (Status + Task file path).
+2. Re-read manifest + task folders; render **updated `## Plan summary`** in chat per `src/references/plan-ai-output.md` (new completion %, next task).
+3. Do not defer the dashboard to CLI — show it in this message.
+
+### Phase 7: Report
 
 1. Summarize paths, snapshot file, tracker outcome.
 2. Do **not** `git commit` or open PRs unless the user explicitly asked (AGENTS.md).
@@ -122,6 +128,10 @@ If any answer is no, continue working before responding.
 ## Verification Summary
 
 [one paragraph from fur-check]
+
+## Plan summary
+
+[MANDATORY if closed task linked a plan — updated dashboard per src/references/plan-ai-output.md]
 
 ## Risks and Follow-ups
 

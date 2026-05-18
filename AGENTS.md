@@ -51,7 +51,7 @@ src/
     fur-ui-clone/ -> Pixel-perfect website clone pipeline
     fur-ui-review/ -> UI/UX review for implemented interfaces
   evals/          -> prompt sets, golden outputs, graders
-  references/     -> planning layout, task template, rubrics, eval design
+  references/     -> planning layout, task template, plan-ai-output (chat dashboard), rubrics
   docs/tr/        -> Turkish translations
 ```
 

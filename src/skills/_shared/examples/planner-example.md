@@ -11,11 +11,37 @@ User says: "We need to add dark mode to the app."
 ```markdown
 ## Task Result
 
-- Mode: created
-- Local task(s): `.fur.planning/tasks/backlog/20260115-1000-add-dark-mode.md`
+- Mode: split
+- Local task(s): `.fur.planning/tasks/ready/20260115-1000-add-dark-mode.md`
 - Plan: `.fur.planning/plans/dark-mode.md`
 - Tracker: local
 - questionLevel / projectMaturity: high / new
+
+## Plan summary
+
+**Dark mode** · `dark-mode`
+
+| Field | Value |
+|-------|-------|
+| Completion | **0%** (0/4 done) |
+| Progress | **0%** (ready=50%, backlog=25%) |
+| Total time | 10.5 hours |
+| Sessions | 4 × 3 hours = 12 hours |
+| Target end | **2026-01-22** |
+| Next up | **T1** — Core toggle + persistence (`ready`) |
+
+```
+[░░░░░░░░░░░░░░░░░░░░░░░░] 0%
+```
+
+| ID | Status | Est | Phase | Task |
+|----|--------|-----|-------|------|
+| T1 | ready | M | phase-1 | `20260115-1000-add-dark-mode.md` |
+| T2 | planned | S | phase-1 | — |
+| T3 | planned | M | phase-2 | — |
+| T4 | planned | S | phase-2 | — |
+
+_Source: `.fur.planning/plans/dark-mode.md`_
 
 ## Clarifications
 
@@ -23,17 +49,9 @@ User says: "We need to add dark mode to the app."
 2. Should it persist across sessions? (User: yes.)
 3. Are animated transitions in scope? (User: no.)
 
-## Plan Summary
+## Risks
 
-The work is split into two phases:
-
-**Phase 1**: Core toggle + persistence
-- Task: `20260115-1000-add-dark-mode.md` (backlog → ready after clarification)
-- Scope: Toggle in settings, localStorage persistence, immediate apply, light default.
-
-**Phase 2**: Auto-detect + animations (future)
-- Task: `20260115-1005-dark-mode-auto-detect.md` (backlog)
-- Scope: System preference detection, animated transitions.
+Phase 2 (auto-detect) deferred until Phase 1 ships.
 
 ## Next
 
@@ -42,8 +60,8 @@ The work is split into two phases:
 
 ## Why This Output Is Good
 
-- Input is classified (local new).
+- Input is classified (split / local new).
+- **`## Plan summary` is shown in chat** — user does not need to run CLI.
+- Net schedule (hours + due date), completion %, and manifest table are visible.
 - Clarifications are concrete and tied to `questionLevel`.
-- Task is small enough for one `fur-do` session.
-- Large work is split into phases with clear boundaries.
 - Next step is deterministic.

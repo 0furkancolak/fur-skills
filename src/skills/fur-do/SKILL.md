@@ -151,6 +151,10 @@ Cover trade-offs, edge cases, and why the chosen approach was preferable.
 ## Risks and Follow-ups
 
 Include residual technical risk, missing coverage, and any suggested follow-up task.
+
+## Plan summary
+
+[MANDATORY if task has Plan: / Plan task ID: — compact dashboard per src/references/plan-ai-output.md: completion %, next task, target end]
 ```
 
 ### Control Plane
