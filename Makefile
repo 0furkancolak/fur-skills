@@ -1,44 +1,49 @@
-.PHONY: setup install uninstall doctor init init-gitignore init-track refresh progress compact help
+.PHONY: help install uninstall repo-doctor test typecheck eval-meta init-gitignore init-track refresh progress compact
 
 help:
-	@echo "fur-skills Makefile"
+	@echo "fur-skills (Bun)"
 	@echo ""
-	@echo "Setup & Install:"
-	@echo "  make setup            One-time repo setup (chmod +x, git init)"
-	@echo "  make install          Symlink skills + CLI to user directories"
-	@echo "  make uninstall         Remove all skill + CLI symlinks"
-	@echo "  make doctor            Verify installation status"
-	@echo ""
-	@echo "Project Planning (requires fur init first):"
-	@echo "  make init-gitignore    Init .fur.planning + add to .gitignore"
-	@echo "  make init-track        Init .fur.planning (trackable by git)"
-	@echo "  make refresh           Create a progress snapshot"
-	@echo "  make progress          Show current progress summary"
-	@echo "  make compact           Archive old progress snapshots"
-
-setup:
-	@./setup-fur-skills.sh
+	@echo "  make install          Symlink skills + CLI (fur install)"
+	@echo "  make uninstall        Remove symlinks (fur uninstall)"
+	@echo "  make repo-doctor      Validate repo quality"
+	@echo "  make test             Run bun test"
+	@echo "  make typecheck        Run tsc --noEmit"
+	@echo "  make eval-meta        Core eval metadata checks"
+	@echo "  make init-gitignore   fur init --gitignore"
+	@echo "  make init-track       fur init --no-gitignore"
+	@echo "  make refresh          fur refresh"
+	@echo "  make progress         fur progress"
+	@echo "  make compact          fur compact"
 
 install:
-	@./scripts/install.sh
+	@bun src/cli.ts install
 
 uninstall:
-	@./scripts/uninstall.sh
+	@bun src/cli.ts uninstall
 
-doctor:
-	@./scripts/doctor.sh
+repo-doctor:
+	@bun run repo-doctor
+
+test:
+	@bun test src/tests
+
+typecheck:
+	@bun run typecheck
+
+eval-meta:
+	@bun src/cli.ts eval meta fur-task fur-do fur-check fur-debug
 
 init-gitignore:
-	@fur init --gitignore
+	@bun src/cli.ts init --gitignore
 
 init-track:
-	@fur init --no-gitignore
+	@bun src/cli.ts init --no-gitignore
 
 refresh:
-	@fur refresh
+	@bun src/cli.ts refresh
 
 progress:
-	@fur progress
+	@bun src/cli.ts progress
 
 compact:
-	@fur compact
+	@bun src/cli.ts compact

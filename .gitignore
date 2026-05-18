@@ -5,6 +5,7 @@
 *.swo
 *~
 node_modules/
+dist/
 
 # Secrets and local overrides
 .env

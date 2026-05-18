@@ -20,8 +20,8 @@ fur-skills v2 is a **contract-first, provider-aware, eval-driven** skill platfor
 - **Frontmatter contract** — `skill_class`, `skill_version`, `default_response_depth`, `quality_contract`, `handoff`
 - **Dual-plane output** — `presentation_plane` (human-readable markdown) + `control_plane` (machine-parseable YAML)
 - **Self-check requirement** — mandatory internal verification before final output
-- **Provider overlays** — Claude (`skills/_shared/overlays/claude.md`), OpenAI reasoning (`openai-reasoning.md`), generic (`generic.md`)
-- **Eval fixtures** — prompt sets, golden outputs, deterministic graders under `evals/`
+- **Provider overlays** — Claude (`src/skills/_shared/overlays/claude.md`), OpenAI reasoning (`openai-reasoning.md`), generic (`generic.md`)
+- **Eval fixtures** — prompt sets, golden outputs, deterministic graders under `src/evals/`
 
 ### Skill Classes
 
@@ -54,11 +54,24 @@ Every skill follows the shared contract in `AGENTS.md`:
 - Evidence before claims: every non-trivial assertion ties to a source.
 - Config over convention: `responseDepth`, `evidenceStyle`, and `verificationStrictness` live in config.
 
+## Prerequisites
+
+- [Bun](https://bun.sh) 1.1+
+
 ## Installation
 
 ```bash
 cd /path/to/fur-skills
-./scripts/install.sh
+bun install
+fur install          # interaktif: host seçimi, ön/son kontroller (@clack/prompts)
+# fur install --yes  # CI / non-interactive
+```
+
+Or without a global `fur` on PATH yet:
+
+```bash
+bun install
+bun src/cli.ts install
 ```
 
 The `fur` command requires `~/bin` in your PATH:
@@ -71,7 +84,7 @@ Verify:
 
 ```bash
 fur help
-./scripts/doctor.sh
+fur repo-doctor
 ```
 
 The installer also exposes the website clone workflow to OpenCode as:
@@ -176,7 +189,12 @@ Defaults:
 | `fur refresh` | Helper used by `fur-done`; create a progress snapshot. |
 | `fur progress` | Helper used by `fur-status`; print counts and latest snapshot. |
 | `fur compact` | Move old progress snapshots to `progress/archive/`. |
-| `fur doctor` | Check skill symlinks and CLI installation status. |
+| `fur doctor` | Check skill symlinks and CLI installation status on your machine. |
+| `fur install` | Symlink skills + CLI to `~/.claude/skills`, `~/.cursor/skills`, etc. |
+| `fur uninstall` | Remove fur skill symlinks and `~/bin/fur`. |
+| `fur repo-doctor` | Validate fur-skills repo quality (frontmatter, eval fixtures, CI). |
+| `fur eval meta <skill>` | Check eval fixture metadata for a skill. |
+| `fur eval grade <skill> <skill_md> <output_md>` | Run deterministic grader on an output file. |
 
 ## Tracker Config
 
@@ -214,14 +232,14 @@ Workspace-level config routes external references:
 
 ## Reference Files
 
-- `references/planning-layout.md` — `.fur.planning` and `.fur.workspace` layout
-- `references/task-template.md` — task file template
-- `references/context-window.md` — context budget rules
-- `references/skill-spec-v2.md` — mandatory shared skill contract (frontmatter, sections, output schema)
-- `references/output-rubrics.md` — depth, quality, evidence, and risk rubrics
-- `references/context-pack-rules.md` — rich / standard / lean context loading rules
-- `references/eval-design.md` — golden data sets, trace grading, and grader rules
+- `src/references/planning-layout.md` — `.fur.planning` and `.fur.workspace` layout
+- `src/references/task-template.md` — task file template
+- `src/references/context-window.md` — context budget rules
+- `src/references/skill-spec-v2.md` — mandatory shared skill contract (frontmatter, sections, output schema)
+- `src/references/output-rubrics.md` — depth, quality, evidence, and risk rubrics
+- `src/references/context-pack-rules.md` — rich / standard / lean context loading rules
+- `src/references/eval-design.md` — golden data sets, trace grading, and grader rules
 
 ## Turkish Translations
 
-See `docs/tr/` for Turkish translations of key documents.
+See `src/docs/tr/` for Turkish translations of key documents.

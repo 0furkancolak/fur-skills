@@ -1,0 +1,25 @@
+{
+  "name": "fur-skills",
+  "version": "2.0.0",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "fur": "./src/cli.ts"
+  },
+  "scripts": {
+    "fur": "bun src/cli.ts",
+    "repo-doctor": "bun src/cli.ts repo-doctor",
+    "eval:meta": "bun src/cli.ts eval meta",
+    "eval:grade": "bun src/cli.ts eval grade",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test src/tests"
+  },
+  "dependencies": {
+    "@clack/prompts": "^1.4.0",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "typescript": "^5.9.3"
+  }
+}
