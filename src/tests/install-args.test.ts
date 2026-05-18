@@ -13,4 +13,16 @@ describe("parseInstallArgs", () => {
     expect(parsed.options.hosts).toEqual(["claude", "cursor"]);
     expect(parsed.options.installOpencode).toBe(false);
   });
+
+  test("parses --lang tr", () => {
+    const parsed = parseInstallArgs(["--lang", "tr", "--yes"]);
+    expect(parsed.options.locale).toBe("tr");
+    expect(parsed.langExplicit).toBe(true);
+    expect(parsed.invalidLang).toBe(false);
+  });
+
+  test("flags invalid --lang", () => {
+    const parsed = parseInstallArgs(["--lang=fr"]);
+    expect(parsed.invalidLang).toBe(true);
+  });
 });

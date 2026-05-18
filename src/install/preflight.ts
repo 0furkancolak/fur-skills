@@ -10,6 +10,8 @@ import {
   skillsDir,
   type SkillHostId,
 } from "../lib/paths.ts";
+import type { InstallMessages } from "./i18n/index.ts";
+import { createInstallMessages } from "./i18n/index.ts";
 import type { InstallCheck, InstallOptions, PreflightReport } from "./types.ts";
 
 async function pathWritable(dir: string): Promise<boolean> {
@@ -39,7 +41,9 @@ async function discoverFurSkills(root: string): Promise<string[]> {
 export async function runPreflight(
   options: InstallOptions,
   root = repoRoot(),
+  messages: InstallMessages = createInstallMessages(options.locale),
 ): Promise<PreflightReport> {
+  const m = messages;
   const checks: InstallCheck[] = [];
   const home = homeDir();
 
@@ -47,13 +51,13 @@ export async function runPreflight(
     checks.push({
       id: "home",
       ok: false,
-      message: "HOME ortam değişkeni tanımlı değil",
+      message: m.t("preflight.homeMissing"),
     });
   } else {
     checks.push({
       id: "home",
       ok: true,
-      message: `HOME: ${home}`,
+      message: m.t("preflight.homeOk", { home }),
     });
   }
 
@@ -61,8 +65,10 @@ export async function runPreflight(
   checks.push({
     id: "bun",
     ok: Boolean(bunPath),
-    message: bunPath ? `Bun: ${bunPath}` : "Bun PATH içinde bulunamadı",
-    hint: bunPath ? undefined : "https://bun.sh adresinden kurun",
+    message: bunPath
+      ? m.t("preflight.bunFound", { path: bunPath })
+      : m.t("preflight.bunMissing"),
+    hint: bunPath ? undefined : m.t("preflight.bunHint"),
   });
 
   const cliPath = cliEntryPath(root);
@@ -71,8 +77,8 @@ export async function runPreflight(
     id: "cli-source",
     ok: cliExists,
     message: cliExists
-      ? `CLI kaynağı: ${cliPath}`
-      : `CLI kaynağı eksik: ${cliPath}`,
+      ? m.t("preflight.cliSourceOk", { path: cliPath })
+      : m.t("preflight.cliSourceMissing", { path: cliPath }),
   });
 
   let skillNames: string[] = [];
@@ -83,14 +89,14 @@ export async function runPreflight(
       ok: skillNames.length > 0,
       message:
         skillNames.length > 0
-          ? `${skillNames.length} fur skill bulundu`
-          : "Kurulacak fur skill bulunamadı",
+          ? m.t("preflight.skillsFound", { count: skillNames.length })
+          : m.t("preflight.skillsMissing"),
     });
   } catch {
     checks.push({
       id: "skills",
       ok: false,
-      message: `Skills dizini okunamadı: ${skillsDir(root)}`,
+      message: m.t("preflight.skillsDirUnreadable", { path: skillsDir(root) }),
     });
   }
 
@@ -104,8 +110,8 @@ export async function runPreflight(
       id: `host-${host.id}`,
       ok: writable,
       message: writable
-        ? `${host.label}: ${host.dir}`
-        : `${host.label}: yazılamıyor — ${host.dir}`,
+        ? m.t("preflight.hostOk", { label: host.label, dir: host.dir })
+        : m.t("preflight.hostNotWritable", { label: host.label, dir: host.dir }),
     });
   }
 
@@ -116,8 +122,8 @@ export async function runPreflight(
       id: "cli-target",
       ok: binWritable && cliExists,
       message: binWritable
-        ? `CLI hedefi: ${homeBinFur()}`
-        : `~/bin oluşturulamıyor veya yazılamıyor`,
+        ? m.t("preflight.cliTargetOk", { path: homeBinFur() })
+        : m.t("preflight.cliTargetFail"),
     });
   }
 
@@ -128,8 +134,8 @@ export async function runPreflight(
       id: "opencode-source",
       ok: true,
       message: opencodeExists
-        ? "OpenCode clone-website komutu kurulacak"
-        : "OpenCode kaynağı yok — bu adım atlanacak",
+        ? m.t("preflight.opencodeWillInstall")
+        : m.t("preflight.opencodeWillSkip"),
     });
   }
 
@@ -140,7 +146,7 @@ export async function runPreflight(
     checks.push({
       id: "path-hint",
       ok: true,
-      message: `PATH içinde ~/bin yok — kurulumdan sonra shell config'e eklemeniz gerekebilir`,
+      message: m.t("preflight.pathHint"),
       hint: 'export PATH="$HOME/bin:$PATH"',
     });
   }

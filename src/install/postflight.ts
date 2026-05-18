@@ -9,6 +9,8 @@ import {
   skillHostTargets,
   skillsDir,
 } from "../lib/paths.ts";
+import type { InstallMessages } from "./i18n/index.ts";
+import { createInstallMessages } from "./i18n/index.ts";
 import type { InstallCheck, InstallOptions, PostflightReport } from "./types.ts";
 
 async function symlinkTarget(linkPath: string): Promise<string | null> {
@@ -25,7 +27,9 @@ export async function runPostflight(
   options: InstallOptions,
   installedSkills: string[],
   root = repoRoot(),
+  messages: InstallMessages = createInstallMessages(options.locale),
 ): Promise<PostflightReport> {
+  const m = messages;
   const checks: InstallCheck[] = [];
   const home = homeDir();
   const skillsRoot = skillsDir(root);
@@ -43,7 +47,7 @@ export async function runPostflight(
         ok,
         message: ok
           ? `${host.label} / ${skill}`
-          : `${host.label} / ${skill} — symlink hatalı veya eksik`,
+          : m.t("postflight.symlinkBad", { label: host.label, skill }),
       });
     }
 
@@ -60,7 +64,7 @@ export async function runPostflight(
         ok: sharedOk,
         message: sharedOk
           ? `${host.label} / _shared`
-          : `${host.label} / _shared — symlink hatalı`,
+          : m.t("postflight.sharedBad", { label: host.label }),
       });
     }
   }
@@ -79,8 +83,8 @@ export async function runPostflight(
       id: "cli-wrapper",
       ok: executable,
       message: executable
-        ? `fur CLI (çalıştırılabilir): ${cliLink}`
-        : `fur CLI çalıştırılamıyor: ${cliLink}`,
+        ? m.t("postflight.cliExecutable", { path: cliLink })
+        : m.t("postflight.cliNotExecutable", { path: cliLink }),
     });
 
     if (executable) {
@@ -94,8 +98,8 @@ export async function runPostflight(
         ok: code === 0,
         message:
           code === 0
-            ? "`fur help` PATH üzerinden çalıştı"
-            : `\`fur help\` başarısız (exit ${code})`,
+            ? m.t("postflight.cliRunOk")
+            : m.t("postflight.cliRunFail", { code }),
       });
     }
   }
@@ -122,8 +126,8 @@ export async function runPostflight(
         id: "opencode-symlink",
         ok,
         message: ok
-          ? "OpenCode clone-website komutu"
-          : "OpenCode symlink hatalı veya eksik",
+          ? m.t("postflight.opencodeOk")
+          : m.t("postflight.opencodeBad"),
       });
     }
   }

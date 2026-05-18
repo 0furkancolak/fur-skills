@@ -17,7 +17,7 @@ Usage:
   fur plan status <slug>
   fur compact
   fur doctor
-  fur install [--yes] [--hosts claude,agents,cursor] [--no-cli] [--no-opencode]
+  fur install [--yes] [--lang en|tr] [--hosts claude,agents,cursor] [--no-cli] [--no-opencode]
   fur uninstall
   fur repo-doctor
   fur eval meta <skill>...
@@ -33,8 +33,8 @@ Commands:
   plan status <slug>    Show manifest progress for one plan
   compact               Archive old progress snapshots
   doctor                Check installation and local state
-  install               Interactive install (clack prompts) + pre/post checks
-  uninstall             Remove fur skill symlinks and CLI
+  install               Interactive install (clack prompts) + pre/post checks; lang: --lang, FUR_LANG, or LANG
+  uninstall             Remove fur skill symlinks and CLI (--lang en|tr)
   repo-doctor           Validate fur-skills repo quality (CI)
   eval meta             Check eval fixture metadata for skill(s)
   eval grade            Run deterministic grader on an output file

@@ -1,10 +1,14 @@
 import type { SkillHostId } from "../lib/paths.ts";
+import type { InstallLocale } from "./i18n/types.ts";
+
+export type { InstallLocale };
 
 export interface InstallOptions {
   hosts: SkillHostId[];
   installCli: boolean;
   installOpencode: boolean;
   removeObsolete: boolean;
+  locale: InstallLocale;
 }
 
 export interface InstallCheck {
@@ -26,9 +30,17 @@ export interface PostflightReport {
   readonly allOk: boolean;
 }
 
-export const DEFAULT_INSTALL_OPTIONS: InstallOptions = {
-  hosts: ["claude", "agents", "cursor"],
-  installCli: true,
-  installOpencode: true,
-  removeObsolete: true,
-};
+export function defaultInstallOptions(
+  locale: InstallLocale = "en",
+): InstallOptions {
+  return {
+    hosts: ["claude", "agents", "cursor"],
+    installCli: true,
+    installOpencode: true,
+    removeObsolete: true,
+    locale,
+  };
+}
+
+/** @deprecated Use defaultInstallOptions(resolveInstallLocale([])) */
+export const DEFAULT_INSTALL_OPTIONS: InstallOptions = defaultInstallOptions("en");

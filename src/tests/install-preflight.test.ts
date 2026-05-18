@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { hostIdsFromArg, runPreflight } from "../install/preflight.ts";
-import { DEFAULT_INSTALL_OPTIONS } from "../install/types.ts";
+import { defaultInstallOptions } from "../install/types.ts";
 import { repoRoot } from "../lib/paths.ts";
 
 describe("hostIdsFromArg", () => {
@@ -15,7 +15,7 @@ describe("hostIdsFromArg", () => {
 
 describe("runPreflight", () => {
   test("passes for default options in repo", async () => {
-    const report = await runPreflight(DEFAULT_INSTALL_OPTIONS, repoRoot());
+    const report = await runPreflight(defaultInstallOptions("en"), repoRoot());
     expect(report.skillNames.length).toBeGreaterThan(0);
     expect(report.checks.some((c) => c.id === "bun")).toBe(true);
     expect(report.checks.find((c) => c.id === "skills")?.ok).toBe(true);
