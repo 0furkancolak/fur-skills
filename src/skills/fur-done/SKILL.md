@@ -61,6 +61,7 @@ Load in this order:
 3. `.fur.planning/state.json` when present.
 4. `.fur.workspace/config.json` if tracker sync is in play.
 5. `progress/latest.md` for continuity.
+6. `src/references/superpowers-bridge.md` when branch/worktree finishing decisions are in scope.
 
 Do not load unrelated tasks or history.
 
@@ -89,6 +90,18 @@ Do not load unrelated tasks or history.
 2. **GitHub close / comment**: only if routing is unambiguous **and** `closeAllowed` (or equivalent) is true — mirroring AGENTS.md external-write rules.
 3. **Jira transition**: only if `transitionAllowed` true and transition name/ID is configured; never guess transitions.
 4. If anything is ambiguous, complete **local** steps only and document the manual tracker action for the user.
+
+### Phase 4b: Optional methodology bridge
+
+Use Fur native completion for local task archival and tracker sync.
+
+Delegate to `superpowers:finishing-a-development-branch` only when:
+
+- work happened on a branch/worktree
+- merge/PR/keep/discard decision is needed
+- final branch cleanup matters
+
+After delegation, Fur still owns moving the task to `done/`, writing the progress snapshot, and syncing tracker completion when config permits. If Superpowers is unavailable and mode is `optional`, continue with Fur native completion and record the fallback.
 
 ### Phase 5: Self-review
 
@@ -119,6 +132,7 @@ If any answer is no, continue working before responding.
 - Never fabricate tracker comments, transitions, or timestamps.
 - If config forbids external writes, stop after local move + `fur refresh`.
 - Avoid spawning new tasks automatically; note follow-up **risks** instead unless the user wants `fur-task`.
+- Superpowers branch finishing does not replace Fur local closure, progress snapshots, or permitted tracker sync.
 
 ## Output
 
@@ -154,6 +168,14 @@ internal_check: ready | needs-changes | needs-verification
 scope_respected: true | false
 verification_state: complete | partial
 risk_level: none | low | medium | high
+methodology_bridge:
+  provider: superpowers
+  selected_skill: superpowers:finishing-a-development-branch | null
+  used: true | false
+  mode: optional
+  fallback: fur-native
+  fallback_used: true | false
+  reason: "[why delegation was or was not selected]"
 ```
 
 ## Anti-patterns

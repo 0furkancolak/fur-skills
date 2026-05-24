@@ -137,3 +137,9 @@ risk_level: none | low | medium | high
 ```
 
 This keeps the output deterministic and machine-parseable for future hosts.
+
+## Superpowers Bridge Notes
+
+Superpowers support is optional.
+
+Never fail a task only because Superpowers is missing unless config mode is `required`.

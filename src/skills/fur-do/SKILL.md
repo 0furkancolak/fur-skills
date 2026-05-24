@@ -58,6 +58,7 @@ Load in this order:
 2. Only the linked plan fragments relevant to this task.
 3. Project verification defaults (`context/verification.md`).
 4. Only the code paths directly touched by the task.
+5. `src/references/superpowers-bridge.md` when task risk or plan execution may warrant heavier methodology.
 
 Do not load unrelated history unless the active task depends on it.
 
@@ -74,6 +75,21 @@ Do not load unrelated history unless the active task depends on it.
 
 1. Locate touched modules; match existing patterns (naming, error handling, tests, formatting).
 2. If the task references a tracker issue, sync intent mentally — do not expand scope beyond the local task text.
+
+### Phase 2b: Optional methodology bridge
+
+Use Fur native execution for tiny clear fixes and single-scope tasks. Never delegate blindly.
+
+If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider these optional routes:
+
+- `superpowers:using-git-worktrees` when implementation should not happen directly on the current branch.
+- `superpowers:test-driven-development` for production behavior changes, critical flows, and bugfixes with acceptance criteria.
+- `superpowers:subagent-driven-development` when applying an approved multi-task plan and subagents are available.
+- `superpowers:executing-plans` when applying an approved multi-task plan without subagent support.
+
+Superpowers delegation does not replace Fur state management. After delegated execution, update Fur progress/task state as usual.
+
+Fur remains responsible for selected task state, `.fur.planning` progress, `responseDepth`, `verificationStrictness`, acceptance criteria coverage, and final handoff format. If Superpowers is unavailable and mode is `optional`, continue with Fur native execution and record the fallback.
 
 ### Phase 3: Implement
 
@@ -111,6 +127,8 @@ If any answer is no, continue working before responding.
 - For micro tasks only, automatic check + done is allowed when all acceptance criteria and verification pass.
 - **Commits and PRs** always need explicit user approval (AGENTS.md); do not `git commit` or open PRs unless asked.
 - If halfway through the work you discover missing requirements, **stop** and hand back to `fur-task`.
+- Superpowers delegation does not replace Fur state management.
+- After delegated execution, update Fur progress/task state as usual.
 - Context hygiene: if the session is huge, suggest summarizing via `fur compact` / `progress/latest.md` per `src/references/context-window.md`.
 
 ## Output
@@ -169,6 +187,14 @@ auto_closed: true | false
 scope_respected: true | false
 verification_state: complete | partial | not-run
 risk_level: none | low | medium | high
+methodology_bridge:
+  provider: superpowers
+  selected_skill: superpowers:using-git-worktrees | superpowers:test-driven-development | superpowers:subagent-driven-development | superpowers:executing-plans | null
+  used: true | false
+  mode: optional
+  fallback: fur-native
+  fallback_used: true | false
+  reason: "[why delegation was or was not selected]"
 ```
 
 ## Anti-patterns

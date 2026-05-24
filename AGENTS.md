@@ -85,6 +85,7 @@ fur-quick
 - `responseDepth`: `concise`, `standard`, or `deep`
 - `evidenceStyle`: `paths-only`, `inline`, or `inline-plus-paths`
 - `verificationStrictness`: `loose`, `normal`, or `strict`
+- `methodology.superpowers`: optional bridge config (`enabled: true`, `mode: optional`, `fallback: fur-native`)
 
 Default preference:
 

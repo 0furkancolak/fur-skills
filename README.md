@@ -51,6 +51,7 @@ Every skill follows the shared contract in `AGENTS.md`:
 - Multi-repo tracker routing lives in `.fur.workspace/config.json`.
 - Repo-local behavior lives in `.fur.planning/config.json`.
 - Question asking is controlled by `questionLevel`; answer depth is controlled by `responseDepth`.
+- Superpowers can be used as an optional methodology bridge for heavier work; Fur remains primary.
 - Old context should stay in files, not in chat; use `progress/latest.md` and `fur compact`.
 - Evidence before claims: every non-trivial assertion ties to a source.
 - Config over convention: `responseDepth`, `evidenceStyle`, and `verificationStrictness` live in config.
@@ -178,6 +179,37 @@ Defaults:
 | `loose` | Manual checks acceptable; skip if tooling is missing. |
 | `normal` | Run available checks; note gaps honestly. |
 | `strict` | All verification steps must run; missing tooling is a blocker to report. |
+
+## Optional Superpowers Bridge
+
+fur-skills can optionally delegate heavier methodology steps to Superpowers. Fur remains the primary workflow and owns task state, progress, tracker routing, and final handoffs.
+
+Use Fur native flow for small, clear tasks. Use optional Superpowers delegation for ambiguous, risky, debugging-heavy, TDD-heavy, review-heavy, branch-finishing, or multi-step work. Superpowers is never installed automatically and is not required by default.
+
+Default config:
+
+```json
+{
+  "methodology": {
+    "superpowers": {
+      "enabled": true,
+      "mode": "optional",
+      "fallback": "fur-native"
+    }
+  }
+}
+```
+
+Routing:
+
+| Fur skill | Optional Superpowers delegation |
+|---|---|
+| `fur-task` | `brainstorming`, `writing-plans` |
+| `fur-do` | `using-git-worktrees`, `test-driven-development`, `subagent-driven-development`, `executing-plans` |
+| `fur-debug` | `systematic-debugging`, `verification-before-completion` |
+| `fur-check` | `verification-before-completion`, `requesting-code-review`, `receiving-code-review` |
+| `fur-done` | `finishing-a-development-branch` |
+| `fur-status` | no delegation |
 
 ## Automation Mode
 

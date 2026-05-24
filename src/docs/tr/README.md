@@ -52,6 +52,7 @@ fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidi
 - **Contract-first**: Her skill net bir kalite sözleşmesine sahiptir (`skill-spec-v2.md`).
 - **Provider-aware**: Claude, OpenAI reasoning ve generic hostlar için ayrı overlay yaklaşımı vardır (`src/skills/_shared/overlays/`).
 - **Eval-driven**: Skill kalitesi prompt setleri, golden output'lar ve grader'lar ile ölçülür (`src/evals/`).
+- **Opsiyonel metodoloji köprüsü**: Superpowers ağır işlerde kullanılabilir, ama Fur ana workflow olarak kalır.
 
 ## Skill Sınıfları
 
@@ -88,6 +89,12 @@ fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidi
 | `loose` | Araç yoksa manuel kontrol kabul edilir. |
 | `normal` | Mevcut kontroller koşulur, eksikler açıkça yazılır. |
 | `strict` | Kontrol eksikse blocker olarak raporlanır. |
+
+## Opsiyonel Superpowers Köprüsü
+
+Superpowers sadece belirsiz, riskli, debug-heavy, TDD-heavy, review-heavy veya çok adımlı işler için opsiyonel metodoloji köprüsüdür. Küçük ve net işlerde Fur native flow kullanılır. Superpowers yoksa fallback Fur native flow'dur.
+
+Detay: [`superpowers-bridge.md`](superpowers-bridge.md)
 
 ## Soru Seviyeleri
 

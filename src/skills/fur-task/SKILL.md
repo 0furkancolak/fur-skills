@@ -65,6 +65,7 @@ Load in this order:
 3. `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
 4. `progress/latest.md` for current project state.
 5. Existing tasks in `tasks/ready/` and `tasks/backlog/` to avoid duplication.
+6. `src/references/superpowers-bridge.md` when deciding whether heavier methodology is appropriate.
 
 Do not load unrelated history.
 
@@ -87,6 +88,18 @@ Pick exactly one primary mode:
 | Local new | Plain description, bug report, idea |
 | Next work | "What's next?", "what should I do?" |
 | Split / plan | Explicitly too big for one session |
+
+### Phase 2b: Optional methodology bridge
+
+Use Fur native task creation by default. Do not delegate simple task creation, issue import, tracker routing, next-work selection, or tiny tasks.
+
+If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider Superpowers only for heavier cases:
+
+- Use `superpowers:brainstorming` when the task is ambiguous, product-heavy, architecture-heavy, or feature-design-heavy.
+- Use `superpowers:writing-plans` when an approved spec/design needs to become an implementation plan.
+- If Superpowers is unavailable and mode is `optional`, continue with Fur native planning and record the fallback.
+
+Never delegate blindly. Fur remains responsible for task files, tracker routing, plan manifests, `questionLevel`, `responseDepth`, and final handoff.
 
 ### Phase 3: Resolve tracker (if external)
 
@@ -203,6 +216,14 @@ task_size: micro | standard | major | n/a
 scope_respected: true | false
 verification_state: not-applicable
 risk_level: none | low | medium | high
+methodology_bridge:
+  provider: superpowers
+  selected_skill: superpowers:brainstorming | superpowers:writing-plans | null
+  used: true | false
+  mode: optional
+  fallback: fur-native
+  fallback_used: true | false
+  reason: "[why delegation was or was not selected]"
 ```
 
 ## Anti-patterns
@@ -213,6 +234,7 @@ risk_level: none | low | medium | high
 - Do not promote a task to `ready/` while required clarification fields are missing.
 - Do not include time or date estimates in plan output.
 - Do not guess external tracker routing when ambiguous.
+- Do not delegate tiny, clear, tracker-routing-only, or issue-import-only work to Superpowers.
 - Do not forget to suggest the next skill.
 
 ## Examples

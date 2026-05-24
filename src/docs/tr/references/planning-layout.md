@@ -37,6 +37,13 @@
   "evidenceStyle": "inline",
   "verificationStrictness": "normal",
   "automationMode": "guided",
+  "methodology": {
+    "superpowers": {
+      "enabled": true,
+      "mode": "optional",
+      "fallback": "fur-native"
+    }
+  },
   "questionPolicy": {
     "askBeforeSplittingLargeTasks": true,
     "askWhenAcceptanceCriteriaMissing": true,
@@ -46,6 +53,8 @@
   "createdAt": "2026-05-14T09:30:00Z"
 }
 ```
+
+`methodology.superpowers` opsiyonel metodoloji köprüsünü yönetir. Varsayılan olarak etkindir, `optional` modda çalışır ve Superpowers yoksa `fur-native` fallback kullanır.
 
 Tracker yönlendirmesi burada değil, workspace config içindedir.
 

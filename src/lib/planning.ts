@@ -162,6 +162,13 @@ export async function writeConfig(
     evidenceStyle: config.evidenceStyle,
     verificationStrictness: config.verificationStrictness,
     automationMode: config.automationMode,
+    methodology: {
+      superpowers: {
+        enabled: true,
+        mode: "optional",
+        fallback: "fur-native",
+      },
+    },
     questionPolicy: {
       askBeforeSplittingLargeTasks: true,
       askWhenAcceptanceCriteriaMissing: true,
