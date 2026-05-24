@@ -88,7 +88,7 @@ fur init --gitignore --project-maturity established --question-level normal --au
 
 1. Confirm the **Created structure** below exists (folders + `README.md` + `context/*.md` stubs).
 2. Open `.fur.planning/config.json` and confirm keys: `questionLevel`, `projectMaturity`, `responseDepth`, `evidenceStyle`, `verificationStrictness`, `automationMode`, `methodology.superpowers`, `questionPolicy`, `localTaskMode`, `gitignore` (boolean reflects CLI).
-3. Confirm the default methodology bridge config: `methodology.superpowers.enabled = true`, `methodology.superpowers.mode = optional`, and `methodology.superpowers.fallback = fur-native`.
+3. Confirm the default methodology bridge config: `methodology.superpowers.enabled = true`, `methodology.superpowers.mode = optional`, and `methodology.superpowers.fallback = fur-skills`.
 4. Do not attempt to install Superpowers. Do not block initialization if Superpowers is missing.
 5. Optionally run `fur progress` — it may say no snapshot yet; that is OK until the first `fur refresh`.
 
@@ -166,7 +166,7 @@ If any answer is no, continue working before responding.
 - evidenceStyle: paths-only | inline | inline-plus-paths
 - verificationStrictness: loose | normal | strict
 - automationMode: guided | streamlined
-- Methodology bridge: Superpowers enabled optional, fallback fur-native
+- Methodology bridge: Superpowers enabled optional, fallback fur-skills
 - Workspace config: found [path] | not found
 - Repo registered in workspace: yes [id] | no (action: add repositories[] entry)
 - Next CLI hints: fur refresh | fur task (skill)
@@ -177,17 +177,6 @@ If any answer is no, continue working before responding.
 ```yaml
 status: initialized | already-exists | blocked
 next_skill: fur-task | fur-status
-scope_respected: true | false
-verification_state: complete | not-run
-risk_level: none | low
-methodology_bridge:
-  provider: superpowers
-  selected_skill: null
-  used: false
-  mode: optional
-  fallback: fur-native
-  fallback_used: false
-  reason: "Initialization only writes optional bridge config; it does not delegate."
 ```
 
 ## Anti-patterns

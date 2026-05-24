@@ -15,7 +15,7 @@
 {"input": "Task request with questionLevel: high should trigger clarification questions before decomposition.", "expected_routing": "fur-task", "min_scores": {"depth": 3, "quality": 2, "evidence": 2, "risk": 1}}
 {"input": "Task request with questionLevel: low should skip clarifications and produce a task immediately.", "expected_routing": "fur-task", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "A task request when config specifies responseDepth: concise should produce a short output.", "expected_routing": "fur-task", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
-{"input": "A task request when config specifies responseDepth: deep should include trade-off analysis and edge cases.", "expected_routing": "fur-task", "min_scores": {"depth": 3, "quality": 3, "evidence": 2, "risk": 2}}
+{"input": "A task request when config specifies responseDepth: deep should include expanded but non-repetitive trade-off and edge-case detail.", "expected_routing": "fur-task", "min_scores": {"depth": 3, "quality": 3, "evidence": 2, "risk": 2}}
 {"input": "A complex task request with responseDepth: standard and verificationStrictness: strict should demand explicit AC mapping.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 3, "evidence": 2, "risk": 2}}
 {"input": "Import a GitHub issue with detailed description, AC, and linked PR. Should preserve external references.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 2, "evidence": 2, "risk": 1}}
 {"input": "README'deki typo'yu düzelt.", "expected_routing": "fur-do", "expected_methodology_bridge": {"used": false, "selected_skill": null}, "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}

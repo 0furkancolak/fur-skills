@@ -163,8 +163,7 @@ If any answer is no, continue working before responding.
 ```yaml
 status: designed | blocked | needs-clarification
 next_skill: fur-task | fur-ui-design
-scope_respected: true | false
-verification_state: not-applicable
+# Optional only when useful:
 risk_level: none | low | medium | high
 ```
 

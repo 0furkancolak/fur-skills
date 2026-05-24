@@ -144,9 +144,8 @@ If any answer is no, continue working before responding.
 ```yaml
 status: ready | needs-changes | needs-verification
 next_skill: fur-check | fur-do | fur-debug
-scope_respected: true | false
+# Optional only when useful:
 verification_state: complete | partial | not-run
-risk_level: none | low | medium | high
 ```
 
 ## Anti-patterns

@@ -119,8 +119,8 @@ When `responseDepth: deep`, add:
 ```xml
 <depth>
 Produce a full audit trail.
-Include task restatement, assumption labeling, trade-off analysis,
-edge-case discussion, and explicit self-check.
+Include assumptions, key trade-offs, edge cases, and explicit self-check.
+Do not paste full transcripts, plan diffs, or repeated tables.
 </depth>
 ```
 

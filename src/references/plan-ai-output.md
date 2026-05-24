@@ -1,6 +1,6 @@
 # Plan AI Output (Primary UX)
 
-Users mostly work through chat, not CLI. Plan summary and deterministic completion must appear in the AI reply when a plan is relevant.
+Users mostly work through chat, not CLI. When a plan is relevant, show a compact deterministic summary instead of dumping the full plan or historical diff.
 
 CLI (`fur plan status`) is optional verification only; telling the user to run a command does not replace showing the dashboard in chat.
 
@@ -8,24 +8,30 @@ CLI (`fur plan status`) is optional verification only; telling the user to run a
 
 | Skill | Required `## Plan summary` |
 |-------|----------------------------|
-| `fur-task` (split) | Yes — immediately after creating the plan |
-| `fur-task` (other) | Short summary if active `plans/*.md` exist |
-| `fur-status` | Yes — for each active plan in `plans/` |
-| `fur-done` | Yes — updated summary when closing a plan-linked task |
-| `fur-do` | Compact summary at end if task links a plan |
+| `fur-task` (split) | Yes — compact summary after creating the plan |
+| `fur-task` (other) | One-line summary if active `plans/*.md` exist |
+| `fur-status` | One line per active plan |
+| `fur-done` | One-line updated summary when closing a plan-linked task |
+| `fur-do` | One-line summary if task links a plan |
 
 ## How to compute (from disk)
 
 1. Read `plans/<slug>.md`: frontmatter + `## Task manifest` table.
 2. Scan `tasks/{backlog,ready,done}/`: match `Plan:` and `Plan task ID:`; refresh statuses.
-3. Metrics:
-   - `Completion = done / total`
-   - ASCII bar uses `Completion`.
+3. Metrics: `Completion = done / total`.
 4. Ignore legacy schedule fields if old plans contain them.
 
 ## Required chat format
 
-Use this structure:
+Default compact form:
+
+```md
+## Plan summary
+
+`auth-refactor`: 25% (2/8 done) · next: T3 Unit tests (`planned`)
+```
+
+Use the expanded table only when the user asks for plan details or the task is specifically about plan reconciliation:
 
 ````md
 ## Plan summary
@@ -36,10 +42,6 @@ Use this structure:
 |-------|-------|
 | Completion | **25%** (2/8 done) |
 | Next up | **T3** — Unit tests for auth (`planned`) |
-
-```
-[██████░░░░░░░░░░░░░░░░░░] 25%
-```
 
 | ID | Status | Est | Phase | Task |
 |----|--------|-----|-------|------|
@@ -54,9 +56,10 @@ _Source: `.fur.planning/plans/auth-refactor.md`_
 ## Anti-patterns
 
 - Saying only `run fur plan status` without pasting the dashboard.
-- Showing hours, sessions, due dates, target dates, or duration guesses.
+- Showing hours, sessions, due dates, target dates, phase tables, or duration guesses.
+- Pasting old and new plan rows as a diff in normal `fur-do` / `fur-done` output.
 - Omitting completion percentage.
-- Giving a plan file path without the summary block.
+- Giving a plan file path without at least the compact summary.
 
 ## One-line rollup (after split)
 

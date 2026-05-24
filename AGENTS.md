@@ -85,7 +85,7 @@ fur-quick
 - `responseDepth`: `concise`, `standard`, or `deep`
 - `evidenceStyle`: `paths-only`, `inline`, or `inline-plus-paths`
 - `verificationStrictness`: `loose`, `normal`, or `strict`
-- `methodology.superpowers`: optional bridge config (`enabled: true`, `mode: optional`, `fallback: fur-native`)
+- `methodology.superpowers`: optional bridge config (`enabled: true`, `mode: optional`, `fallback: fur-skills`)
 
 Default preference:
 
@@ -119,7 +119,7 @@ This constitution defines the shared quality contract for every skill in the fur
 
 ## Principles
 
-1. **Scope is small; explanation is deep.** A skill may touch only one file, but its output must explain why, with evidence, trade-offs, and residual risk.
+1. **Scope is small; explanation is proportional.** A skill may touch only one file, but its output must include the evidence needed to trust the result without dumping unrelated detail.
 2. **Evidence before claims.** Every non-trivial assertion must tie to a source: file path, command output, diff line, or external reference.
 3. **Config over convention.** Prefer `responseDepth`, `evidenceStyle`, and `verificationStrictness` in `.fur.planning/config.json` instead of hard-coding depth in each skill.
 4. **Provider-aware, not provider-locked.** The base skill language is host-agnostic. Provider-specific optimizations (XML tags for Claude, developer messages for OpenAI reasoning, structured outputs where supported) live in `src/skills/_shared/overlays/` and are applied as overlays, not forks.
@@ -142,8 +142,8 @@ This constitution defines the shared quality contract for every skill in the fur
 | Level | Behavior |
 |---|---|
 | `concise` | Operational handoff only. 1-3 sentences + file list + next step. Use for trivial changes or when the user explicitly asks for speed. |
-| `standard` | Default. Covers acceptance criteria, files changed, checks, and risks in structured markdown. |
-| `deep` | Full audit trail. Includes task restatement, assumption labeling, trade-off analysis, edge-case discussion, and explicit self-check. |
+| `standard` | Default. Covers acceptance criteria, files changed, checks, and meaningful risks in compact structured markdown. |
+| `deep` | Expanded audit trail only when needed or requested. Includes assumptions, key trade-offs, edge cases, and explicit self-check without pasting full transcripts or plan diffs. |
 
 Every skill must respect `responseDepth` from config when present. If missing, default to `standard`.
 

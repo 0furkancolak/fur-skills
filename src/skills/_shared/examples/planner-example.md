@@ -58,6 +58,6 @@ Phase 2 (auto-detect) deferred until Phase 1 ships.
 
 - Input is classified (split / local new).
 - **`## Plan summary` is shown in chat** — user does not need to run CLI.
-- Completion %, ASCII bar, and manifest table are visible.
+- Completion %, done/total count, and next task are visible.
 - Clarifications are concrete and tied to `questionLevel`.
 - Next step is deterministic.

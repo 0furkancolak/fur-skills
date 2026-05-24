@@ -37,7 +37,7 @@ describe("cmdInit", () => {
       superpowers: {
         enabled: true,
         mode: "optional",
-        fallback: "fur-native",
+        fallback: "fur-skills",
       },
     });
   });

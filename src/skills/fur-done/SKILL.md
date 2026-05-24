@@ -93,7 +93,7 @@ Do not load unrelated tasks or history.
 
 ### Phase 4b: Optional methodology bridge
 
-Use Fur native completion for local task archival and tracker sync.
+Use fur-skills completion for local task archival and tracker sync.
 
 Delegate to `superpowers:finishing-a-development-branch` only when:
 
@@ -101,7 +101,7 @@ Delegate to `superpowers:finishing-a-development-branch` only when:
 - merge/PR/keep/discard decision is needed
 - final branch cleanup matters
 
-After delegation, Fur still owns moving the task to `done/`, writing the progress snapshot, and syncing tracker completion when config permits. If Superpowers is unavailable and mode is `optional`, continue with Fur native completion and record the fallback.
+After delegation, Fur still owns moving the task to `done/`, writing the progress snapshot, and syncing tracker completion when config permits. If Superpowers is unavailable and mode is `optional`, continue with fur-skills completion and record the fallback.
 
 ### Phase 5: Self-review
 
@@ -118,8 +118,8 @@ If any answer is no, continue working before responding.
 ### Phase 6: Update plan visibility in chat
 
 1. If the closed task references `Plan:` / `Plan task ID:`, update that row to `done` in `plans/<slug>.md` manifest (Status + Task file path).
-2. Re-read manifest + task folders; render **updated `## Plan summary`** in chat per `src/references/plan-ai-output.md` (new completion %, next task).
-3. Do not defer the dashboard to CLI — show it in this message.
+2. Re-read manifest + task folders; render only the compact one-line `## Plan summary` from `src/references/plan-ai-output.md` unless the user asks for the full dashboard.
+3. Do not paste plan table diffs, schedule fields, target dates, phase tables, or old/new duplicate rows in normal closure output.
 
 ### Phase 7: Report
 
@@ -152,7 +152,7 @@ If any answer is no, continue working before responding.
 
 ## Plan summary
 
-[MANDATORY if closed task linked a plan — updated dashboard per src/references/plan-ai-output.md]
+[If closed task linked a plan, one compact line: `slug`: percent (done/total) · next: task or complete.]
 
 ## Risks and Follow-ups
 
@@ -164,18 +164,12 @@ If any answer is no, continue working before responding.
 ```yaml
 status: closed | local-only | blocked
 next_skill: fur-do | fur-task | fur-debug | fur-status
+# Optional only when useful:
 internal_check: ready | needs-changes | needs-verification
-scope_respected: true | false
-verification_state: complete | partial
-risk_level: none | low | medium | high
 methodology_bridge:
   provider: superpowers
-  selected_skill: superpowers:finishing-a-development-branch | null
-  used: true | false
-  mode: optional
-  fallback: fur-native
-  fallback_used: true | false
-  reason: "[why delegation was or was not selected]"
+  selected_skill: superpowers:finishing-a-development-branch
+  fallback: fur-skills
 ```
 
 ## Anti-patterns

@@ -37,7 +37,7 @@ fur-skills v2 is a **contract-first, provider-aware, eval-driven** skill platfor
 ### Quality Constitution
 
 Every skill follows the shared contract in `AGENTS.md`:
-- Scope is small; explanation is deep
+- Scope is small; explanation is proportional and evidenced
 - Evidence before claims
 - Config over convention (`responseDepth`, `evidenceStyle`, `verificationStrictness`)
 - Provider-aware, not provider-locked
@@ -161,8 +161,8 @@ Defaults:
 | Level | Behavior |
 |---|---|
 | `concise` | Operational handoff only. 1-3 sentences + file list + next step. |
-| `standard` | Default. Covers acceptance criteria, files changed, checks, and risks in structured markdown. |
-| `deep` | Full audit trail. Includes task restatement, assumption labeling, trade-off analysis, edge-case discussion, and explicit self-check. |
+| `standard` | Default. Covers acceptance criteria, files changed, checks, and meaningful risks in compact structured markdown. |
+| `deep` | Expanded audit trail only when needed or requested; avoid full transcripts, plan diffs, or repeated tables. |
 
 ## Evidence Style
 
@@ -184,7 +184,7 @@ Defaults:
 
 fur-skills can optionally delegate heavier methodology steps to Superpowers. Fur remains the primary workflow and owns task state, progress, tracker routing, and final handoffs.
 
-Use Fur native flow for small, clear tasks. Use optional Superpowers delegation for ambiguous, risky, debugging-heavy, TDD-heavy, review-heavy, branch-finishing, or multi-step work. Superpowers is never installed automatically and is not required by default.
+Use fur-skills flow for small, clear tasks. Use optional Superpowers delegation for ambiguous, risky, debugging-heavy, TDD-heavy, review-heavy, branch-finishing, or multi-step work. Superpowers is never installed automatically and is not required by default.
 
 Default config:
 
@@ -194,7 +194,7 @@ Default config:
     "superpowers": {
       "enabled": true,
       "mode": "optional",
-      "fallback": "fur-native"
+      "fallback": "fur-skills"
     }
   }
 }

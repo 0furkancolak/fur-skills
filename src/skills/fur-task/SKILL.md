@@ -91,13 +91,13 @@ Pick exactly one primary mode:
 
 ### Phase 2b: Optional methodology bridge
 
-Use Fur native task creation by default. Do not delegate simple task creation, issue import, tracker routing, next-work selection, or tiny tasks.
+Use fur-skills task creation by default. Do not delegate simple task creation, issue import, tracker routing, next-work selection, or tiny tasks.
 
 If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider Superpowers only for heavier cases:
 
 - Use `superpowers:brainstorming` when the task is ambiguous, product-heavy, architecture-heavy, or feature-design-heavy.
 - Use `superpowers:writing-plans` when an approved spec/design needs to become an implementation plan.
-- If Superpowers is unavailable and mode is `optional`, continue with Fur native planning and record the fallback.
+- If Superpowers is unavailable and mode is `optional`, continue with fur-skills planning and record the fallback.
 
 Never delegate blindly. Fur remains responsible for task files, tracker routing, plan manifests, `questionLevel`, `responseDepth`, and final handoff.
 
@@ -136,8 +136,8 @@ Assign exactly one `Task size` in the task body:
    - Fill the **Task manifest** table with **every** planned slice (use `planned` until a file exists).
    - Create only the **next** actionable task file(s) now; do not silently drop future slices from the manifest.
    - Each created task must include `Plan: plans/<slug>.md` and `Plan task ID: Tn` under Implementation notes.
-   - In chat, give a one-line rollup: `N tasks · X% complete (done Y/N) · next: T1 <title>`.
-   - Render `## Plan summary` in chat per `src/references/plan-ai-output.md` (mandatory).
+   - In chat, give a compact rollup: `N tasks · X% complete (done Y/N) · next: T1 <title>`.
+   - Render compact `## Plan summary` in chat per `src/references/plan-ai-output.md`.
 4. **Tracker sync block**: always fill the template footer (`Source`, `External ID`, `Sync status`, …) — use `unsynced` / `drafted` until an ID exists.
 5. **Next-work queries**: prefer the highest-priority `ready/` task with complete AC; if none, say what is missing (promotion criteria, blocked deps).
 
@@ -154,7 +154,7 @@ If any answer is no, continue working before responding.
 
 ### Phase 7: Show plan in chat (primary UX)
 
-1. **Always render `## Plan summary` in the assistant message** when split mode created/updated a plan — follow `src/references/plan-ai-output.md` exactly (completion %, ASCII progress bar, manifest table, next task).
+1. **Always render compact `## Plan summary` in the assistant message** when split mode created/updated a plan — follow `src/references/plan-ai-output.md` (completion %, done/total, next task).
 2. Compute metrics by reading `plans/<slug>.md` + `tasks/{backlog,ready,done}/` on disk; do **not** tell the user to run CLI instead of showing this block.
 3. Optional cross-check: `fur plan status <slug>` in shell — never a substitute for the chat block.
 4. Return relative paths only for artifacts; avoid pasting full plan bodies outside the dashboard block.
@@ -191,8 +191,7 @@ If any answer is no, continue working before responding.
 
 ## Plan summary
 
-[MANDATORY when split or active plan — full block per src/references/plan-ai-output.md:
- completion %, ASCII bar, manifest table, next task]
+[When split or active plan — compact line per src/references/plan-ai-output.md: completion %, done/total, next task]
 
 ## Clarifications
 
@@ -212,18 +211,12 @@ fur-do | fur-status | fur-init | fix .fur.workspace config
 ```yaml
 status: created | selected | split | blocked-config
 next_skill: fur-do | fur-status | fur-init
-task_size: micro | standard | major | n/a
-scope_respected: true | false
-verification_state: not-applicable
-risk_level: none | low | medium | high
+# Optional only when useful:
+task_size: micro | standard | major
 methodology_bridge:
   provider: superpowers
-  selected_skill: superpowers:brainstorming | superpowers:writing-plans | null
-  used: true | false
-  mode: optional
-  fallback: fur-native
-  fallback_used: true | false
-  reason: "[why delegation was or was not selected]"
+  selected_skill: superpowers:brainstorming
+  fallback: fur-skills
 ```
 
 ## Anti-patterns

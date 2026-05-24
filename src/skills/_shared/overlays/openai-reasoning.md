@@ -95,17 +95,12 @@ When `structuredOutput: true` in config, provide a JSON schema for the control p
       "type": "string",
       "enum": ["fur-check", "fur-task", "fur-debug"]
     },
-    "scope_respected": { "type": "boolean" },
     "verification_state": {
       "type": "string",
       "enum": ["complete", "partial", "not-run"]
-    },
-    "risk_level": {
-      "type": "string",
-      "enum": ["none", "low", "medium", "high"]
     }
   },
-  "required": ["status", "next_skill", "scope_respected", "verification_state", "risk_level"]
+  "required": ["status", "next_skill"]
 }
 ```
 
@@ -143,8 +138,8 @@ When `responseDepth: deep`, add:
 ```
 DEPTH: deep
 Produce a full audit trail.
-Include task restatement, assumption labeling, trade-off analysis,
-edge-case discussion, and explicit self-check.
+Include assumptions, key trade-offs, edge cases, and explicit self-check.
+Do not paste full transcripts, plan diffs, or repeated tables.
 ```
 
 When `responseDepth: concise`, add:
@@ -160,4 +155,4 @@ Do not assume Superpowers is installed.
 
 Use the methodology bridge decision rules.
 
-If the host cannot load `superpowers:*` skills, use Fur native fallback and record the fallback in `control_plane.methodology_bridge`.
+If the host cannot load `superpowers:*` skills, use `fur-skills` fallback and record it in `control_plane.methodology_bridge` only when bridge routing was considered.

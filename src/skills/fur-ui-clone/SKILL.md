@@ -609,9 +609,8 @@ Include residual technical risk, missing coverage, and any suggested follow-up t
 ```yaml
 status: implemented | blocked | needs-clarification
 next_skill: fur-ui-review | fur-check | fur-task
-scope_respected: true | false
+# Optional only when useful:
 verification_state: complete | partial | not-run
-risk_level: none | low | medium | high
 ```
 
 ## Anti-patterns

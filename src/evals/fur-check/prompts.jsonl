@@ -14,7 +14,7 @@
 {"input": "Run check with evidenceStyle: paths-only. Expect minimal inline snippets.", "expected_routing": "fur-check", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "Run check with evidenceStyle: inline-plus-paths. Expect full snippets and paths for audit.", "expected_routing": "fur-check", "min_scores": {"depth": 3, "quality": 3, "evidence": 3, "risk": 2}}
 {"input": "Check with responseDepth: concise. Expect 1-3 sentences, file list, and next step only.", "expected_routing": "fur-check", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
-{"input": "Check with responseDepth: deep. Expect full audit trail, assumption labeling, and trade-off analysis.", "expected_routing": "fur-check", "min_scores": {"depth": 3, "quality": 3, "evidence": 3, "risk": 2}}
+{"input": "Check with responseDepth: deep. Expect expanded but non-repetitive audit detail with assumptions and key trade-offs.", "expected_routing": "fur-check", "min_scores": {"depth": 3, "quality": 3, "evidence": 3, "risk": 2}}
 {"input": "Review a security fix where the check must verify that the fix does not introduce new vulnerabilities.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 3, "evidence": 3, "risk": 3}}
 {"input": "Check a task with no acceptance criteria defined. Skill should report insufficient information.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
 {"input": "Review a task where the code diff is empty but the PR description claims feature is complete.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 3}}

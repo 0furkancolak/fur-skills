@@ -71,8 +71,8 @@ fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidi
 | Seviye | Davranış |
 |---|---|
 | `concise` | Kısa operasyonel çıktı. 1-3 cümle + dosya listesi + sonraki adım. |
-| `standard` | Acceptance criteria, dosyalar, kontroller ve riskleri içeren standart çıktı. |
-| `deep` | Tam audit trail, varsayımlar, trade-off, edge-case ve self-check. |
+| `standard` | Acceptance criteria, dosyalar, kontroller ve önemli riskleri içeren kompakt standart çıktı. |
+| `deep` | Gerektiğinde veya istendiğinde geniş audit trail; tam transcript, plan diff veya tekrar eden tablolar basılmaz. |
 
 ## evidenceStyle
 
@@ -92,7 +92,7 @@ fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidi
 
 ## Opsiyonel Superpowers Köprüsü
 
-Superpowers sadece belirsiz, riskli, debug-heavy, TDD-heavy, review-heavy veya çok adımlı işler için opsiyonel metodoloji köprüsüdür. Küçük ve net işlerde Fur native flow kullanılır. Superpowers yoksa fallback Fur native flow'dur.
+Superpowers sadece belirsiz, riskli, debug-heavy, TDD-heavy, review-heavy veya çok adımlı işler için opsiyonel metodoloji köprüsüdür. Küçük ve net işlerde fur-skills flow kullanılır. Superpowers yoksa fallback fur-skills flow'dur.
 
 Detay: [`superpowers-bridge.md`](superpowers-bridge.md)
 

@@ -4,7 +4,7 @@ Fur is the primary workflow and router. Superpowers is an optional methodology b
 
 Do not copy Superpowers skill content into this repo. Do not fork, vendor, install, or require Superpowers from Fur. Only require Superpowers when project config explicitly sets `methodology.superpowers.mode` to `required`; the default is optional.
 
-If Superpowers is unavailable and mode is `optional`, continue with Fur native behavior and record the fallback in the control plane.
+If Superpowers is unavailable and mode is `optional`, continue with `fur-skills` behavior and record the fallback only when it matters for routing.
 
 ## Config
 
@@ -16,7 +16,7 @@ Default `.fur.planning/config.json`:
     "superpowers": {
       "enabled": true,
       "mode": "optional",
-      "fallback": "fur-native"
+      "fallback": "fur-skills"
     }
   }
 }
@@ -24,11 +24,11 @@ Default `.fur.planning/config.json`:
 
 - `enabled: true` means the bridge may be considered.
 - `mode: optional` means use Superpowers only when available and appropriate.
-- `fallback: fur-native` means never fail only because Superpowers is missing.
+- `fallback: fur-skills` means never fail only because Superpowers is missing.
 
-## When to use Fur native flow
+## When to use fur-skills flow
 
-Use Fur native flow when:
+Use `fur-skills` flow when:
 
 - The task is tiny, clear, or low risk.
 - No production behavior changes are involved.
@@ -61,32 +61,20 @@ Delegate only when the task benefits from heavier methodology:
 
 ## Control Plane
 
-When a bridge decision is made, include:
+Keep the default control plane small:
 
 ```yaml
-control_plane:
-  methodology_bridge:
-    provider: superpowers
-    selected_skill: superpowers:brainstorming
-    used: true
-    mode: optional
-    fallback: fur-native
-    fallback_used: false
-    reason: "Task is ambiguous and needs design clarification before implementation planning."
+status: created
+next_skill: fur-do
 ```
 
-For native flow:
+Add `methodology_bridge` only when the bridge materially affects routing:
 
 ```yaml
-control_plane:
-  methodology_bridge:
-    provider: superpowers
-    selected_skill: null
-    used: false
-    mode: optional
-    fallback: fur-native
-    fallback_used: false
-    reason: "Task is small and clear; Fur native task flow is sufficient."
+methodology_bridge:
+  provider: superpowers
+  selected_skill: superpowers:brainstorming
+  fallback: fur-skills
 ```
 
-If Superpowers is unavailable in optional mode, set `used: false`, `fallback_used: true`, and continue with Fur native flow.
+For ordinary `fur-skills` flow, omit `methodology_bridge` unless the user asked about bridge routing. If Superpowers is unavailable in optional mode, set only `fallback: fur-skills` when reporting the bridge decision.

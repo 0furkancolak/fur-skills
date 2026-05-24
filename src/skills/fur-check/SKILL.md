@@ -85,7 +85,7 @@ Do not load unrelated code paths.
 
 ### Phase 3b: Optional methodology bridge
 
-Use Fur native verification by default.
+Use fur-skills verification by default.
 
 If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider these optional routes:
 
@@ -93,7 +93,7 @@ If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, cons
 - `superpowers:requesting-code-review` when the branch/task requires independent review.
 - `superpowers:receiving-code-review` when review feedback must be processed and applied.
 
-Fur remains responsible for final accept/reject gate status. If Superpowers is unavailable and mode is `optional`, continue with Fur native verification and record the fallback.
+Fur remains responsible for final accept/reject gate status. If Superpowers is unavailable and mode is `optional`, continue with fur-skills verification and record the fallback.
 
 ### Phase 4: Structured review
 
@@ -169,20 +169,14 @@ Ready | Needs changes | Needs verification
 ```yaml
 status: ready | needs-changes | needs-verification
 next_skill: fur-done | fur-do | fur-debug
-scope_respected: true | false
-verification_state: complete | partial | not-run
-risk_level: none | low | medium | high
+# Optional only when useful:
 gate:
   status: accepted | rejected | needs-verification
   blocking_issues: []
 methodology_bridge:
   provider: superpowers
-  selected_skill: superpowers:verification-before-completion | superpowers:requesting-code-review | superpowers:receiving-code-review | null
-  used: true | false
-  mode: optional
-  fallback: fur-native
-  fallback_used: true | false
-  reason: "[why delegation was or was not selected]"
+  selected_skill: superpowers:verification-before-completion
+  fallback: fur-skills
 ```
 
 ## Anti-patterns

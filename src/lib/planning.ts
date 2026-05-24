@@ -166,7 +166,7 @@ export async function writeConfig(
       superpowers: {
         enabled: true,
         mode: "optional",
-        fallback: "fur-native",
+        fallback: "fur-skills",
       },
     },
     questionPolicy: {

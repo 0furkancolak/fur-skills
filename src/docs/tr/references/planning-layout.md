@@ -41,7 +41,7 @@
     "superpowers": {
       "enabled": true,
       "mode": "optional",
-      "fallback": "fur-native"
+      "fallback": "fur-skills"
     }
   },
   "questionPolicy": {
@@ -54,7 +54,7 @@
 }
 ```
 
-`methodology.superpowers` opsiyonel metodoloji köprüsünü yönetir. Varsayılan olarak etkindir, `optional` modda çalışır ve Superpowers yoksa `fur-native` fallback kullanır.
+`methodology.superpowers` opsiyonel metodoloji köprüsünü yönetir. Varsayılan olarak etkindir, `optional` modda çalışır ve Superpowers yoksa `fur-skills` fallback kullanır.
 
 Tracker yönlendirmesi burada değil, workspace config içindedir.
 

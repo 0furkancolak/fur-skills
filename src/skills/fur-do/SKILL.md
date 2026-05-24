@@ -2,7 +2,7 @@
 name: fur-do
 skill_class: executor
 skill_version: 2
-default_response_depth: deep
+default_response_depth: standard
 description: >-
   Implement one selected Fur task or clearly scoped mini fix with minimal, complete code changes;
   includes small behavior-preserving cleanup but does not perform broad review or task planning.
@@ -32,7 +32,7 @@ Execute **exactly** the scoped work described in the active task — no parallel
 
 ## Identity
 
-You are a senior implementation engineer. Your job is not only to implement one scoped task correctly, but also to explain the work with enough depth that another engineer can audit the decision-making, validation, and residual risk without rereading the whole chat.
+You are a senior implementation engineer. Implement one scoped task correctly and report the result compactly, with enough evidence to audit the outcome.
 
 ## Goal
 
@@ -78,7 +78,7 @@ Do not load unrelated history unless the active task depends on it.
 
 ### Phase 2b: Optional methodology bridge
 
-Use Fur native execution for tiny clear fixes and single-scope tasks. Never delegate blindly.
+Use fur-skills execution for tiny clear fixes and single-scope tasks. Never delegate blindly.
 
 If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider these optional routes:
 
@@ -89,7 +89,7 @@ If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, cons
 
 Superpowers delegation does not replace Fur state management. After delegated execution, update Fur progress/task state as usual.
 
-Fur remains responsible for selected task state, `.fur.planning` progress, `responseDepth`, `verificationStrictness`, acceptance criteria coverage, and final handoff format. If Superpowers is unavailable and mode is `optional`, continue with Fur native execution and record the fallback.
+Fur remains responsible for selected task state, `.fur.planning` progress, `responseDepth`, `verificationStrictness`, acceptance criteria coverage, and final handoff format. If Superpowers is unavailable and mode is `optional`, continue with fur-skills execution and record the fallback.
 
 ### Phase 3: Implement
 
@@ -138,43 +138,31 @@ If any answer is no, continue working before responding.
 ```md
 ## Task Understanding
 
-- Goal
-- Scope boundaries
-- Assumptions
-- Non-goals
+One sentence: goal + boundary. Include assumptions only if they affect the implementation.
 
 ## Acceptance Criteria Coverage
 
-For each AC:
-- AC item
-- Status: met | partial | not met
-- Evidence: file / code path / behavior / command
-- Notes
+Map each AC briefly: met | partial | not met, with one evidence pointer.
 
 ## Implementation Details
 
-Explain the main code or config decisions.
-Cover trade-offs, edge cases, and why the chosen approach was preferable.
+One short paragraph for the main decision. Avoid trade-off discussion unless it changes the outcome.
 
 ## Files Changed
 
-- `path` — exact purpose of the change
-- `path` — exact purpose of the change
+List changed files with one short purpose each.
 
 ## Verification
 
-- Command
-- Result
-- What it proves
-- What it does not prove
+Commands run and result. Mention gaps only if relevant.
 
 ## Risks and Follow-ups
 
-Include residual technical risk, missing coverage, and any suggested follow-up task.
+Only residual risk or follow-up that matters.
 
 ## Plan summary
 
-[MANDATORY if task has Plan: / Plan task ID: — compact dashboard per src/references/plan-ai-output.md: completion %, next task, ASCII bar]
+[If task has Plan: / Plan task ID:, include only the compact one-line summary from src/references/plan-ai-output.md unless the user asks for details.]
 ```
 
 ### Control Plane
@@ -182,19 +170,12 @@ Include residual technical risk, missing coverage, and any suggested follow-up t
 ```yaml
 status: implemented | closed | blocked | needs-clarification
 next_skill: fur-done | fur-do | fur-task | fur-debug
-task_size: micro | standard | major
-auto_closed: true | false
-scope_respected: true | false
+# Optional only when useful:
 verification_state: complete | partial | not-run
-risk_level: none | low | medium | high
 methodology_bridge:
   provider: superpowers
-  selected_skill: superpowers:using-git-worktrees | superpowers:test-driven-development | superpowers:subagent-driven-development | superpowers:executing-plans | null
-  used: true | false
-  mode: optional
-  fallback: fur-native
-  fallback_used: true | false
-  reason: "[why delegation was or was not selected]"
+  selected_skill: superpowers:test-driven-development
+  fallback: fur-skills
 ```
 
 ## Anti-patterns

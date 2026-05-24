@@ -68,7 +68,7 @@ Do not load full task bodies or archived snapshots.
 ### Phase 1: Read planning state (chat-first)
 
 1. Count `*.md` in `tasks/{backlog,ready,done}` and list `plans/*.md`.
-2. For **each** plan file: read manifest + reconcile task folder statuses; render **`## Plan summary`** in chat per `src/references/plan-ai-output.md` (completion %, ASCII bar, manifest table, next task).
+2. For each plan file: read manifest + reconcile task folder statuses; render one compact `## Plan summary` line per plan.
 3. Do **not** stop at "run `fur plan status`" — the user interacts via AI; the dashboard must appear in this message.
 4. Optional shell: `fur progress` / `fur plan status` for cross-check only.
 5. If `.fur.planning` is missing, report "run `fur init`" and stop.
@@ -91,7 +91,7 @@ Do not delegate to Superpowers from `fur-status`. Only report methodology bridge
 Methodology bridge:
 - Superpowers: enabled
 - Mode: optional
-- Fallback: fur-native
+- Fallback: fur-skills
 - Last delegation: none
 ```
 
@@ -137,7 +137,7 @@ If any answer is no, continue working before responding.
 
 ## Plan summary
 
-[MANDATORY for each plan in plans/ — full dashboard per src/references/plan-ai-output.md]
+[One compact line per active plan: `slug`: percent (done/total) · next: task or complete.]
 
 ## Latest Snapshot
 
@@ -153,17 +153,6 @@ If any answer is no, continue working before responding.
 ```yaml
 status: orienting
 next_skill: fur-do | fur-task | fur-check | fur-done | fur-init
-scope_respected: true | false
-verification_state: not-applicable
-risk_level: none | low
-methodology_bridge:
-  provider: superpowers
-  selected_skill: null
-  used: false
-  mode: optional
-  fallback: fur-native
-  fallback_used: false
-  reason: "fur-status is read-only and never delegates."
 ```
 
 ## Anti-patterns

@@ -2,7 +2,7 @@
 
 Fur ana workflow olarak kalır. Superpowers sadece ağır metodoloji gereken durumlarda opsiyonel bir köprü olarak kullanılır.
 
-Superpowers içeriği bu repoya kopyalanmaz, fork edilmez, vendor edilmez ve otomatik kurulmaz. Varsayılan mod `optional` olduğu için Superpowers yoksa Fur native flow devam eder.
+Superpowers içeriği bu repoya kopyalanmaz, fork edilmez, vendor edilmez ve otomatik kurulmaz. Varsayılan mod `optional` olduğu için Superpowers yoksa fur-skills flow devam eder.
 
 ## Varsayılan config
 
@@ -12,13 +12,13 @@ Superpowers içeriği bu repoya kopyalanmaz, fork edilmez, vendor edilmez ve oto
     "superpowers": {
       "enabled": true,
       "mode": "optional",
-      "fallback": "fur-native"
+      "fallback": "fur-skills"
     }
   }
 }
 ```
 
-## Fur native flow ne zaman kullanılır?
+## fur-skills flow ne zaman kullanılır?
 
 - İş küçük ve netse.
 - Production davranışı değişmiyorsa.

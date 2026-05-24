@@ -8,5 +8,5 @@
 | Ambiguous routing silent default | Repo ID guessed without asking | Multiple repo match without question | Disambiguation question mandatory |
 | No verification section | Task lacks how-to-check | Verification section empty | Verification required before ready/ |
 | Wrong next skill | Planner routes to fur-do on blocked task | next_skill check | Blocked tasks route to fur-task |
-| Tiny task delegated to Superpowers | Typo or small README task selects `superpowers:*` | `expected_methodology_bridge.used: false` fixtures | Keep Fur native flow for tiny and clear tasks |
-| Missing fallback record | Superpowers unavailable but no fallback in control plane | Control plane lacks `fallback_used` | Record Fur native fallback when bridge is optional |
+| Tiny task delegated to Superpowers | Typo or small README task selects `superpowers:*` | `expected_methodology_bridge.used: false` fixtures | Keep fur-skills flow for tiny and clear tasks |
+| Missing fallback record | Superpowers unavailable but fallback is not clear when bridge routing was considered | Control plane lacks `fallback: fur-skills` | Record `fallback: fur-skills` only when bridge routing matters |

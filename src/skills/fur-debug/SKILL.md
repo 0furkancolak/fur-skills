@@ -70,7 +70,7 @@ Do not load unrelated code paths.
 
 If the root cause is unknown and Superpowers is available, delegate to `superpowers:systematic-debugging` before proposing fixes.
 
-If Superpowers is unavailable and mode is `optional`, continue with Fur native diagnostic loop.
+If Superpowers is unavailable and mode is `optional`, continue with fur-skills diagnostic loop.
 
 After a fix is applied and completion must be verified, consider `superpowers:verification-before-completion`.
 
@@ -179,7 +179,7 @@ If any answer is no, continue working before responding.
 - If verification cannot run here, say exactly what was manually proven instead.
 - **Evidence before claims** — same bar as `fur-check`: cite command output, stack lines, or counters.
 - Context hygiene: long transcripts belong in task notes or `context/archive/` per `src/references/context-window.md`; keep chat to deltas + paths.
-- If root cause is unknown and Superpowers is available, delegate to `superpowers:systematic-debugging`; if unavailable, continue Fur native.
+- If root cause is unknown and Superpowers is available, delegate to `superpowers:systematic-debugging`; if unavailable, continue fur-skills.
 
 ## Output
 
@@ -222,17 +222,12 @@ If any answer is no, continue working before responding.
 ```yaml
 status: diagnosed | blocked | needs-clarification
 next_skill: fur-check | fur-task | fur-debug
-scope_respected: true | false
+# Optional only when useful:
 verification_state: complete | partial | not-run
-risk_level: none | low | medium | high
 methodology_bridge:
   provider: superpowers
-  selected_skill: superpowers:systematic-debugging | superpowers:verification-before-completion | null
-  used: true | false
-  mode: optional
-  fallback: fur-native
-  fallback_used: true | false
-  reason: "[why delegation was or was not selected]"
+  selected_skill: superpowers:systematic-debugging
+  fallback: fur-skills
 ```
 
 ## Anti-patterns

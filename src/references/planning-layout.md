@@ -40,7 +40,7 @@
     "superpowers": {
       "enabled": true,
       "mode": "optional",
-      "fallback": "fur-native"
+      "fallback": "fur-skills"
     }
   },
   "questionPolicy": {
@@ -59,7 +59,7 @@
 - `evidenceStyle`: `paths-only`, `inline`, or `inline-plus-paths`. Controls how much evidence is inlined.
 - `verificationStrictness`: `loose`, `normal`, or `strict`. Controls how hard to enforce verification steps.
 - `automationMode`: `guided` or `streamlined`.
-- `methodology.superpowers`: optional bridge settings. The default allows delegation for heavier methodology when Superpowers is available and falls back to Fur native flow when it is not.
+- `methodology.superpowers`: optional bridge settings. The default allows delegation for heavier methodology when Superpowers is available and falls back to `fur-skills` when it is not.
 - New projects default to `high`; established projects usually use `normal`.
 - `responseDepth` defaults to `standard` and is independent of `questionLevel`.
 - Tracker source selection does not live here; it lives in workspace config.

@@ -113,8 +113,8 @@ When `responseDepth: deep`, add:
 ```markdown
 **Depth**: deep
 Produce a full audit trail.
-Include task restatement, assumption labeling, trade-off analysis,
-edge-case discussion, and explicit self-check.
+Include assumptions, key trade-offs, edge cases, and explicit self-check.
+Do not paste full transcripts, plan diffs, or repeated tables.
 ```
 
 When `responseDepth: concise`, add:
@@ -131,12 +131,9 @@ Always emit a fenced YAML block at the end of the output, even if the host does 
 ```yaml
 status: implemented | blocked | needs-clarification
 next_skill: fur-check | fur-task | fur-debug
-scope_respected: true | false
-verification_state: complete | partial | not-run
-risk_level: none | low | medium | high
 ```
 
-This keeps the output deterministic and machine-parseable for future hosts.
+Add optional fields only when they are needed for routing, such as `methodology_bridge` after a bridge decision.
 
 ## Superpowers Bridge Notes
 

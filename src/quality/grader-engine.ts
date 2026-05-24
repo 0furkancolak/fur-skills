@@ -14,9 +14,6 @@ export interface GraderResult {
 const YAML_REQUIRED_KEYS = [
   "status",
   "next_skill",
-  "scope_respected",
-  "verification_state",
-  "risk_level",
 ];
 
 const VAGUE_PATTERNS = [

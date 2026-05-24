@@ -78,12 +78,9 @@ When supported by the host, the skill should also emit a machine-checkable YAML 
 ```yaml
 status: <state>
 next_skill: <skill-name>
-scope_respected: true | false
-verification_state: complete | partial | not-run
-risk_level: none | low | medium | high
 ```
 
-On hosts without structured output, this block is still recommended as a fenced YAML block inside the markdown.
+Add optional fields such as `verification_state`, `risk_level`, `gate`, or `methodology_bridge` only when they materially help downstream routing. On hosts without structured output, this block is still recommended as a fenced YAML block inside the markdown.
 
 ## Few-shot Requirement
 
