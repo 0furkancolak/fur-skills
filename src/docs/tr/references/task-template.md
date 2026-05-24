@@ -19,6 +19,10 @@ YYYYMMDD-HHMM-short-title.md
 
 feature | bug | refactor | chore | docs | test | investigation
 
+## Task size
+
+micro | standard | major
+
 ## Bağlam
 
 Bu task neden var? Hangi problemi çözüyor?
@@ -53,6 +57,10 @@ Bu task'ın tamamlandığını nasıl kontrol edersiniz? Çalıştırılacak kom
 ## Riskler
 
 Olası gerilemeler, açık sorular veya belirsizlik alanları.
+
+## Açık Sorular
+
+Yalnızca task hazır değilse gereklidir. Bloklayıcı açık soruları olan task `tasks/backlog/` altında kalır.
 
 ## İsteğe Bağlı: Paralel Dilimler
 

@@ -15,6 +15,7 @@ optional:
   - workspace_config
   - existing_tasks
   - progress_latest
+  - state_json
 quality_contract:
   must_map_every_ac: false
   must_report_assumptions: true
@@ -59,10 +60,11 @@ Create or select a focused task with clear acceptance criteria and verification,
 ## Context Loading Contract
 
 Load in this order:
-1. `.fur.planning/config.json` (questionLevel, projectMaturity, questionPolicy, responseDepth).
-2. `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
-3. `progress/latest.md` for current project state.
-4. Existing tasks in `tasks/ready/` and `tasks/backlog/` to avoid duplication.
+1. `.fur.planning/config.json` (questionLevel, projectMaturity, questionPolicy, responseDepth, automationMode).
+2. `.fur.planning/state.json` when present.
+3. `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
+4. `progress/latest.md` for current project state.
+5. Existing tasks in `tasks/ready/` and `tasks/backlog/` to avoid duplication.
 
 Do not load unrelated history.
 
@@ -95,8 +97,20 @@ Pick exactly one primary mode:
 ### Phase 4: Clarify (questionLevel)
 
 1. Prefer **repo discovery** (read code, existing tasks, `plans/`, `progress/latest.md`) over asking the user.
-2. Apply `questionLevel` thresholds from `fur-init` / AGENTS.md: low = blockers only; normal = missing AC or verification; high = product/edge/rollout when thin.
-3. Every local task must gain **Acceptance criteria** (checkboxes) and **Verification** (commands or explicit manual steps) before promotion to `ready/`.
+2. Before writing a `ready/` task, confirm four fields: intended behavior change, completion criteria, verification method, and scope boundary.
+3. Apply `questionLevel` thresholds from `fur-init` / AGENTS.md: low = blockers only; normal = missing AC or verification; high = product/edge/rollout when thin.
+4. If required information is missing after discovery, ask 1-3 concrete questions and stop. If the user cannot answer yet, create only a `backlog/` draft with `Open Questions`.
+5. Every local task must gain **Acceptance criteria** (checkboxes) and **Verification** (commands or explicit manual steps) before promotion to `ready/`.
+
+### Phase 4b: Size the task
+
+Assign exactly one `Task size` in the task body:
+
+| Size | Criteria | Default path |
+|------|----------|--------------|
+| `micro` | One file or one symbol, low risk, no external write, no migration/auth/security/data contract impact, AC and verification are obvious. | `fur-do` may run check and done automatically. |
+| `standard` | Clear scoped change that may touch several files and needs normal verification. | `fur-do`, then `fur-done` runs the internal check gate. |
+| `major` | Multi-module, architectural, migration, auth/security, data contract, unclear rollout, or high-risk work. | split/plan mode, then `fur-do`, then `fur-done` with strict check gate. |
 
 ### Phase 5: Write artifacts
 
@@ -104,14 +118,13 @@ Pick exactly one primary mode:
 2. **Default placement**: `tasks/backlog/` unless the user and evidence show it is immediately actionable → `tasks/ready/`.
 3. **Large work (split / plan mode)** — mandatory visibility contract:
    - Create `plans/<slug>.md` from `src/references/plan-template.md` **before** task files.
-   - Fill YAML frontmatter: `estimated_tasks`, `estimated_sessions` (integer), `session_hours`, `estimated_hours`, `target_start`, `target_end`. **No ranges** (`2-3 weeks`, `8-12 sessions` forbidden).
-   - `estimated_hours` = sum of manifest Est. (S=1.5h, M=3h, L=6h per `plan-template.md`).
+   - Fill YAML frontmatter: `plan_version`, `slug`, `title`, `status`, `estimated_tasks`, `created`, `updated`.
+   - Do **not** write schedule fields in new plans.
    - Fill the **Task manifest** table with **every** planned slice (use `planned` until a file exists).
-   - Phases table: per-phase task count, **Hours** as one number, **Target end** as ISO date.
    - Create only the **next** actionable task file(s) now; do not silently drop future slices from the manifest.
    - Each created task must include `Plan: plans/<slug>.md` and `Plan task ID: Tn` under Implementation notes.
-   - In chat, give a one-line rollup: `N tasks · Hh · M sessions · due YYYY-MM-DD · X% complete (done Y/N) · next: T1 <title>`.
-   - Render full `## Plan summary` in chat per `src/references/plan-ai-output.md` (mandatory).
+   - In chat, give a one-line rollup: `N tasks · X% complete (done Y/N) · next: T1 <title>`.
+   - Render `## Plan summary` in chat per `src/references/plan-ai-output.md` (mandatory).
 4. **Tracker sync block**: always fill the template footer (`Source`, `External ID`, `Sync status`, …) — use `unsynced` / `drafted` until an ID exists.
 5. **Next-work queries**: prefer the highest-priority `ready/` task with complete AC; if none, say what is missing (promotion criteria, blocked deps).
 
@@ -128,7 +141,7 @@ If any answer is no, continue working before responding.
 
 ### Phase 7: Show plan in chat (primary UX)
 
-1. **Always render `## Plan summary` in the assistant message** when split mode created/updated a plan — follow `src/references/plan-ai-output.md` exactly (completion %, progress %, hours, sessions, target end, progress bar, manifest table).
+1. **Always render `## Plan summary` in the assistant message** when split mode created/updated a plan — follow `src/references/plan-ai-output.md` exactly (completion %, ASCII progress bar, manifest table, next task).
 2. Compute metrics by reading `plans/<slug>.md` + `tasks/{backlog,ready,done}/` on disk; do **not** tell the user to run CLI instead of showing this block.
 3. Optional cross-check: `fur plan status <slug>` in shell — never a substitute for the chat block.
 4. Return relative paths only for artifacts; avoid pasting full plan bodies outside the dashboard block.
@@ -136,10 +149,12 @@ If any answer is no, continue working before responding.
 ### Phase 8: Handoff
 
 1. Name the next skill: usually `fur-do`; sometimes `fur-status` or config fix instructions.
+2. For `micro` tasks, say that `fur-do` should run check + done automatically if verification passes.
 
 ## Rules
 
 - Do not implement product code in this skill.
+- Do not write time, duration, session, due-date, or target-date estimates.
 - Do not invent tracker metadata (labels, assignees, statuses, IDs).
 - Keep each task small enough for **one** focused `fur-do` session; split instead of bundling.
 - Ambiguous external references → question, never silent default.
@@ -155,6 +170,7 @@ If any answer is no, continue working before responding.
 ## Task Result
 
 - Mode: created | selected | split | drafted-external | wrote-external | blocked-config
+- Task size: micro | standard | major | n/a
 - Local task(s): [paths]
 - Plan: [path or none]
 - Tracker: local | jira | github | none
@@ -163,7 +179,7 @@ If any answer is no, continue working before responding.
 ## Plan summary
 
 [MANDATORY when split or active plan — full block per src/references/plan-ai-output.md:
- completion %, progress %, hours, sessions, target end, ASCII bar, manifest table, next task]
+ completion %, ASCII bar, manifest table, next task]
 
 ## Clarifications
 
@@ -183,6 +199,7 @@ fur-do | fur-status | fur-init | fix .fur.workspace config
 ```yaml
 status: created | selected | split | blocked-config
 next_skill: fur-do | fur-status | fur-init
+task_size: micro | standard | major | n/a
 scope_respected: true | false
 verification_state: not-applicable
 risk_level: none | low | medium | high
@@ -193,6 +210,8 @@ risk_level: none | low | medium | high
 - Do not create a task too big for one `fur-do` session.
 - Do not invent tracker metadata without config permission.
 - Do not skip acceptance criteria or verification.
+- Do not promote a task to `ready/` while required clarification fields are missing.
+- Do not include time or date estimates in plan output.
 - Do not guess external tracker routing when ambiguous.
 - Do not forget to suggest the next skill.
 

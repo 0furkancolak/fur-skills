@@ -24,10 +24,6 @@ User says: "We need to add dark mode to the app."
 | Field | Value |
 |-------|-------|
 | Completion | **0%** (0/4 done) |
-| Progress | **0%** (ready=50%, backlog=25%) |
-| Total time | 10.5 hours |
-| Sessions | 4 × 3 hours = 12 hours |
-| Target end | **2026-01-22** |
 | Next up | **T1** — Core toggle + persistence (`ready`) |
 
 ```
@@ -62,6 +58,6 @@ Phase 2 (auto-detect) deferred until Phase 1 ships.
 
 - Input is classified (split / local new).
 - **`## Plan summary` is shown in chat** — user does not need to run CLI.
-- Net schedule (hours + due date), completion %, and manifest table are visible.
+- Completion %, ASCII bar, and manifest table are visible.
 - Clarifications are concrete and tied to `questionLevel`.
 - Next step is deterministic.

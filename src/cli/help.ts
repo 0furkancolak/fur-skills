@@ -8,7 +8,8 @@ Usage:
            [--project-maturity new|established] \\
            [--response-depth concise|standard|deep] \\
            [--evidence-style paths-only|inline|inline-plus-paths] \\
-           [--verification-strictness loose|normal|strict]
+           [--verification-strictness loose|normal|strict] \\
+           [--automation-mode guided|streamlined]
   fur workspace init
   fur workspace doctor
   fur refresh
@@ -27,9 +28,9 @@ Commands:
   init                  Create .fur.planning; TTY prompts, non-TTY defaults
   workspace init        Create .fur.workspace/config.json
   workspace doctor      Validate .fur.workspace/config.json
-  refresh               Create a progress snapshot
+  refresh               Create a progress snapshot and state.json
   progress              Show current progress summary
-  plan list             List plans with task/duration rollup
+  plan list             List plans with completion rollup
   plan status <slug>    Show manifest progress for one plan
   compact               Archive old progress snapshots
   doctor                Check installation and local state

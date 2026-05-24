@@ -115,7 +115,7 @@ Before finalizing, I verified:
 
 ```yaml
 status: implemented
-next_skill: fur-check
+next_skill: fur-done
 scope_respected: true
 verification_state: complete
 risk_level: low
@@ -123,7 +123,7 @@ risk_level: low
 
 ## Suggested Next Step
 
-Route to `fur-check` for acceptance verification before closing the task.
+Route to `fur-done`; it will run the internal check gate before closing the task.
 ```
 
 ## Rubric Scores

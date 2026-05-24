@@ -6,13 +6,13 @@ import {
   listPlans,
   loadPlan,
   reconcilePlanFromDisk,
-  sumManifestHours,
 } from "../lib/plan-manifest.ts";
 import {
   countMd,
   ensurePlanningDirs,
   planningDir,
 } from "../lib/planning.ts";
+import { writeFurState } from "../lib/state.ts";
 import {
   findWorkspaceConfig,
   repoRegisteredInWorkspace,
@@ -106,21 +106,15 @@ export async function cmdRefresh(): Promise<number> {
       const report = await loadPlan(planPath, projectRoot);
       if (!report) continue;
       const reconciled = await reconcilePlanFromDisk(report, projectRoot);
-      const fm = reconciled.frontmatter;
-      const manifestHours = sumManifestHours(reconciled.rows);
-      const hours =
-        fm.estimated_hours != null && fm.estimated_hours > 0
-          ? fm.estimated_hours
-          : manifestHours;
       lines.push(
         `- ${reconciled.slug}: ${reconciled.percentDone}% complete (${reconciled.doneCount}/${reconciled.totalCount})` +
-          ` · progress ${reconciled.percentProgress}%` +
-          ` · ${hours}h` +
-          (fm.target_end ? ` · due ${fm.target_end}` : ""),
+          ` · ${reconciled.rows.find((r) => r.status === "ready")?.id ?? "no ready task"}`,
       );
     }
     plansSection = lines.join("\n");
   }
+
+  const state = await writeFurState(projectRoot, now);
 
   let gitSection = "";
   if (git.isGit) {
@@ -162,6 +156,13 @@ ${trackerSection}
 ## Latest ready tasks
 
 ${latestReady || ""}
+
+## State
+
+- State file: ${join(planning, "state.json")}
+- Active task: ${state.activeTask ?? "none"}
+- Active plan: ${state.activePlan ?? "none"}
+- Next recommended action: ${state.nextRecommendedAction}
 `;
 
   await writeFile(snapshot, body);
@@ -176,6 +177,8 @@ ${latestReady || ""}
 
   console.log("Progress snapshot written:");
   console.log(snapshot);
+  console.log("State written:");
+  console.log(join(planning, "state.json"));
   return 0;
 }
 

@@ -42,6 +42,10 @@ export function validVerificationStrictness(v: string): boolean {
   return v === "loose" || v === "normal" || v === "strict";
 }
 
+export function validAutomationMode(v: string): boolean {
+  return v === "guided" || v === "streamlined";
+}
+
 export function parseGitignoreAnswer(answer: string): "--gitignore" | "--no-gitignore" | null {
   const a = answer.toLowerCase();
   if (["y", "yes"].includes(a)) return "--gitignore";

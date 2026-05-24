@@ -30,7 +30,7 @@ handoff:
 
 # fur-check
 
-Code + acceptance gate **after** `fur-do` and **before** `fur-done`. Visual polish is mostly `fur-ui-review`.
+Code + acceptance gate for explicit review requests and for the internal gate used by `fur-done`. Visual polish is mostly `fur-ui-review`.
 
 ## Identity
 
@@ -42,7 +42,8 @@ Decide whether the task is **safe to close**: acceptance criteria met, verificat
 
 ## When to Use
 
-- Immediately after `fur-do` on a non-trivial change.
+- User explicitly asks for a standalone review after `fur-do`.
+- `fur-done` needs the same acceptance gate before closing a standard or major task.
 - User asks for review, "is this done?", or pre-merge sanity check.
 - Risky / security / data-path changes even when small.
 
@@ -109,7 +110,7 @@ If any answer is no, continue working before responding.
 
 1. Choose **Ready** / **Needs changes** / **Needs verification** (insufficient signal).
 2. If Needs changes: each item must include **what** is wrong and **where** to fix (file + hint), not vague advice.
-3. Do **not** move tasks or edit tracker — recommend `fur-do` or `fur-done` next.
+3. Do **not** move tasks or edit tracker in standalone mode — recommend `fur-do` or `fur-done` next. When embedded in `fur-done`, return the verdict before closure proceeds.
 
 ## Rules
 

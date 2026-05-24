@@ -40,7 +40,7 @@ Created `src/app/api/users/route.ts` with a `GET` handler. Used the existing `db
 
 ```yaml
 status: implemented
-next_skill: fur-check
+next_skill: fur-done
 scope_respected: true
 verification_state: partial
 risk_level: medium
@@ -48,4 +48,4 @@ risk_level: medium
 
 ## Suggested Next Step
 
-Route to `fur-check` for verification. Follow-up: create a task for API route tests.
+Route to `fur-done` for internal check and closure. Follow-up: create a task for API route tests.

@@ -4,7 +4,7 @@
 
 ```yaml
 status: implemented
-next_skill: fur-check
+next_skill: fur-do
 scope_respected: true
 verification_state: complete
 risk_level: low

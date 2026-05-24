@@ -4,9 +4,10 @@ Purpose: Keep only **currently relevant** information in the agent or chat conte
 
 ## Default Reading Order (Read These First)
 
-1. `.fur.planning/progress/latest.md` — short summary; do not load all progress files individually.
-2. **Active task** (the target file in `ready/` or the user-provided task).
-3. Only the relevant files under `.fur.planning/context/` (e.g., `verification.md`, `mcp.md`); do not dump everything.
+1. `.fur.planning/state.json` — latest machine-readable state from `fur refresh`.
+2. `.fur.planning/progress/latest.md` — short human summary; do not load all progress files individually.
+3. **Active task** (the target file in `ready/` or the user-provided task).
+4. Only the relevant files under `.fur.planning/context/` (e.g., `verification.md`, `mcp.md`); do not dump everything.
 
 ## Old Tasks and Topics
 
@@ -41,7 +42,7 @@ fur compact
 ## Agent Rules (Summary)
 
 - Summarize long history; use `context/archive/` if needed.
-- Run `fur refresh` after every meaningful milestone; run `fur compact` when needed.
-- When giving status updates, `latest.md` + active task summary is sufficient — do not re-read every old snapshot.
+- Run `fur refresh` after every meaningful milestone; it updates both `progress/latest.md` and `state.json`. Run `fur compact` when needed.
+- When giving status updates, `state.json` + `latest.md` + active task summary is sufficient — do not re-read every old snapshot.
 - Never carry the full text of more than 2–3 active tasks in chat context at once.
 - Link to files instead of pasting their contents when the content is longer than ~50 lines.

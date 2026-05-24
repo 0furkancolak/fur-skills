@@ -1,11 +1,7 @@
 import * as p from "@clack/prompts";
 import { existsSync } from "node:fs";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
 import {
-  findVagueTimeRanges,
   formatPlanProgress,
-  formatPlanSchedule,
   formatPlanSummary,
   formatProgressBar,
   listPlans,
@@ -78,12 +74,6 @@ export async function cmdPlan(args: string[]): Promise<number> {
     }
 
     const reconciled = await reconcilePlanFromDisk(report, root);
-    const planAbs = join(root, reconciled.path);
-    const planText = existsSync(planAbs)
-      ? await readFile(planAbs, "utf-8")
-      : "";
-    const vagueRanges = planText ? findVagueTimeRanges(planText) : [];
-
     if (process.stdin.isTTY && process.stdout.isTTY) {
       p.intro(
         `fur plan — ${reconciled.slug} · ${reconciled.percentDone}% complete`,
@@ -92,17 +82,7 @@ export async function cmdPlan(args: string[]): Promise<number> {
         `${formatProgressBar(reconciled.percentDone, 24)}\n${formatPlanProgress(reconciled)}`,
         "Completion",
       );
-      p.note(formatPlanSchedule(reconciled), "Schedule");
       p.note(formatPlanSummary(reconciled), "Summary");
-
-      if (vagueRanges.length > 0) {
-        p.log.warn(
-          `Vague time range detected (${vagueRanges.join(", ")}). Use single numbers + dates — see plan-template.md`,
-        );
-      }
-      if (!reconciled.frontmatter.target_end) {
-        p.log.warn("Missing target_end — add a single due date (YYYY-MM-DD) to the plan.");
-      }
 
       if (reconciled.rows.length > 0) {
         const table = reconciled.rows

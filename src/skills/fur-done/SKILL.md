@@ -9,10 +9,12 @@ description: >-
 disable-model-invocation: true
 requires:
   - active_task
-  - fur_check_output
 optional:
+  - fur_do_output
+  - fur_check_output
   - fur_workspace_config
   - progress_latest
+  - state_json
 quality_contract:
   must_map_every_ac: false
   must_report_assumptions: false
@@ -21,7 +23,7 @@ quality_contract:
   must_include_user_facing_explanation: true
   self_check_required: true
 handoff:
-  success_next: fur-status
+  success_next: fur-do
   ambiguous_scope_next: fur-task
   unknown_failure_next: fur-debug
 ---
@@ -36,27 +38,29 @@ You are a project coordinator. Your job is to close verified tasks cleanly, crea
 
 ## Goal
 
-Move the task markdown to `tasks/done/`, refresh `progress/latest.md` via `fur refresh`, and perform allowed tracker transitions only when workspace config is explicit.
+Run the internal check gate, move verified task markdown to `tasks/done/`, refresh `progress/latest.md` and `state.json` via `fur refresh`, and perform allowed tracker transitions only when workspace config is explicit.
 
 ## When to Use
 
-- `fur-check` outcome is **Ready** (or user explicitly accepts stated gaps).
+- `fur-do` has implemented a standard or major task and the user asks to close it.
+- `fur-check` outcome is **Ready** (optional prior evidence) or `fur-done` can run the same acceptance gate itself.
 - All acceptance criteria are satisfied or waived in writing by the user.
 - You need a dated paper trail in `progress/` for long sessions.
 
 ## When NOT to Use
 
 - Implementation incomplete → `fur-do`.
-- Verification missing / failed → `fur-check` or `fur-debug`.
+- Verification missing / failed → run the internal check gate; if still failing, route to `fur-do` or `fur-debug`.
 - User has not approved external close when policy requires approval → stay local-only and say why.
 
 ## Context Loading Contract
 
 Load in this order:
 1. Active task file.
-2. Latest `fur-check` output or user waiver.
-3. `.fur.workspace/config.json` if tracker sync is in play.
-4. `progress/latest.md` for continuity.
+2. Latest `fur-do` output, `fur-check` output, or user waiver.
+3. `.fur.planning/state.json` when present.
+4. `.fur.workspace/config.json` if tracker sync is in play.
+5. `progress/latest.md` for continuity.
 
 Do not load unrelated tasks or history.
 
@@ -64,8 +68,10 @@ Do not load unrelated tasks or history.
 
 ### Phase 1: Confirm closure bar
 
-1. Re-read the task + latest `fur-check` notes; ensure no open Blockers remain unless user waived them.
-2. If the task lacks Tracker sync metadata, that is fine — mark `local` only.
+1. Re-read the task + latest `fur-do` / `fur-check` notes.
+2. Run the internal check gate before any file move: map acceptance criteria, inspect touched diff, run verification commands from the task or context defaults, and record pass/fail/skipped with reasons.
+3. If blockers, failed verification, or unmet acceptance criteria remain, do not move the task; route to `fur-do` for known fixes or `fur-debug` for unknown failures.
+4. If the task lacks Tracker sync metadata, that is fine — mark `local` only.
 
 ### Phase 2: Move local task file
 
@@ -74,7 +80,7 @@ Do not load unrelated tasks or history.
 
 ### Phase 3: Progress snapshot
 
-1. From repo root run `fur refresh` so `progress/latest.md` points at a new timestamped snapshot (git status + counts + ready list).
+1. From repo root run `fur refresh` so `progress/latest.md` points at a new timestamped snapshot and `.fur.planning/state.json` is updated.
 2. If snapshots pile up, mention `fur compact` (honors `FUR_PROGRESS_KEEP`, default 8).
 
 ### Phase 4: External tracker (optional)
@@ -87,7 +93,7 @@ Do not load unrelated tasks or history.
 ### Phase 5: Self-review
 
 Before finalizing, verify:
-- Did I confirm the task passed `fur-check` or user waiver?
+- Did I run the internal check gate or confirm a fresh `fur-check` Ready result / user waiver?
 - Did I move the task file to `done/`?
 - Did I run `fur refresh` for a new snapshot?
 - Did I respect external-write permissions?
@@ -109,7 +115,7 @@ If any answer is no, continue working before responding.
 
 ## Rules
 
-- Never mark done without verification evidence or explicit user waiver of gaps.
+- Never mark done without the internal check gate, a fresh Ready check result, or explicit user waiver of gaps.
 - Never fabricate tracker comments, transitions, or timestamps.
 - If config forbids external writes, stop after local move + `fur refresh`.
 - Avoid spawning new tasks automatically; note follow-up **risks** instead unless the user wants `fur-task`.
@@ -123,6 +129,7 @@ If any answer is no, continue working before responding.
 
 - Task moved: [old path] → [new path]
 - Progress snapshot: [timestamped file] + latest symlink updated: yes/no
+- State: `.fur.planning/state.json` updated: yes/no
 - Tracker sync: closed | transitioned | drafted-manual-steps | local-only | skipped (reason)
 
 ## Verification Summary
@@ -142,7 +149,8 @@ If any answer is no, continue working before responding.
 
 ```yaml
 status: closed | local-only | blocked
-next_skill: fur-status | fur-task
+next_skill: fur-do | fur-task | fur-debug | fur-status
+internal_check: ready | needs-changes | needs-verification
 scope_respected: true | false
 verification_state: complete | partial
 risk_level: none | low | medium | high
@@ -150,7 +158,7 @@ risk_level: none | low | medium | high
 
 ## Anti-patterns
 
-- Do not close a task without verification or user waiver.
+- Do not close a task without internal check evidence, a fresh Ready check result, or user waiver.
 - Do not fabricate tracker sync results.
 - Do not skip `fur refresh`.
 - Do not forget to suggest the next skill.
@@ -167,4 +175,4 @@ Use these examples to calibrate response depth, evidence quality, output structu
 
 ## Suggested Next Step
 
-`fur-status` to pick the next unit of work, or `fur compact` if `progress/` is noisy.
+`fur-do` on the next ready task when one exists, `fur-task` when the queue is empty or stale, or `fur-status` only when the user wants orientation.

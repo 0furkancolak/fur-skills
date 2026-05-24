@@ -21,7 +21,7 @@ quality_contract:
   must_include_user_facing_explanation: true
   self_check_required: true
 handoff:
-  success_next: fur-check
+  success_next: fur-done
   ambiguous_scope_next: fur-task
   unknown_failure_next: fur-debug
 ---
@@ -97,16 +97,18 @@ Before finalizing, verify:
 
 If any answer is no, continue working before responding.
 
-### Phase 6: Report (do not close)
+### Phase 6: Close or report
 
-1. Summarize files, risks, and commands with real output snippets where helpful.
-2. Do **not** move the task to `done/` or update trackers — that is `fur-done`.
+1. If `Task size: micro` and verification passes, run the `fur-done` closure behavior automatically: apply the internal check gate, move the task to `done/`, and run `fur refresh`.
+2. If `Task size: micro` and verification fails, do not close; route to `fur-do` for a scoped fix or `fur-debug` for unknown failure.
+3. If `Task size: standard` or `major`, summarize files, risks, and commands with real output snippets and route to `fur-done`; `fur-done` will run the internal check gate before closing.
 
 ## Rules
 
 - No scope creep, no product redesign, no speculative features.
 - No tracker comments, transitions, or GitHub/Jira writes — `fur-task` / `fur-done` own that boundary.
-- Do **not** mark the task complete in markdown; `fur-check` + `fur-done` do.
+- Do **not** mark standard or major tasks complete in markdown; `fur-done` owns closure after its internal check gate.
+- For micro tasks only, automatic check + done is allowed when all acceptance criteria and verification pass.
 - **Commits and PRs** always need explicit user approval (AGENTS.md); do not `git commit` or open PRs unless asked.
 - If halfway through the work you discover missing requirements, **stop** and hand back to `fur-task`.
 - Context hygiene: if the session is huge, suggest summarizing via `fur compact` / `progress/latest.md` per `src/references/context-window.md`.
@@ -154,14 +156,16 @@ Include residual technical risk, missing coverage, and any suggested follow-up t
 
 ## Plan summary
 
-[MANDATORY if task has Plan: / Plan task ID: — compact dashboard per src/references/plan-ai-output.md: completion %, next task, target end]
+[MANDATORY if task has Plan: / Plan task ID: — compact dashboard per src/references/plan-ai-output.md: completion %, next task, ASCII bar]
 ```
 
 ### Control Plane
 
 ```yaml
-status: implemented | blocked | needs-clarification
-next_skill: fur-check | fur-task | fur-debug
+status: implemented | closed | blocked | needs-clarification
+next_skill: fur-done | fur-do | fur-task | fur-debug
+task_size: micro | standard | major
+auto_closed: true | false
 scope_respected: true | false
 verification_state: complete | partial | not-run
 risk_level: none | low | medium | high
@@ -186,6 +190,4 @@ Use these examples to calibrate response depth, evidence quality, output structu
 
 ## Suggested Next Step
 
-Route to `fur-check` for acceptance verification before closing.
-If requirements are unclear, route to `fur-task`.
-If verification fails for an unknown reason, route to `fur-debug`.
+For micro tasks, auto-close after successful internal check + done. For standard and major tasks, route to `fur-done`, which runs the check gate before closing. If requirements are unclear, route to `fur-task`. If verification fails for an unknown reason, route to `fur-debug`.

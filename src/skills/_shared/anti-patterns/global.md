@@ -113,14 +113,14 @@ Before finalizing, verify:
 fur-done
 ```
 
-When the task has not been checked yet.
+When neither `fur-do` micro auto-close nor `fur-done` internal check gate will run.
 
-**Why it is bad**: Bypasses the quality gate. `fur-do` must route to `fur-check` before `fur-done`.
+**Why it is bad**: Bypasses the quality gate. Micro tasks may auto-close from `fur-do`; standard and major tasks must route to `fur-done`, which runs the internal check gate.
 
 **Good**:
 ```markdown
 ## Suggested Next Step
-Route to `fur-check` for acceptance verification before closing.
+Route to `fur-done`; it will run the internal check gate before closing.
 ```
 
 ## 8. Invented Check Results
@@ -168,7 +168,7 @@ No YAML block at the end.
 **Good**:
 ```yaml
 status: implemented
-next_skill: fur-check
+next_skill: fur-done
 scope_respected: true
 verification_state: complete
 risk_level: low

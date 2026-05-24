@@ -4,9 +4,10 @@ Amaç: Sohbet veya agent context'ine **gereksiz eski detay** taşımadan yalnız
 
 ## Varsayılan Okuma Sırası (Önce Bunlar)
 
-1. `.fur.planning/progress/latest.md` — kısa özet; tüm eski progress dosyalarını tek tek okumayın.
-2. **Aktif task** (ready'deki hedef dosya veya kullanıcının verdiği task).
-3. `.fur.planning/context/` içinde yalnızca ilgili dosyalar (ör. `verification.md`, `mcp.md`); hepsini dump etmeyin.
+1. `.fur.planning/state.json` — `fur refresh` tarafından üretilen makine-okunur son durum.
+2. `.fur.planning/progress/latest.md` — kısa özet; tüm eski progress dosyalarını tek tek okumayın.
+3. **Aktif task** (ready'deki hedef dosya veya kullanıcının verdiği task).
+4. `.fur.planning/context/` içinde yalnızca ilgili dosyalar (ör. `verification.md`, `mcp.md`); hepsini dump etmeyin.
 
 ## Eski Task ve Konular
 
@@ -41,7 +42,7 @@ fur compact
 ## Agent Kuralları (Özet)
 
 - Uzun geçmişi özetleyin; gerekiyorsa `context/archive/` kullanın.
-- Her önemli dönüşten sonra `fur refresh`; gerekiyorsa `fur compact` çalıştırın.
-- Kullanıcıya durum verirken önce `latest.md` + aktif task özeti yeterlidir.
+- Her önemli dönüşten sonra `fur refresh`; bu komut hem `progress/latest.md` hem `state.json` günceller. Gerekiyorsa `fur compact` çalıştırın.
+- Kullanıcıya durum verirken önce `state.json` + `latest.md` + aktif task özeti yeterlidir.
 - Chat context'inde aynı anda 2–3'ten fazla aktif task'ın tam metnünü taşımamaya çalışın.
 - İçerik 50 satırdan uzunsa dosya yolunu link olarak verin, yapıştırmayın.

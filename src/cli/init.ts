@@ -9,6 +9,7 @@ import {
   parseGitignoreAnswer,
   promptChoice,
   validEvidenceStyle,
+  validAutomationMode,
   validProjectMaturity,
   validQuestionLevel,
   validResponseDepth,
@@ -23,6 +24,7 @@ export interface InitOptions {
   responseDepth?: string;
   evidenceStyle?: string;
   verificationStrictness?: string;
+  automationMode?: string;
 }
 
 function parseInitArgs(args: string[]): InitOptions {
@@ -38,7 +40,8 @@ function parseInitArgs(args: string[]): InitOptions {
       arg === "--project-maturity" ||
       arg === "--response-depth" ||
       arg === "--evidence-style" ||
-      arg === "--verification-strictness"
+      arg === "--verification-strictness" ||
+      arg === "--automation-mode"
     ) {
       const value = args[i + 1];
       if (!value) {
@@ -50,6 +53,7 @@ function parseInitArgs(args: string[]): InitOptions {
       if (arg === "--response-depth") opts.responseDepth = value;
       if (arg === "--evidence-style") opts.evidenceStyle = value;
       if (arg === "--verification-strictness") opts.verificationStrictness = value;
+      if (arg === "--automation-mode") opts.automationMode = value;
       i += 2;
     } else {
       console.error(`Unknown init option: ${arg}`);
@@ -159,6 +163,18 @@ export async function cmdInit(args: string[]): Promise<number> {
     return 1;
   }
 
+  let automationMode = opts.automationMode;
+  if (!automationMode) {
+    automationMode = isTty()
+      ? await promptChoice("Automation mode (guided/streamlined)", "guided")
+      : "guided";
+  }
+  if (!validAutomationMode(automationMode)) {
+    console.error(`Invalid automation mode: ${automationMode}`);
+    console.error("Expected: guided or streamlined");
+    return 1;
+  }
+
   await ensurePlanningDirs(projectRoot);
   await writePlanningFiles(projectRoot);
 
@@ -174,6 +190,7 @@ export async function cmdInit(args: string[]): Promise<number> {
     responseDepth,
     evidenceStyle,
     verificationStrictness,
+    automationMode,
   });
 
   if (useGitignore) {
@@ -187,6 +204,7 @@ export async function cmdInit(args: string[]): Promise<number> {
   console.log(`Response depth: ${responseDepth}`);
   console.log(`Evidence style: ${evidenceStyle}`);
   console.log(`Verification strictness: ${verificationStrictness}`);
+  console.log(`Automation mode: ${automationMode}`);
   console.log("");
   reportWorkspaceHint(projectRoot);
   return 0;

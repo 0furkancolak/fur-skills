@@ -11,6 +11,7 @@
     ready/
     done/
   plans/
+  state.json
   progress/
     archive/
   context/
@@ -32,6 +33,10 @@
   "localTaskMode": "local-markdown",
   "questionLevel": "high",
   "projectMaturity": "new",
+  "responseDepth": "standard",
+  "evidenceStyle": "inline",
+  "verificationStrictness": "normal",
+  "automationMode": "guided",
   "questionPolicy": {
     "askBeforeSplittingLargeTasks": true,
     "askWhenAcceptanceCriteriaMissing": true,

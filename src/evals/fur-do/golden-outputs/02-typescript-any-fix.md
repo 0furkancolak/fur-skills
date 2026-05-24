@@ -33,7 +33,7 @@ Single-line type annotation change. No behavior change.
 
 ```yaml
 status: implemented
-next_skill: fur-check
+next_skill: fur-done
 scope_respected: true
 verification_state: complete
 risk_level: none
@@ -41,4 +41,4 @@ risk_level: none
 
 ## Suggested Next Step
 
-Route to `fur-check` for quick verification.
+Route to `fur-done` for internal check and closure.

@@ -31,6 +31,7 @@ describe("cmdInit", () => {
     expect(config.questionLevel).toBe("high");
     expect(config.projectMaturity).toBe("new");
     expect(config.responseDepth).toBe("standard");
+    expect(config.automationMode).toBe("guided");
     expect(config.gitignore).toBe(true);
   });
 });

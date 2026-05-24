@@ -19,6 +19,10 @@ Example: `20250114-0930-add-dark-mode.md`
 
 feature | bug | refactor | chore | docs | test | investigation
 
+## Task size
+
+micro | standard | major
+
 ## Context
 
 Why this task exists. What triggered it? What problem does it solve?
@@ -60,6 +64,10 @@ How to check this task is done. Commands to run, manual steps to verify.
 ## Risks
 
 Possible regressions, open questions, or areas of uncertainty.
+
+## Open Questions
+
+Required only when the task is not ready. A task with open blocking questions stays in `tasks/backlog/`.
 
 ## Optional: Parallel Slices
 

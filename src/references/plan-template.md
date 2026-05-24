@@ -2,18 +2,18 @@
 
 Use for large work split across multiple `fur-do` sessions. Save as `.fur.planning/plans/<slug>.md`.
 
-Every split **must** include the manifest table below so agents and `fur plan status` can answer: how many tasks, how long (net hours + date), what's done.
+Plans track deterministic completion only. Do not estimate dates, sessions, or hours.
 
-## Time rules (required)
+## Time and Schedule Rules
 
-- **No ranges:** do not use `2-3 weeks`, `8–12 sessions`, `3-4 days`.
-- **Single numbers:** hours, session count, and dates must be exact.
-- **Target end:** `target_end: YYYY-MM-DD` (one day).
-- **Task Est.:** only `S` / `M` / `L` — fixed hours (see below).
+- Do not write schedule fields in new plans.
+- Do not describe plan length with weeks, months, days, hours, due dates, or session counts.
+- User-facing progress is only `done / total` plus the ASCII percentage bar.
+- `Size` is a complexity label (`S`, `M`, `L`, `XL`), not a time estimate.
 
 ## Filename
 
-```
+```txt
 plans/<short-slug>.md
 ```
 
@@ -23,17 +23,13 @@ Example: `plans/auth-refactor.md`
 
 ```md
 ---
-plan_version: 1
+plan_version: 2
 slug: auth-refactor
 title: Auth refactor
 status: active
 estimated_tasks: 8
-estimated_sessions: 10
-session_hours: 3
-estimated_hours: 30
-target_start: 2026-05-19
-target_end: 2026-06-02
 created: 2026-05-18
+updated: 2026-05-18
 ---
 
 # Auth refactor
@@ -42,28 +38,26 @@ created: 2026-05-18
 
 | Field | Value |
 |-------|-------|
-| Total tasks (planned) | 8 |
-| Completion | 0% (0/8 done) — updated via agent / `fur plan status` |
-| Progress (weighted) | 0% — ready=50%, backlog=25%, done=100% |
-| Total time | 30 hours |
-| Session plan | 10 sessions × 3 hours = 30 hours |
-| Start | 2026-05-19 |
-| Target end | 2026-06-02 |
+| Total tasks | 8 |
+| Completion | 0% (0/8 done) |
 | Current phase | phase-1 |
+| Next task | T1 |
 
-One paragraph: what we're building, why now, definition of done for the **whole** plan.
+One paragraph: what we're building, why now, and the definition of done for the whole plan.
 
 ## Phases
 
-| Phase | Goal | Tasks | Hours | Target end | Status |
-|-------|------|-------|-------|------------|--------|
-| phase-1 | Foundation | 3 | 12 | 2026-05-23 | in_progress |
-| phase-2 | API migration | 3 | 12 | 2026-05-30 | planned |
-| phase-3 | Cleanup + docs | 2 | 6 | 2026-06-02 | planned |
+| Phase | Goal | Tasks | Status |
+|-------|------|-------|--------|
+| phase-1 | Foundation | 3 | in_progress |
+| phase-2 | API migration | 3 | planned |
+| phase-3 | Cleanup + docs | 2 | planned |
 
 ## Task manifest
 
 Status values: `planned` (not filed yet) · `backlog` · `ready` · `done` · `deferred` · `cancelled`
+
+Size values: `S` · `M` · `L` · `XL`
 
 | ID | Title | Phase | Est. | Status | Task file |
 |----|-------|-------|------|--------|-----------|
@@ -76,16 +70,6 @@ Status values: `planned` (not filed yet) · `backlog` · `ready` · `done` · `d
 | T7 | Update README + runbook | phase-3 | S | planned | |
 | T8 | Remove dead code | phase-3 | S | planned | |
 
-### Estimate key (fixed hours — no ranges)
-
-| Est. | Hours |
-|------|-------|
-| S | 1.5 |
-| M | 3 |
-| L | 6 |
-
-`estimated_hours` must equal the sum of manifest Est. hours (adjust tasks or frontmatter until they match).
-
 ## Dependencies
 
 - T2 blocks on T1
@@ -94,28 +78,24 @@ Status values: `planned` (not filed yet) · `backlog` · `ready` · `done` · `d
 
 ## Risks and open questions
 
-- …
+- ...
 
 ## Changelog
 
 | Date | Change |
 |------|--------|
-| 2026-05-18 | Initial plan + manifest (8 tasks, 30 hours, due 2026-06-02) |
+| 2026-05-18 | Initial plan + manifest (8 tasks, 0% complete) |
 ```
 
 ## Rules for fur-task (split mode)
 
-1. **Always** create or update `plans/<slug>.md` with a full task manifest before creating task files.
-2. Put **every** planned slice in the manifest — including tasks not yet filed (`planned`).
-3. Frontmatter: `estimated_tasks`, `estimated_sessions` (integer), `session_hours`, `estimated_hours`, `target_start`, `target_end` — **no ranges**.
-4. `estimated_hours` = sum of manifest Est. hours (S/M/L table).
-5. `estimated_sessions` × `session_hours` should equal `estimated_hours` (or explain mismatch in Risks).
-6. Phases: **Hours** as one number; **Target end** as ISO date per phase.
-7. Each created task file must include under Implementation notes:
-   - `Plan: plans/<slug>.md`
-   - `Plan task ID: T1`
-8. Chat rollup: `8 tasks · 30h · 10 sessions · due 2026-06-02 · 0% complete (0/8)`.
-9. **AI must show `## Plan summary` in chat** — see `src/references/plan-ai-output.md` (CLI optional).
+1. Create or update `plans/<slug>.md` with a full task manifest before creating task files.
+2. Put every planned slice in the manifest, including tasks not yet filed (`planned`).
+3. Frontmatter must not contain schedule fields.
+4. Create only the next actionable task file(s) now; do not silently drop future slices from the manifest.
+5. Each created task must include `Plan: plans/<slug>.md` and `Plan task ID: Tn` under Implementation notes.
+6. Chat rollup: `8 tasks · 0% complete (0/8) · next: T1 Extract auth service`.
+7. AI must show `## Plan summary` in chat — see `src/references/plan-ai-output.md`.
 
 ## Linking in task files
 

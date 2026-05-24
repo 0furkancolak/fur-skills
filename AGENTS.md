@@ -23,7 +23,8 @@ This repo contains a personal AI agent skill set for a small, fast project workf
 ## Core Workflow
 
 ```txt
-fur-init -> fur-task -> fur-do -> fur-check -> fur-done -> fur-status
+fur-init -> fur-task -> fur-do -> fur-done
+                 \-> fur-check (optional/embedded) ->/
                  \-> fur-debug ->/
 ```
 

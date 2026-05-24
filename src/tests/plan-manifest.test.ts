@@ -4,14 +4,11 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
   computePlanMetrics,
-  findVagueTimeRanges,
   formatPlanDashboardMarkdown,
   formatProgressBar,
-  hoursFromTaskEstimate,
   loadPlan,
   reconcilePlanFromDisk,
   slugFromPlanPath,
-  sumManifestHours,
   type ManifestRow,
 } from "../lib/plan-manifest.ts";
 import { ensurePlanningDirs } from "../lib/planning.ts";
@@ -21,11 +18,6 @@ plan_version: 1
 slug: demo-plan
 title: Demo plan
 estimated_tasks: 3
-estimated_sessions: 3
-session_hours: 3
-estimated_hours: 10.5
-target_start: 2026-05-19
-target_end: 2026-05-21
 ---
 
 # Demo
@@ -54,21 +46,6 @@ describe("plan-manifest", () => {
 
   test("slugFromPlanPath", () => {
     expect(slugFromPlanPath("plans/auth-refactor.md")).toBe("auth-refactor");
-  });
-
-  test("hoursFromTaskEstimate uses fixed hours", () => {
-    expect(hoursFromTaskEstimate("M")).toBe(3);
-    expect(hoursFromTaskEstimate("S")).toBe(1.5);
-  });
-
-  test("findVagueTimeRanges flags range expressions", () => {
-    const hits = findVagueTimeRanges("estimated_duration: 2-3 weeks\nphase: 3-4 days");
-    expect(hits.length).toBeGreaterThan(0);
-  });
-
-  test("sumManifestHours totals manifest Est. column", async () => {
-    const report = await loadPlan("plans/demo-plan.md", root);
-    expect(sumManifestHours(report!.rows)).toBe(10.5);
   });
 
   test("computePlanMetrics calculates percentDone and percentProgress", () => {
@@ -111,7 +88,10 @@ describe("plan-manifest", () => {
     expect(md).toContain("Completion");
     expect(md).toContain("%");
     expect(md).toContain("| T1 |");
-    expect(md).toContain("2026-05-21");
+    expect(md).toContain("[");
+    expect(md).not.toContain("Target end");
+    expect(md).not.toContain("Sessions");
+    expect(md).not.toContain("Total time");
   });
 
   test("loadPlan parses frontmatter and manifest", async () => {
@@ -119,8 +99,6 @@ describe("plan-manifest", () => {
     expect(report).not.toBeNull();
     expect(report!.slug).toBe("demo-plan");
     expect(report!.frontmatter.estimated_tasks).toBe(3);
-    expect(report!.frontmatter.estimated_sessions).toBe(3);
-    expect(report!.frontmatter.target_end).toBe("2026-05-21");
     expect(report!.totalCount).toBe(3);
     expect(report!.rows[0]!.id).toBe("T1");
     expect(report!.rows[0]!.status).toBe("ready");

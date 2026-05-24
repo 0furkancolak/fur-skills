@@ -20,8 +20,8 @@ fur init
 Açık ayarlı kurulum:
 
 ```bash
-fur init --gitignore --project-maturity new --question-level high --response-depth standard --evidence-style inline --verification-strictness normal
-fur init --gitignore --project-maturity established --question-level normal --response-depth deep --evidence-style inline-plus-paths --verification-strictness strict
+fur init --gitignore --project-maturity new --question-level high --response-depth standard --evidence-style inline --verification-strictness normal --automation-mode guided
+fur init --gitignore --project-maturity established --question-level normal --response-depth deep --evidence-style inline-plus-paths --verification-strictness strict --automation-mode guided
 ```
 
 Birden fazla repo bulunan klasörde:
@@ -40,7 +40,8 @@ Installer ayrıca OpenCode için global komut kurar:
 ## Temel Döngü
 
 ```txt
-fur-init -> fur-task -> fur-do -> fur-check -> fur-done -> fur-status
+fur-init -> fur-task -> fur-do -> fur-done
+                 \-> fur-check (opsiyonel/gömülü) ->/
                  \-> fur-debug ->/
 ```
 
@@ -119,9 +120,9 @@ Her skill şu kurallara uyar:
 | `fur-init` | orchestrator | `.fur.planning`, local config, soru seviyesi ve workspace ipuçlarını kurar. |
 | `fur-task` | planner | Local/Jira/GitHub kaynaklardan küçük task üretir, seçer veya böler. |
 | `fur-do` | executor | Seçili task'ı uygular. |
-| `fur-check` | gate | Acceptance, test, typecheck/lint ve review kapısıdır. |
-| `fur-done` | orchestrator | Task'ı done'a taşır, snapshot alır, config izinliyse tracker sync yapar. |
-| `fur-status` | orchestrator | Nerede kalındığını ve sıradaki tek aksiyonu gösterir. |
+| `fur-check` | gate | Standalone veya gömülü acceptance, test, typecheck/lint ve review kapısıdır. |
+| `fur-done` | orchestrator | İç check kapısını çalıştırır, doğrulanmış task'ı done'a taşır, snapshot/state alır, config izinliyse tracker sync yapar. |
+| `fur-status` | orchestrator | İstendiğinde nerede kalındığını ve sıradaki tek aksiyonu gösterir. |
 | `fur-debug` | diagnostic | Kök nedeni bilinmeyen bug'lar için fazlı debug akışıdır. |
 
 ## UI Skill'leri
@@ -137,11 +138,11 @@ Her skill şu kurallara uyar:
 | Komut | Görev |
 |---|---|
 | `fur init` | TTY'de sorular sorarak, non-TTY'de güvenli defaultlarla `.fur.planning` oluşturur. |
-| `fur init --gitignore --question-level high --project-maturity new --response-depth standard --evidence-style inline --verification-strictness normal` | Non-interactive init. |
+| `fur init --gitignore --question-level high --project-maturity new --response-depth standard --evidence-style inline --verification-strictness normal --automation-mode guided` | Non-interactive init. |
 | `fur workspace init` | `.fur.workspace/config.json` oluşturur. |
 | `fur workspace doctor` | Workspace repo/tracker config'ini doğrular. |
-| `fur refresh` | `fur-done` için yardımcı progress snapshot komutu. |
-| `fur progress` | `fur-status` için yardımcı kısa durum komutu. |
+| `fur refresh` | `fur-done` için progress snapshot ve `.fur.planning/state.json` üreten yardımcı komut. |
+| `fur progress` | `fur-status` için kısa durum ve plan completion komutu. |
 | `fur compact` | Eski snapshot'ları arşivler. |
 | `fur doctor` | Kurulum, skill symlink, v2 section ve eval fixture durumunu gösterir. |
 

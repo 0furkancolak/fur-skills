@@ -11,6 +11,7 @@ requires:
   - project_root
   - fur_planning_dir
 optional:
+  - state_json
   - progress_latest
   - fur_workspace_config
 quality_contract:
@@ -54,9 +55,10 @@ Summarize queue depth, latest `fur refresh` snapshot, workspace registration, an
 
 Load in this order:
 1. `.fur.planning/config.json`.
-2. `tasks/{backlog,ready,done}` counts.
-3. `progress/latest.md` head (~80-120 lines).
-4. `.fur.workspace/config.json` if present.
+2. `.fur.planning/state.json` when present.
+3. `tasks/{backlog,ready,done}` counts.
+4. `progress/latest.md` head (~80-120 lines).
+5. `.fur.workspace/config.json` if present.
 
 Do not load full task bodies or archived snapshots.
 
@@ -65,7 +67,7 @@ Do not load full task bodies or archived snapshots.
 ### Phase 1: Read planning state (chat-first)
 
 1. Count `*.md` in `tasks/{backlog,ready,done}` and list `plans/*.md`.
-2. For **each** plan file: read manifest + reconcile task folder statuses; render **`## Plan summary`** in chat per `src/references/plan-ai-output.md` (completion %, progress %, net hours, `target_end`, bar, manifest table, next task).
+2. For **each** plan file: read manifest + reconcile task folder statuses; render **`## Plan summary`** in chat per `src/references/plan-ai-output.md` (completion %, ASCII bar, manifest table, next task).
 3. Do **not** stop at "run `fur plan status`" — the user interacts via AI; the dashboard must appear in this message.
 4. Optional shell: `fur progress` / `fur plan status` for cross-check only.
 5. If `.fur.planning` is missing, report "run `fur init`" and stop.

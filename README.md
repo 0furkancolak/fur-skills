@@ -7,7 +7,8 @@ Personal AI agent skill set for a small, fast project workflow.
 Fur keeps project work moving through one simple loop:
 
 ```txt
-fur-init -> fur-task -> fur-do -> fur-check -> fur-done -> fur-status
+fur-init -> fur-task -> fur-do -> fur-done
+                 \-> fur-check (optional/embedded) ->/
                  \-> fur-debug ->/
 ```
 
@@ -106,8 +107,8 @@ fur init
 Explicit setup:
 
 ```bash
-fur init --gitignore --project-maturity new --question-level high
-fur init --gitignore --project-maturity established --question-level normal
+fur init --gitignore --project-maturity new --question-level high --automation-mode guided
+fur init --gitignore --project-maturity established --question-level normal --automation-mode guided
 ```
 
 For a folder that contains multiple repos:
@@ -124,9 +125,9 @@ fur workspace doctor
 | **fur-init** | orchestrator | Create `.fur.planning/`, local behavior config, question level, and workspace hints. |
 | **fur-task** | planner | Create/select/split local tasks; import Jira/GitHub references; draft/write external tasks when config permits. |
 | **fur-do** | executor | Implement one selected task or tiny clear fix. |
-| **fur-check** | gate | Review and verify acceptance criteria, tests, risk, and changed code. |
-| **fur-done** | orchestrator | Move verified task to done, snapshot progress, and sync tracker completion when config permits. |
-| **fur-status** | orchestrator | Show task counts, latest snapshot, tracker sync state, and one next action. |
+| **fur-check** | gate | Standalone or embedded review gate for acceptance criteria, tests, risk, and changed code. |
+| **fur-done** | orchestrator | Runs the internal check gate, moves verified task to done, refreshes progress/state, and syncs tracker completion when config permits. |
+| **fur-status** | orchestrator | Optional orientation view for task counts, latest snapshot, tracker sync state, and one next action. |
 | **fur-debug** | diagnostic | Diagnose unknown root cause with a phase-based debugging loop. |
 
 ## UI Skills
@@ -178,16 +179,23 @@ Defaults:
 | `normal` | Run available checks; note gaps honestly. |
 | `strict` | All verification steps must run; missing tooling is a blocker to report. |
 
+## Automation Mode
+
+| Mode | Behavior |
+|---|---|
+| `guided` | Default. `fur-do` auto-closes only micro tasks; `fur-done` runs the internal check gate for standard/major tasks. |
+| `streamlined` | Uses the same safety gates, but agents choose the fastest allowed path when config and risk permit. |
+
 ## CLI Commands
 
 | Command | Purpose |
 |---|---|
 | `fur init` | Create `.fur.planning/`; TTY prompts, non-TTY uses safe defaults. |
-| `fur init --gitignore --question-level high --project-maturity new` | Non-interactive init with explicit behavior. |
+| `fur init --gitignore --question-level high --project-maturity new --automation-mode guided` | Non-interactive init with explicit behavior. |
 | `fur workspace init` | Create `.fur.workspace/config.json` in the current folder. |
 | `fur workspace doctor` | Validate workspace repo/tracker config. |
-| `fur refresh` | Helper used by `fur-done`; create a progress snapshot. |
-| `fur progress` | Helper used by `fur-status`; print counts and latest snapshot. |
+| `fur refresh` | Helper used by `fur-done`; create a progress snapshot and `.fur.planning/state.json`. |
+| `fur progress` | Helper used by `fur-status`; print counts, plan completion, and latest snapshot. |
 | `fur compact` | Move old progress snapshots to `progress/archive/`. |
 | `fur doctor` | Check skill symlinks and CLI installation status on your machine. |
 | `fur install` | Symlink skills + CLI to `~/.claude/skills`, `~/.cursor/skills`, etc. |

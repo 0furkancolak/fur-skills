@@ -13,34 +13,14 @@ export type TaskManifestStatus =
   | "cancelled"
   | "unknown";
 
-/** Fixed hours per manifest Est. letter (no ranges). */
-export const ESTIMATE_HOURS: Record<string, number> = {
-  S: 1.5,
-  M: 3,
-  L: 6,
-  XL: 12,
-};
-
-export const DEFAULT_SESSION_HOURS = 3;
-
 export interface PlanFrontmatter {
   plan_version?: number;
   slug?: string;
   title?: string;
   status?: string;
   estimated_tasks?: number;
-  /** Integer only — no ranges like "8-12" */
-  estimated_sessions?: number;
-  /** Hours per focused session (default 3) */
-  session_hours?: number;
-  /** Total planned hours — should match sum of manifest Est. column */
-  estimated_hours?: number;
-  target_start?: string;
-  /** Single ISO date — no ranges */
-  target_end?: string;
-  /** @deprecated Use estimated_hours + target_end instead */
-  estimated_duration?: string;
   created?: string;
+  updated?: string;
 }
 
 export interface ManifestRow {
@@ -108,75 +88,15 @@ export function formatProgressBar(percent: number, width = 20): string {
   return `[${"█".repeat(filled)}${"░".repeat(empty)}] ${clamped}%`;
 }
 
-export function hoursFromTaskEstimate(est: string): number {
-  const key = est.trim().toUpperCase();
-  return ESTIMATE_HOURS[key] ?? 0;
-}
-
-export function sumManifestHours(rows: ManifestRow[]): number {
-  return rows.reduce((sum, row) => sum + hoursFromTaskEstimate(row.estimate), 0);
-}
-
-/** Detect vague ranges like "2-3 weeks", "8–12 sessions", "3-4 days". */
-export function findVagueTimeRanges(text: string): string[] {
-  const patterns: Array<{ re: RegExp; label: string }> = [
-    {
-      re: /\d+\s*[-–]\s*\d+\s*(week|weeks|day|days|hour|hours|session|sessions|hafta|gün|saat|oturum)/gi,
-      label: "range + unit",
-    },
-    { re: /\d+\s*[-–]\s*\d+\s*(weeks?|days?)/gi, label: "range (week/day)" },
-    {
-      re: /estimated_duration:\s*[^\n]*\d+\s*[-–]\s*\d+/gi,
-      label: "frontmatter estimated_duration range",
-    },
-    {
-      re: /estimated_sessions:\s*[^\n]*\d+\s*[-–]\s*\d+/gi,
-      label: "frontmatter estimated_sessions range",
-    },
-  ];
-  const hits = new Set<string>();
-  for (const { re, label } of patterns) {
-    if (re.test(text)) hits.add(label);
-    re.lastIndex = 0;
-  }
-  return [...hits];
-}
-
-export function formatPlanSchedule(report: PlanReport): string {
-  const fm = report.frontmatter;
-  const manifestHours = sumManifestHours(report.rows);
-  const hours =
-    fm.estimated_hours != null && fm.estimated_hours > 0
-      ? fm.estimated_hours
-      : manifestHours;
-  const sessions =
-    fm.estimated_sessions != null && fm.estimated_sessions > 0
-      ? fm.estimated_sessions
-      : report.totalCount;
-  const sessionHours = fm.session_hours ?? DEFAULT_SESSION_HOURS;
-  const sessionTotal = sessions * sessionHours;
-
-  const lines: string[] = [];
-  lines.push(`Total time: ${hours} hours (manifest sum: ${manifestHours} hours)`);
-  lines.push(
-    `Session plan: ${sessions} sessions × ${sessionHours} hours = ${sessionTotal} hours`,
+export function formatPlanCompletion(report: PlanMetrics): string {
+  return (
+    `${formatProgressBar(report.percentDone)} complete · ` +
+    `${report.doneCount}/${report.totalCount} done`
   );
-  if (fm.target_start) lines.push(`Start: ${fm.target_start}`);
-  if (fm.target_end) lines.push(`Target end: ${fm.target_end}`);
-  if (hours !== sessionTotal) {
-    lines.push(
-      `Note: total hours (${hours}) does not match session plan (${sessionTotal}) — fix the plan`,
-    );
-  }
-  return lines.join("\n");
 }
 
 export function formatPlanProgress(report: PlanMetrics): string {
-  return (
-    `${formatProgressBar(report.percentDone)} complete · ` +
-    `${report.doneCount}/${report.totalCount} done · ` +
-    `progress ${report.percentProgress}%`
-  );
+  return formatPlanCompletion(report);
 }
 
 const MANIFEST_HEADER =
@@ -344,16 +264,8 @@ export function formatPlanSummary(report: PlanReport): string {
       `Estimated tasks (declared): ${fm.estimated_tasks} | manifest rows: ${report.totalCount}`,
     );
   }
-  lines.push(formatPlanSchedule(report));
-  if (fm.estimated_duration) {
-    lines.push(
-      `(deprecated: use estimated_hours + target_end instead of estimated_duration)`,
-    );
-  }
   lines.push(formatPlanProgress(report));
-  lines.push(
-    `Completion: ${report.percentDone}% · Progress (weighted): ${report.percentProgress}%`,
-  );
+  lines.push(`Completion: ${report.percentDone}% (${report.doneCount}/${report.totalCount} done)`);
   const statusParts = Object.entries(report.byStatus)
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([k, v]) => `${k}=${v}`);
@@ -377,16 +289,6 @@ function nextActionableTask(rows: ManifestRow[]): ManifestRow | undefined {
  */
 export function formatPlanDashboardMarkdown(report: PlanReport): string {
   const fm = report.frontmatter;
-  const manifestHours = sumManifestHours(report.rows);
-  const hours =
-    fm.estimated_hours != null && fm.estimated_hours > 0
-      ? fm.estimated_hours
-      : manifestHours;
-  const sessions =
-    fm.estimated_sessions != null && fm.estimated_sessions > 0
-      ? fm.estimated_sessions
-      : report.totalCount;
-  const sessionHours = fm.session_hours ?? DEFAULT_SESSION_HOURS;
   const next = nextActionableTask(report.rows);
 
   const tableRows: string[] = [
@@ -397,13 +299,8 @@ export function formatPlanDashboardMarkdown(report: PlanReport): string {
     "| Field | Value |",
     "|-------|-------|",
     `| Completion | **${report.percentDone}%** (${report.doneCount}/${report.totalCount} done) |`,
-    `| Progress | **${report.percentProgress}%** (ready=50%, backlog=25%) |`,
-    `| Total time | ${hours} hours |`,
-    `| Sessions | ${sessions} × ${sessionHours} hours = ${sessions * sessionHours} hours |`,
   ];
 
-  if (fm.target_start) tableRows.push(`| Start | ${fm.target_start} |`);
-  if (fm.target_end) tableRows.push(`| Target end | **${fm.target_end}** |`);
   if (next) {
     tableRows.push(
       `| Next up | **${next.id}** — ${next.title} (\`${next.status}\`) |`,

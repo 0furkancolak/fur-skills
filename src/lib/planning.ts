@@ -13,6 +13,7 @@ tasks/backlog/  Draft tasks (not yet ready for implementation)
 tasks/ready/    Ready-to-implement tasks (prioritized)
 tasks/done/     Completed tasks (kept for reference)
 plans/          Implementation plans with task manifest (see src/references/plan-template.md; fur plan status)
+state.json      Machine-readable state from fur refresh
 progress/       Progress snapshots (fur compact -> progress/archive/)
 context/        Project context: MCP, issue tracker, verification, domain notes
 \`\`\`
@@ -142,6 +143,7 @@ export interface PlanningConfig {
   responseDepth: string;
   evidenceStyle: string;
   verificationStrictness: string;
+  automationMode: string;
 }
 
 export async function writeConfig(
@@ -159,6 +161,7 @@ export async function writeConfig(
     responseDepth: config.responseDepth,
     evidenceStyle: config.evidenceStyle,
     verificationStrictness: config.verificationStrictness,
+    automationMode: config.automationMode,
     questionPolicy: {
       askBeforeSplittingLargeTasks: true,
       askWhenAcceptanceCriteriaMissing: true,

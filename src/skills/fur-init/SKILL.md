@@ -35,7 +35,7 @@ You are a project coordinator. Your job is to set up the planning workspace corr
 
 ## Goal
 
-Create a clean `.fur.planning/` tree, write `config.json` with `questionLevel` and `projectMaturity`, seed `context/` stubs, and surface workspace (`/.fur.workspace/`) registration status — without implementing product code.
+Create a clean `.fur.planning/` tree, ask setup questions in TTY mode, write `config.json` with behavior settings, seed `context/` stubs, and surface workspace (`/.fur.workspace/`) registration status — without implementing product code.
 
 ## When to Use
 
@@ -69,16 +69,16 @@ Do not load unrelated project code or history.
 ### Phase 2: Run the CLI
 
 1. Choose `questionLevel` and `projectMaturity` using AGENTS.md defaults: **new → `high`**, **established → `normal`** unless the user overrides.
-2. Run `fur init` from the project root. In TTY it prompts; in non-TTY/CI it defaults to `--gitignore`, `--project-maturity new`, `--question-level high`.
+2. Run `fur init` from the project root. In TTY it asks for gitignore, project maturity, question level, response depth, evidence style, verification strictness, and automation mode. In non-TTY/CI it defaults to `--gitignore`, `--project-maturity new`, `--question-level high`, `--response-depth standard`, `--evidence-style inline`, `--verification-strictness normal`, `--automation-mode guided`.
 
 Non-interactive examples:
 
 ```bash
-fur init --gitignore --project-maturity new --question-level high
+fur init --gitignore --project-maturity new --question-level high --automation-mode guided
 ```
 
 ```bash
-fur init --gitignore --project-maturity established --question-level normal
+fur init --gitignore --project-maturity established --question-level normal --automation-mode guided
 ```
 
 3. If the user must not ignore planning in git, use `--no-gitignore` and explain the tradeoff (commits may include `.fur.planning/`).
@@ -86,7 +86,7 @@ fur init --gitignore --project-maturity established --question-level normal
 ### Phase 3: Verify layout and config
 
 1. Confirm the **Created structure** below exists (folders + `README.md` + `context/*.md` stubs).
-2. Open `.fur.planning/config.json` and confirm keys: `questionLevel`, `projectMaturity`, `questionPolicy`, `localTaskMode`, `gitignore` (boolean reflects CLI).
+2. Open `.fur.planning/config.json` and confirm keys: `questionLevel`, `projectMaturity`, `responseDepth`, `evidenceStyle`, `verificationStrictness`, `automationMode`, `questionPolicy`, `localTaskMode`, `gitignore` (boolean reflects CLI).
 3. Optionally run `fur progress` — it may say no snapshot yet; that is OK until the first `fur refresh`.
 
 ### Phase 4: Workspace discovery
@@ -132,6 +132,11 @@ If any answer is no, continue working before responding.
 - `normal`: ask when scope, acceptance criteria, tracker target, or verification is missing.
 - `high`: also ask product, edge-case, data, and rollout questions when requirements are thin.
 
+## Automation modes
+
+- `guided`: default; `fur-do` auto-closes only micro tasks, and `fur-done` runs the internal check gate for standard/major tasks.
+- `streamlined`: same safety gates, but agents should choose the fastest allowed path when config and risk permit.
+
 ## Rules
 
 - Do not implement application code or create tracker issues during init.
@@ -152,6 +157,10 @@ If any answer is no, continue working before responding.
 - .gitignore updated (fur planning): yes / no / skipped
 - questionLevel: low | normal | high
 - projectMaturity: new | established
+- responseDepth: concise | standard | deep
+- evidenceStyle: paths-only | inline | inline-plus-paths
+- verificationStrictness: loose | normal | strict
+- automationMode: guided | streamlined
 - Workspace config: found [path] | not found
 - Repo registered in workspace: yes [id] | no (action: add repositories[] entry)
 - Next CLI hints: fur refresh | fur task (skill)
