@@ -15,3 +15,5 @@ dist/
 *.p12
 
 .mypy_cache/
+# Fur agent planning workspace
+.fur.planning/

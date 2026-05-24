@@ -65,7 +65,7 @@ Load in this order:
 3. `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
 4. `progress/latest.md` for current project state.
 5. Existing tasks in `tasks/ready/` and `tasks/backlog/` to avoid duplication.
-6. `src/references/superpowers-bridge.md` when deciding whether heavier methodology is appropriate.
+6. `src/references/superpowers-bridge.md` before deciding whether heavier methodology is appropriate.
 
 Do not load unrelated history.
 
@@ -89,17 +89,26 @@ Pick exactly one primary mode:
 | Next work | "What's next?", "what should I do?" |
 | Split / plan | Explicitly too big for one session |
 
-### Phase 2b: Optional methodology bridge
+### Phase 2b: Methodology bridge triage
 
-Use fur-skills task creation by default. Do not delegate simple task creation, issue import, tracker routing, next-work selection, or tiny tasks.
+Fur owns task creation, tracker routing, plan manifests, `questionLevel`, `responseDepth`, and final handoff. Superpowers is a methodology bridge, not a replacement task system.
 
-If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider Superpowers only for heavier cases:
+Always make an explicit bridge decision before writing artifacts:
 
-- Use `superpowers:brainstorming` when the task is ambiguous, product-heavy, architecture-heavy, or feature-design-heavy.
-- Use `superpowers:writing-plans` when an approved spec/design needs to become an implementation plan.
-- If Superpowers is unavailable and mode is `optional`, continue with fur-skills planning and record the fallback.
+| Decision | Use when | Action |
+|---|---|---|
+| Fur-only | Tiny, clear, local task; issue import; tracker routing; next-work selection; typo/docs/config chore with obvious AC. | Continue here; do not add `methodology_bridge` unless the user asked about it. |
+| `superpowers:brainstorming` | Intent is ambiguous; product behavior is not settled; UX/API/architecture choices exist; feature design is needed; task scope depends on user goals or rollout/edge-case policy. | Use brainstorming before creating a `ready/` task. Treat its approved design/spec as planning input, then return here to write Fur artifacts. |
+| `superpowers:writing-plans` | A spec/design is already approved and needs a multi-step implementation plan. | Use writing-plans, then mirror the next actionable slice into Fur `plans/` / `tasks/` as needed. |
+| Fur fallback | Superpowers is unavailable and config mode is `optional`. | Continue with Fur planning and record `fallback: fur-skills` only when bridge routing materially affected the decision. |
 
-Never delegate blindly. Fur remains responsible for task files, tracker routing, plan manifests, `questionLevel`, `responseDepth`, and final handoff.
+Bridge selection rules:
+
+1. If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, prefer `superpowers:brainstorming` for ambiguous/product-heavy/architecture-heavy/feature-design-heavy requests instead of inventing AC.
+2. If config has `methodology.superpowers.mode: required` and the selected Superpowers skill is unavailable, stop with `blocked-config`.
+3. If mode is `optional`, lack of Superpowers must not block Fur planning; ask the missing clarification questions yourself and keep the task in `backlog/` until ready criteria are met.
+4. Never delegate tiny, clear, tracker-routing-only, issue-import-only, or next-work-selection requests to Superpowers.
+5. When a bridge skill is selected, obey that skill's approval gates before writing implementation-ready Fur tasks.
 
 ### Phase 3: Resolve tracker (if external)
 
@@ -109,11 +118,28 @@ Never delegate blindly. Fur remains responsible for task files, tracker routing,
 
 ### Phase 4: Clarify (questionLevel)
 
-1. Prefer **repo discovery** (read code, existing tasks, `plans/`, `progress/latest.md`) over asking the user.
-2. Before writing a `ready/` task, confirm four fields: intended behavior change, completion criteria, verification method, and scope boundary.
-3. Apply `questionLevel` thresholds from `fur-init` / AGENTS.md: low = blockers only; normal = missing AC or verification; high = product/edge/rollout when thin.
-4. If required information is missing after discovery, ask 1-3 concrete questions and stop. If the user cannot answer yet, create only a `backlog/` draft with `Open Questions`.
-5. Every local task must gain **Acceptance criteria** (checkboxes) and **Verification** (commands or explicit manual steps) before promotion to `ready/`.
+1. Prefer **repo discovery** (read code, existing tasks, `plans/`, `progress/latest.md`) before asking the user, but do not use discovery as an excuse to invent product intent.
+2. Before writing a `ready/` task, establish the ready gate:
+   - Intended behavior change: what observable behavior should change?
+   - Completion criteria: how will the user know it is done?
+   - Verification method: command or manual check that can prove completion.
+   - Scope boundary: what is explicitly out of scope?
+3. Apply `questionLevel` thresholds from `fur-init` / AGENTS.md:
+   - `low`: ask only when a blocker prevents a safe task or tracker route.
+   - `normal`: ask when AC, verification, or scope boundary is missing or contradictory.
+   - `high`: ask when product intent, edge cases, rollout expectations, UX/API behavior, or risk tolerance are thin.
+4. If bridge triage selected `superpowers:brainstorming`, use it before task writing; its clarifying dialogue satisfies this phase only after a design/spec is approved.
+5. If required information is missing after discovery, ask 1-3 concrete questions and stop. Prefer one high-signal question when possible; use 2-3 only when each answer blocks a different ready-gate field.
+6. If the user cannot answer yet, create only a `backlog/` draft with `Open Questions`; do not promote it to `ready/`.
+7. Every local task must gain **Acceptance criteria** (checkboxes) and **Verification** (commands or explicit manual steps) before promotion to `ready/`.
+
+Clarification bias:
+
+- For vague input, ask before writing a `ready/` task.
+- For large input dumps, extract the likely goal, then ask the smallest question that chooses the next slice.
+- For external issues with vague titles like "improve performance", ask for the metric, target area, or reproduction path unless the issue body already provides it.
+- For high-risk areas (auth, billing, data migration, security, privacy), ask about expected behavior and rollback/verification unless already explicit.
+- If you skip questions, record the reason in `## Clarifications` (`none — AC, verification, and scope boundary were explicit in ...`).
 
 ### Phase 4b: Size the task
 
@@ -146,7 +172,9 @@ Assign exactly one `Task size` in the task body:
 Before finalizing, verify:
 - Did I create a task small enough for one `fur-do` session?
 - Did every task have acceptance criteria and verification?
+- Did I make and apply a methodology bridge decision?
 - Did I respect `questionLevel` when deciding whether to ask the user?
+- Did I avoid inventing missing product intent when I should have asked or used brainstorming?
 - Did I match the output contract for this skill class?
 - Did I suggest the correct next skill?
 
@@ -169,9 +197,11 @@ If any answer is no, continue working before responding.
 - Do not implement product code in this skill.
 - Do not write time, duration, session, due-date, or target-date estimates.
 - Do not invent tracker metadata (labels, assignees, statuses, IDs).
+- Do not invent product intent, edge-case policy, or rollout expectations to avoid asking a question.
 - Keep each task small enough for **one** focused `fur-do` session; split instead of bundling.
 - Ambiguous external references → question, never silent default.
 - Deeper questioning is governed by `questionLevel`; do not spawn a separate "interview" skill.
+- `superpowers:brainstorming` is the preferred bridge for ambiguous product, architecture, UX/API, or feature-design requests when the bridge is enabled.
 - External writes require explicit user approval **or** clear workspace permission (AGENTS.md).
 - Long research belongs in `plans/` or `context/archive/` with a short pointer in the task file.
 
@@ -195,7 +225,7 @@ If any answer is no, continue working before responding.
 
 ## Clarifications
 
-[questions asked, or "none"]
+[questions asked, or "none — reason questions were not needed"]
 
 ## Risks
 
@@ -225,9 +255,11 @@ methodology_bridge:
 - Do not invent tracker metadata without config permission.
 - Do not skip acceptance criteria or verification.
 - Do not promote a task to `ready/` while required clarification fields are missing.
+- Do not create a `ready/` task from ambiguous product intent without questions or `superpowers:brainstorming`.
 - Do not include time or date estimates in plan output.
 - Do not guess external tracker routing when ambiguous.
 - Do not delegate tiny, clear, tracker-routing-only, or issue-import-only work to Superpowers.
+- Do not select a Superpowers bridge and then bypass its approval gates.
 - Do not forget to suggest the next skill.
 
 ## Examples

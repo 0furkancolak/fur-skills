@@ -38,7 +38,7 @@ Use `fur-skills` flow when:
 
 ## When to delegate to Superpowers
 
-Delegate only when the task benefits from heavier methodology:
+Delegate only when the task benefits from heavier methodology. For `fur-task`, this should be a real routing decision, not an afterthought: ambiguous product, UX/API, architecture, or feature-design requests should normally go through `superpowers:brainstorming` when the bridge is enabled and available.
 
 - Ambiguous feature, design, product, or architecture work.
 - Approved spec/design needs implementation planning.
@@ -52,7 +52,7 @@ Delegate only when the task benefits from heavier methodology:
 
 | Fur skill | Optional Superpowers delegation |
 |---|---|
-| `fur-task` | `superpowers:brainstorming` for ambiguous/product/architecture/design-heavy work; `superpowers:writing-plans` for approved specs/designs that need implementation plans. |
+| `fur-task` | `superpowers:brainstorming` for ambiguous/product/architecture/UX/API/design-heavy work, especially when AC would otherwise be invented; `superpowers:writing-plans` for approved specs/designs that need implementation plans. |
 | `fur-do` | `superpowers:using-git-worktrees` when implementation should not happen on the current branch; `superpowers:test-driven-development` for production behavior changes, critical flows, or bugfixes needing acceptance tests; `superpowers:subagent-driven-development` for approved multi-task plans when subagents are available; `superpowers:executing-plans` for approved multi-task plans without subagents. |
 | `fur-debug` | `superpowers:systematic-debugging` when root cause is unknown; `superpowers:verification-before-completion` after a fix must be verified. |
 | `fur-check` | `superpowers:verification-before-completion` when `verificationStrictness` is strict or critical production behavior changed; `superpowers:requesting-code-review` when independent review is required; `superpowers:receiving-code-review` when review feedback must be processed. |
