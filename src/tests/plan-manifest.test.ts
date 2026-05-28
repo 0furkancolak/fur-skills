@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { tmpdir } from "node:os";
 import {
   computePlanMetrics,
+  computeReadyBatch,
   formatPlanDashboardMarkdown,
   formatProgressBar,
   loadPlan,
@@ -29,6 +30,11 @@ estimated_tasks: 3
 | T1 | First | phase-1 | S | ready | tasks/ready/20260101-1000-first.md |
 | T2 | Second | phase-1 | M | planned | |
 | T3 | Third | phase-2 | L | planned | |
+
+## Dependencies
+
+- T2 blocks on T1
+- T3 blocks on T2
 `;
 
 describe("plan-manifest", () => {
@@ -103,6 +109,10 @@ describe("plan-manifest", () => {
     expect(report!.rows[0]!.id).toBe("T1");
     expect(report!.rows[0]!.status).toBe("ready");
     expect(report!.rows[1]!.status).toBe("planned");
+    expect(report!.dependencies).toEqual({
+      T2: ["T1"],
+      T3: ["T2"],
+    });
   });
 
   test("reconcilePlanFromDisk updates status from task folders", async () => {
@@ -117,5 +127,79 @@ describe("plan-manifest", () => {
     const reconciled = await reconcilePlanFromDisk(report!, root);
     expect(reconciled.rows[0]!.status).toBe("ready");
     expect(reconciled.rows[0]!.taskFile).toContain("tasks/ready/");
+  });
+
+  test("computeReadyBatch returns unblocked independent ready tasks", async () => {
+    await writeFile(
+      join(root, ".fur.planning", "plans", "parallel.md"),
+      `---
+plan_version: 2
+slug: parallel
+title: Parallel
+estimated_tasks: 4
+---
+
+# Parallel
+
+## Task manifest
+
+| ID | Title | Phase | Est. | Status | Task file |
+|----|-------|-------|------|--------|-----------|
+| T1 | Foundation | phase-1 | S | done | tasks/done/20260101-0900-foundation.md |
+| T2 | A | phase-2 | S | ready | tasks/ready/20260101-1000-a.md |
+| T3 | B | phase-2 | S | ready | tasks/ready/20260101-1000-b.md |
+| T4 | C | phase-2 | S | ready | tasks/ready/20260101-1000-c.md |
+
+## Dependencies
+
+- T2, T3, T4 blocks on T1
+`,
+    );
+
+    const report = await loadPlan("plans/parallel.md", root);
+    const batch = computeReadyBatch(report!, "subagent-driven");
+    expect(batch).toEqual({
+      plan: "parallel",
+      group: "parallel-wave-2",
+      taskIds: ["T2", "T3", "T4"],
+      taskFiles: [
+        "tasks/ready/20260101-1000-a.md",
+        "tasks/ready/20260101-1000-b.md",
+        "tasks/ready/20260101-1000-c.md",
+      ],
+      execution: "subagent-driven",
+    });
+  });
+
+  test("computeReadyBatch excludes ready tasks blocked by another ready task", async () => {
+    await writeFile(
+      join(root, ".fur.planning", "plans", "blocked-wave.md"),
+      `---
+plan_version: 2
+slug: blocked-wave
+title: Blocked wave
+estimated_tasks: 3
+---
+
+# Blocked wave
+
+## Task manifest
+
+| ID | Title | Phase | Est. | Status | Task file |
+|----|-------|-------|------|--------|-----------|
+| T1 | Foundation | phase-1 | S | done | tasks/done/20260101-0900-foundation.md |
+| T2 | A | phase-2 | S | ready | tasks/ready/20260101-1000-a.md |
+| T3 | B | phase-2 | S | ready | tasks/ready/20260101-1000-b.md |
+
+## Dependencies
+
+- T2 blocks on T1
+- T3 blocks on T2
+`,
+    );
+
+    const report = await loadPlan("plans/blocked-wave.md", root);
+    const batch = computeReadyBatch(report!, "subagent-driven");
+    expect(batch?.taskIds).toEqual(["T2"]);
   });
 });

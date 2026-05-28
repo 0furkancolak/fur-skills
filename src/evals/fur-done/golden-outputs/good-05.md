@@ -11,13 +11,17 @@
 
 Internal check gate passed and no ready tasks remain.
 
+| AC | Status | Evidence |
+|---|---|---|
+| Final queued task closed | met | task moved to `tasks/done/` |
+
 ## Risks and Follow-ups
 
-Use `fur-task` to create the next unit of work.
+None. This work is complete; new work can be started when desired.
 
 ```yaml
 status: closed
-next_skill: fur-task
+next_skill: fur-status
 internal_check: ready
 scope_respected: true
 verification_state: complete

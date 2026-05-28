@@ -23,6 +23,16 @@ interface SuperpowersBridgeConfig {
   enabled?: boolean;
   mode?: string;
   fallback?: string;
+  brainstormingPolicy?: string;
+}
+
+interface PlanningRuntimeConfig {
+  planning?: {
+    planLock?: string | boolean;
+    activePlan?: string;
+    defaultExecution?: string;
+    batchExecution?: string | boolean;
+  };
 }
 
 async function readSuperpowersBridge(
@@ -41,6 +51,18 @@ async function readSuperpowersBridge(
   }
 }
 
+async function readPlanningRuntimeConfig(
+  projectRoot: string,
+): Promise<PlanningRuntimeConfig> {
+  const configPath = join(planningDir(projectRoot), "config.json");
+  if (!existsSync(configPath)) return {};
+  try {
+    return JSON.parse(await readFile(configPath, "utf-8")) as PlanningRuntimeConfig;
+  } catch {
+    return {};
+  }
+}
+
 function formatSuperpowersBridge(
   bridge: SuperpowersBridgeConfig | null,
 ): string {
@@ -49,6 +71,7 @@ function formatSuperpowersBridge(
   enabled: ${String(bridge.enabled)}
   mode: ${bridge.mode ?? "unknown"}
   fallback: ${bridge.fallback ?? "unknown"}
+  brainstormingPolicy: ${bridge.brainstormingPolicy ?? "config-mandatory"}
 `;
 }
 
@@ -110,6 +133,7 @@ export async function cmdRefresh(): Promise<number> {
 
   const workspaceConfigPath = findWorkspaceConfig(projectRoot);
   const superpowersBridge = await readSuperpowersBridge(projectRoot);
+  const runtimeConfig = await readPlanningRuntimeConfig(projectRoot);
   let trackerSection = "";
   if (workspaceConfigPath) {
     trackerSection += `- Workspace config: ${workspaceConfigPath}\n`;
@@ -190,6 +214,20 @@ ${trackerSection}
 ## Methodology bridge
 
 ${formatSuperpowersBridge(superpowersBridge)}
+## Plan lock
+
+- Enabled: ${String(state.planLock.enabled)}
+- Source: ${state.planLock.source}
+- Active plan: ${state.planLock.activePlan ?? "none"}
+- Default execution: ${state.defaultExecution}
+- Config planLock: ${String(runtimeConfig.planning?.planLock ?? "enabled")}
+- Batch execution: ${String(runtimeConfig.planning?.batchExecution ?? "enabled")}
+- Ready batch: ${
+    state.readyBatch
+      ? `${state.readyBatch.group} (${state.readyBatch.taskIds.join(", ")})`
+      : "none"
+  }
+
 ## Latest ready tasks
 
 ${latestReady || ""}
@@ -239,10 +277,21 @@ export async function cmdProgress(): Promise<number> {
   console.log(`- Done: ${await countMd(join(planning, "tasks", "done"))}`);
   console.log(`- Plans: ${await countMd(join(planning, "plans"))}`);
   const superpowersBridge = await readSuperpowersBridge(projectRoot);
+  const runtimeConfig = await readPlanningRuntimeConfig(projectRoot);
   console.log("");
   console.log("Methodology bridge");
   console.log("------------------");
   console.log(formatSuperpowersBridge(superpowersBridge).trimEnd());
+  console.log("");
+  console.log("Plan lock");
+  console.log("---------");
+  console.log(`- Config planLock: ${String(runtimeConfig.planning?.planLock ?? "enabled")}`);
+  console.log(
+    `- Default execution: ${runtimeConfig.planning?.defaultExecution ?? "subagent-driven"}`,
+  );
+  console.log(
+    `- Batch execution: ${String(runtimeConfig.planning?.batchExecution ?? "enabled")}`,
+  );
   const planPaths = await listPlans(projectRoot);
   if (planPaths.length > 0) {
     console.log("");

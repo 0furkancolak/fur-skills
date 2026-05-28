@@ -11,6 +11,10 @@
 
 Internal check gate could not determine the root cause: the task behavior appears implemented, but the test suite fails in an unrelated setup phase.
 
+| AC | Status | Evidence |
+|---|---|---|
+| Verified closure | partial | unrelated setup failure blocks closure evidence |
+
 ## Risks and Follow-ups
 
 Route to `fur-debug` to isolate the unknown failure before closure.

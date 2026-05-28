@@ -167,7 +167,13 @@ export async function writeConfig(
         enabled: true,
         mode: "optional",
         fallback: "fur-skills",
+        brainstormingPolicy: "config-mandatory",
       },
+    },
+    planning: {
+      planLock: "enabled",
+      defaultExecution: "subagent-driven",
+      batchExecution: "enabled",
     },
     questionPolicy: {
       askBeforeSplittingLargeTasks: true,

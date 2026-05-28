@@ -1,41 +1,34 @@
-# Golden Output 1: Vague Feature Request
+# Golden Output 1: Brainstorming Gate
 
-## Task Understanding
+## Task Result
 
-- **Goal**: Turn vague user request into a focused, actionable task.
-- **Scope boundaries**: Decomposition only; no implementation.
-- **Assumptions**: User intent is valid and project context is available.
-- **Non-goals**: Writing code, creating tracker issues without permission.
+- Mode: created
+- Task size: standard
+- Local task(s): `tasks/backlog/20260115-1000-add-feature.md`
+- Plan: none
+- Tracker: local
+- questionLevel / projectMaturity: normal / established
 
-## Acceptance Criteria Coverage
+| AC | Status | Evidence |
+|---|---|---|
+| Behavior change identified | partial | brainstorming approval is still required |
+| Verification method defined | partial | draft contains proposed command |
 
-| AC | Status | Evidence | Notes |
-|---|---|---|---|
-| Task created with AC | met | `tasks/ready/20260115-1000-add-feature.md` | 3 AC defined |
-| Verification section added | met | same file | Commands listed |
+## Clarifications
 
-## Files Changed
+`superpowers:brainstorming` is required by `brainstormingPolicy: config-mandatory`; the task stays in backlog until the user approves the design/spec and confirms acceptance criteria.
 
-- `tasks/ready/20260115-1000-add-feature.md` — new task file
+## Next
 
-## Verification
-
-- File exists and contains AC + verification.
-
-## Risks and Follow-ups
-
-- None. Risk level: **none**.
-
-## Control Plane
+Continue `superpowers:brainstorming`; promote the task to `ready/` only after approval.
 
 ```yaml
-status: created
-next_skill: fur-do
-scope_respected: true
-verification_state: not-applicable
-risk_level: none
+status: blocked
+next_skill: fur-task
+methodology_bridge:
+  provider: superpowers
+  selected_skill: superpowers:brainstorming
+plan_lock:
+  active_plan: null
+  source: none
 ```
-
-## Suggested Next Step
-
-Route to `fur-do` on the ready task.

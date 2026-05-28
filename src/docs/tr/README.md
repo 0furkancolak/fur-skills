@@ -92,7 +92,7 @@ fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidi
 
 ## Opsiyonel Superpowers Köprüsü
 
-Superpowers sadece belirsiz, riskli, debug-heavy, TDD-heavy, review-heavy veya çok adımlı işler için opsiyonel metodoloji köprüsüdür. Küçük ve net işlerde fur-skills flow kullanılır. Superpowers yoksa fallback fur-skills flow'dur.
+Superpowers task/plan üretiminde varsayılan brainstorming kapısıdır (`brainstormingPolicy: config-mandatory`). Küçük ve net işlerde fur-skills flow yalnızca config açıkça opt-out verirse veya Superpowers `optional` modda yoksa kullanılır. Çok adımlı planlarda varsayılan uygulama `subagent-driven` olur, `batchExecution` bağımsız ready wave'lerin tek batch olarak yürütülmesini sağlar ve `planLock` farklı conversation'ların birbirinin işine atlamasını engeller.
 
 Detay: [`superpowers-bridge.md`](superpowers-bridge.md)
 

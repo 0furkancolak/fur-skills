@@ -23,7 +23,7 @@ quality_contract:
   must_include_user_facing_explanation: true
   self_check_required: true
 handoff:
-  success_next: fur-do
+  success_next: fur-status
   ambiguous_scope_next: fur-task
   unknown_failure_next: fur-debug
 ---
@@ -43,6 +43,7 @@ Run the internal check gate, move verified task markdown to `tasks/done/`, refre
 ## When to Use
 
 - `fur-do` has implemented a standard or major task and the user asks to close it.
+- `fur-do` has implemented a verified batch wave where every task shares the same active plan lock and `Batch group`.
 - `fur-check` outcome is **Ready** (optional prior evidence) or `fur-done` can run the same acceptance gate itself.
 - All acceptance criteria are satisfied or waived in writing by the user.
 - You need a dated paper trail in `progress/` for long sessions.
@@ -58,7 +59,7 @@ Run the internal check gate, move verified task markdown to `tasks/done/`, refre
 Load in this order:
 1. Active task file.
 2. Latest `fur-do` output, `fur-check` output, or user waiver.
-3. `.fur.planning/state.json` when present.
+3. `.fur.planning/state.json` when present, including plan lock state.
 4. `.fur.workspace/config.json` if tracker sync is in play.
 5. `progress/latest.md` for continuity.
 6. `src/references/superpowers-bridge.md` when branch/worktree finishing decisions are in scope.
@@ -78,6 +79,13 @@ Do not load unrelated tasks or history.
 
 1. Move from `tasks/backlog/` or `tasks/ready/` → `tasks/done/` (same filename unless a naming collision forces rename — avoid collisions by planning filenames in `fur-task`).
 2. Update any in-file `Sync status` field to reflect local completion (`closed` locally even if external pending).
+
+Batch closure:
+
+1. Accept multi-task closure only when every task shares the same `Plan lock` and `Batch group`.
+2. Run or confirm the internal check gate per task before moving files.
+3. Move verified task files to `tasks/done/`, update each matching manifest row to `done`, and leave any failed task in `tasks/ready/`.
+4. If one task fails but others are safely verified, close only the verified subset and route the failed task back to `fur-do` or `fur-debug`.
 
 ### Phase 3: Progress snapshot
 
@@ -119,7 +127,10 @@ If any answer is no, continue working before responding.
 
 1. If the closed task references `Plan:` / `Plan task ID:`, update that row to `done` in `plans/<slug>.md` manifest (Status + Task file path).
 2. Re-read manifest + task folders; render only the compact one-line `## Plan summary` from `src/references/plan-ai-output.md` unless the user asks for the full dashboard.
-3. Do not paste plan table diffs, schedule fields, target dates, phase tables, or old/new duplicate rows in normal closure output.
+3. If the plan still has ready work, suggest only that same plan's next task. Do not suggest unrelated ready tasks.
+4. If the plan is complete, say the work is complete and new work can be started when desired; do not route to `fur-task`.
+5. If there is no plan lock and multiple active plans or ready tasks exist, do not select another task; route to `fur-status` for orientation or ask for an explicit plan/task.
+6. Do not paste plan table diffs, schedule fields, target dates, phase tables, or old/new duplicate rows in normal closure output.
 
 ### Phase 7: Report
 
@@ -133,6 +144,8 @@ If any answer is no, continue working before responding.
 - If config forbids external writes, stop after local move + `fur refresh`.
 - Avoid spawning new tasks automatically; note follow-up **risks** instead unless the user wants `fur-task`.
 - Superpowers branch finishing does not replace Fur local closure, progress snapshots, or permitted tracker sync.
+- Completion does not imply permission to jump to another conversation's task. Stay within the closed task's plan lock or stop at status.
+- Batch closure is limited to one active plan lock and one `Batch group`; never batch-close arbitrary ready tasks.
 
 ## Output
 
@@ -163,9 +176,13 @@ If any answer is no, continue working before responding.
 
 ```yaml
 status: closed | local-only | blocked
-next_skill: fur-do | fur-task | fur-debug | fur-status
+next_skill: fur-do | fur-debug | fur-status
 # Optional only when useful:
 internal_check: ready | needs-changes | needs-verification
+batch:
+  group: auth-refactor-wave-2
+  closed_task_ids: [T2, T3]
+  remaining_task_ids: [T4]
 methodology_bridge:
   provider: superpowers
   selected_skill: superpowers:finishing-a-development-branch
@@ -191,4 +208,4 @@ Use these examples to calibrate response depth, evidence quality, output structu
 
 ## Suggested Next Step
 
-`fur-do` on the next ready task when one exists, `fur-task` when the queue is empty or stale, or `fur-status` only when the user wants orientation.
+If the closed task belongs to an incomplete plan, route to `fur-do` only for that same plan's next ready task. If the plan is complete or no plan lock is clear, say the work is complete and route to `fur-status`; start new work only when the user explicitly asks.

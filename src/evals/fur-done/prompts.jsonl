@@ -14,7 +14,7 @@
 {"input": "fur-done after a task that required user approval for a commit that was never given.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
 {"input": "Close task and the snapshot directory is not writable.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
 {"input": "Done on a task where the user explicitly asked not to sync with external trackers.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
-{"input": "Close multiple tasks at once. Should handle batching or refuse.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 2}}
+{"input": "Close multiple tasks at once. Should close only when they share one active plan lock and Batch group.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 2}}
 {"input": "fur-done with a task that has a verificationState: partial. Should flag for follow-up.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
 {"input": "Done after a security fix. Should verify no secrets were committed in the snapshot.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 2, "evidence": 2, "risk": 2}}
 {"input": "Mark task done and the progress snapshot should reference the correct skill version.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}

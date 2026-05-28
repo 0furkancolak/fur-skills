@@ -12,15 +12,22 @@ Superpowers içeriği bu repoya kopyalanmaz, fork edilmez, vendor edilmez ve oto
     "superpowers": {
       "enabled": true,
       "mode": "optional",
-      "fallback": "fur-skills"
+      "fallback": "fur-skills",
+      "brainstormingPolicy": "config-mandatory"
     }
+  },
+  "planning": {
+    "planLock": "enabled",
+    "defaultExecution": "subagent-driven",
+    "batchExecution": "enabled"
   }
 }
 ```
 
 ## fur-skills flow ne zaman kullanılır?
 
-- İş küçük ve netse.
+- Config açıkça opt-out veriyorsa veya Superpowers `optional` modda kullanılamıyorsa.
+- İş küçük, net ve minimum ready-gate bilgileri tamamsa.
 - Production davranışı değişmiyorsa.
 - Kök neden zaten biliniyorsa.
 - Çok adımlı plan yürütme gerekmiyorsa.
@@ -28,6 +35,7 @@ Superpowers içeriği bu repoya kopyalanmaz, fork edilmez, vendor edilmez ve oto
 
 ## Superpowers ne zaman seçilir?
 
+- Task/plan üretimi (`brainstormingPolicy: config-mandatory` varsayılanı).
 - Belirsiz ürün, feature, tasarım veya mimari çalışması.
 - Onaylanmış spec/design için uygulama planı çıkarma.
 - Kök nedeni bilinmeyen debug.
@@ -40,11 +48,11 @@ Superpowers içeriği bu repoya kopyalanmaz, fork edilmez, vendor edilmez ve oto
 
 | Fur skill | Opsiyonel Superpowers delegasyonu |
 |---|---|
-| `fur-task` | `brainstorming`, `writing-plans` |
-| `fur-do` | `using-git-worktrees`, `test-driven-development`, `subagent-driven-development`, `executing-plans` |
+| `fur-task` | task/plan üretiminde varsayılan `brainstorming`, onaylı spec için `writing-plans` |
+| `fur-do` | `using-git-worktrees`, `test-driven-development`, multi-task planlarda varsayılan `subagent-driven-development`, fallback `executing-plans` |
 | `fur-debug` | `systematic-debugging`, `verification-before-completion` |
 | `fur-check` | `verification-before-completion`, `requesting-code-review`, `receiving-code-review` |
 | `fur-done` | `finishing-a-development-branch` |
 | `fur-status` | delegasyon yok; sadece bridge durumunu raporlar |
 
-Küçük ve net işlerde Superpowers seçilmemelidir.
+`planning.planLock` açıkken ajanlar aynı projedeki başka conversation'ın aktif planına otomatik atlamaz; plan net değilse explicit seçim ister. `planning.batchExecution` açıkken aynı plan lock içindeki bağımsız ready wave tek `fur-do` / `fur-done` batch'i olarak yürütülebilir.

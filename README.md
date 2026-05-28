@@ -184,7 +184,7 @@ Defaults:
 
 fur-skills can optionally delegate heavier methodology steps to Superpowers. Fur remains the primary workflow and owns task state, progress, tracker routing, and final handoffs.
 
-Use fur-skills flow for small, clear tasks. Use optional Superpowers delegation for ambiguous, risky, debugging-heavy, TDD-heavy, review-heavy, branch-finishing, or multi-step work. Superpowers is never installed automatically and is not required by default.
+By default, `fur-task` uses Superpowers brainstorming for task/plan creation, and small clear tasks use fur-skills flow only when config explicitly opts out or Superpowers is unavailable in optional mode. Use Superpowers delegation for risky, debugging-heavy, TDD-heavy, review-heavy, branch-finishing, or multi-step work. Superpowers is never installed automatically and is not required by default.
 
 Default config:
 
@@ -194,18 +194,26 @@ Default config:
     "superpowers": {
       "enabled": true,
       "mode": "optional",
-      "fallback": "fur-skills"
+      "fallback": "fur-skills",
+      "brainstormingPolicy": "config-mandatory"
     }
+  },
+  "planning": {
+    "planLock": "enabled",
+    "defaultExecution": "subagent-driven",
+    "batchExecution": "enabled"
   }
 }
 ```
+
+With this default, `fur-task` and split/plan creation use `superpowers:brainstorming` unless config explicitly opts out for a small local task class. Multi-task plans prefer subagent-driven execution, `batchExecution` lets independent ready waves run together, and `planLock` prevents one conversation from jumping into another plan's queued task.
 
 Routing:
 
 | Fur skill | Optional Superpowers delegation |
 |---|---|
-| `fur-task` | `brainstorming`, `writing-plans` |
-| `fur-do` | `using-git-worktrees`, `test-driven-development`, `subagent-driven-development`, `executing-plans` |
+| `fur-task` | `brainstorming` by default for task/plan creation, `writing-plans` for approved specs |
+| `fur-do` | `using-git-worktrees`, `test-driven-development`, `subagent-driven-development` for approved multi-task plans, `executing-plans` fallback |
 | `fur-debug` | `systematic-debugging`, `verification-before-completion` |
 | `fur-check` | `verification-before-completion`, `requesting-code-review`, `receiving-code-review` |
 | `fur-done` | `finishing-a-development-branch` |
