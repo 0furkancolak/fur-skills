@@ -111,6 +111,10 @@ Before finalizing, I verified:
 - [x] Did I separate facts from assumptions? Yes — assumptions labeled explicitly.
 - [x] Did I report checks and residual risk honestly? Yes — verification table includes gaps.
 
+## Risks and Follow-ups
+
+- SSR theme flash was mitigated with an inline pre-hydration script. Risk level: **low**.
+
 ## Control Plane
 
 ```yaml

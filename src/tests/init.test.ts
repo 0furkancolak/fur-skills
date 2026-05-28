@@ -38,7 +38,13 @@ describe("cmdInit", () => {
         enabled: true,
         mode: "optional",
         fallback: "fur-skills",
+        brainstormingPolicy: "config-mandatory",
       },
+    });
+    expect(config.planning).toEqual({
+      planLock: "enabled",
+      defaultExecution: "subagent-driven",
+      batchExecution: "enabled",
     });
   });
 });

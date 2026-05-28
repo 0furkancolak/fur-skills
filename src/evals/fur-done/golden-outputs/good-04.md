@@ -11,13 +11,17 @@
 
 Internal check gate passed. External tracker closure was skipped because write permission was not configured.
 
+| AC | Status | Evidence |
+|---|---|---|
+| Local task closed | met | task moved to `tasks/done/` |
+
 ## Risks and Follow-ups
 
 Manual tracker closure may still be needed outside Fur.
 
 ```yaml
 status: local-only
-next_skill: fur-do
+next_skill: fur-status
 internal_check: ready
 scope_respected: true
 verification_state: complete

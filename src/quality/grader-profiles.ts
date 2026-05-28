@@ -43,6 +43,12 @@ const ORCHESTRATOR_HEADINGS = [
   "## Next Action",
 ];
 
+const DONE_HEADINGS = [
+  "## Done",
+  "## Verification Summary",
+  "## Risks and Follow-ups",
+];
+
 const DIAGNOSTIC_HEADINGS = [
   "## Root Cause",
   "## Feedback Loop",
@@ -62,7 +68,7 @@ export const GRADER_PROFILES: Record<SkillName, GraderProfile> = {
   "fur-ui-design": { requiredHeadings: PLANNER_HEADINGS },
   "fur-debug": { requiredHeadings: DIAGNOSTIC_HEADINGS },
   "fur-init": { requiredHeadings: ORCHESTRATOR_HEADINGS },
-  "fur-done": { requiredHeadings: ORCHESTRATOR_HEADINGS },
+  "fur-done": { requiredHeadings: DONE_HEADINGS },
   "fur-status": { requiredHeadings: ORCHESTRATOR_HEADINGS },
 };
 

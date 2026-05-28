@@ -41,8 +41,14 @@
     "superpowers": {
       "enabled": true,
       "mode": "optional",
-      "fallback": "fur-skills"
+      "fallback": "fur-skills",
+      "brainstormingPolicy": "config-mandatory"
     }
+  },
+  "planning": {
+    "planLock": "enabled",
+    "defaultExecution": "subagent-driven",
+    "batchExecution": "enabled"
   },
   "questionPolicy": {
     "askBeforeSplittingLargeTasks": true,
@@ -54,7 +60,9 @@
 }
 ```
 
-`methodology.superpowers` opsiyonel metodoloji köprüsünü yönetir. Varsayılan olarak etkindir, `optional` modda çalışır ve Superpowers yoksa `fur-skills` fallback kullanır.
+`methodology.superpowers` opsiyonel metodoloji köprüsünü yönetir. Varsayılan olarak etkindir, `optional` modda çalışır ve Superpowers yoksa `fur-skills` fallback kullanır. `brainstormingPolicy: "config-mandatory"` ile task/plan üretimi varsayılan olarak brainstorming kapısından geçer.
+
+`planning.planLock` aynı projedeki farklı conversation'ların birbirinin aktif planına atlamasını engeller. `planning.defaultExecution: "subagent-driven"` multi-task planlarda varsayılan uygulama yöntemidir. `planning.batchExecution: "enabled"` aynı plan lock içindeki bağımsız ready wave task'larının tek batch olarak yürütülmesini sağlar.
 
 Tracker yönlendirmesi burada değil, workspace config içindedir.
 

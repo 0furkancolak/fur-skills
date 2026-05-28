@@ -11,13 +11,17 @@
 
 Internal check gate passed: all acceptance criteria were mapped, `bun test src/tests` passed, and no blockers remained.
 
+| AC | Status | Evidence |
+|---|---|---|
+| Task behavior complete | met | `bun test src/tests` |
+
 ## Risks and Follow-ups
 
 None.
 
 ```yaml
 status: closed
-next_skill: fur-do
+next_skill: fur-status
 internal_check: ready
 scope_respected: true
 verification_state: complete

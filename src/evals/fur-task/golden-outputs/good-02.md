@@ -1,12 +1,31 @@
-# Golden Output 02: Placeholder
+# Golden Output 2: Small Opt-Out Task
 
-## Control Plane
+## Task Result
+
+- Mode: created
+- Task size: micro
+- Local task(s): `tasks/ready/20260115-1010-readme-install.md`
+- Plan: none
+- Tracker: local
+- questionLevel / projectMaturity: low / established
+
+| AC | Status | Evidence |
+|---|---|---|
+| Scope boundary explicit | met | README install section only |
+| Verification explicit | met | `bun test src/tests` not required; manual README review listed |
+
+## Clarifications
+
+None — config explicitly opted out of mandatory brainstorming for small docs chores, and behavior, success criteria, verification, and scope boundary were explicit.
+
+## Next
+
+Run `fur-do` on the ready task.
 
 ```yaml
-status: implemented
+status: created
 next_skill: fur-do
-scope_respected: true
-verification_state: complete
-risk_level: low
+methodology_bridge:
+  provider: superpowers
+  fallback: fur-skills
 ```
-

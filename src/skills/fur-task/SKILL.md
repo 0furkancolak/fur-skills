@@ -60,7 +60,7 @@ Create or select a focused task with clear acceptance criteria and verification,
 ## Context Loading Contract
 
 Load in this order:
-1. `.fur.planning/config.json` (questionLevel, projectMaturity, questionPolicy, responseDepth, automationMode).
+1. `.fur.planning/config.json` (questionLevel, projectMaturity, questionPolicy, responseDepth, automationMode, methodology.superpowers, planning).
 2. `.fur.planning/state.json` when present.
 3. `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
 4. `progress/latest.md` for current project state.
@@ -97,18 +97,21 @@ Always make an explicit bridge decision before writing artifacts:
 
 | Decision | Use when | Action |
 |---|---|---|
-| Fur-only | Tiny, clear, local task; issue import; tracker routing; next-work selection; typo/docs/config chore with obvious AC. | Continue here; do not add `methodology_bridge` unless the user asked about it. |
-| `superpowers:brainstorming` | Intent is ambiguous; product behavior is not settled; UX/API/architecture choices exist; feature design is needed; task scope depends on user goals or rollout/edge-case policy. | Use brainstorming before creating a `ready/` task. Treat its approved design/spec as planning input, then return here to write Fur artifacts. |
+| Fur-only | Only when `methodology.superpowers.brainstormingPolicy` is explicitly configured to opt out for small local chores, or Superpowers is unavailable and mode is `optional`. | Continue here, but still ask the minimum ready-gate questions before `ready/` promotion. |
+| `superpowers:brainstorming` | Default for task/plan creation when `methodology.superpowers.enabled: true` and `brainstormingPolicy` is missing or `config-mandatory`. | Use brainstorming before creating a `ready/` task or split plan. Treat its approved design/spec as planning input, then return here to write Fur artifacts. |
 | `superpowers:writing-plans` | A spec/design is already approved and needs a multi-step implementation plan. | Use writing-plans, then mirror the next actionable slice into Fur `plans/` / `tasks/` as needed. |
 | Fur fallback | Superpowers is unavailable and config mode is `optional`. | Continue with Fur planning and record `fallback: fur-skills` only when bridge routing materially affected the decision. |
 
 Bridge selection rules:
 
-1. If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, prefer `superpowers:brainstorming` for ambiguous/product-heavy/architecture-heavy/feature-design-heavy requests instead of inventing AC.
-2. If config has `methodology.superpowers.mode: required` and the selected Superpowers skill is unavailable, stop with `blocked-config`.
-3. If mode is `optional`, lack of Superpowers must not block Fur planning; ask the missing clarification questions yourself and keep the task in `backlog/` until ready criteria are met.
-4. Never delegate tiny, clear, tracker-routing-only, issue-import-only, or next-work-selection requests to Superpowers.
-5. When a bridge skill is selected, obey that skill's approval gates before writing implementation-ready Fur tasks.
+1. If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, treat `methodology.superpowers.brainstormingPolicy: config-mandatory` as the default even when the field is absent.
+2. Under `config-mandatory`, use `superpowers:brainstorming` for every plan/task creation request unless config explicitly opts out for the task class. Tiny docs/config chores may skip only when opt-out is explicit.
+3. If brainstorming is required but there is no approved design/spec, do not write a `ready/` task. Ask the next required question or create only a `backlog/` draft with `Open Questions`.
+4. If a design/spec is already approved, route to `superpowers:writing-plans` for multi-step plans; otherwise continue Fur task writing from the approved spec.
+5. If config has `methodology.superpowers.mode: required` and the selected Superpowers skill is unavailable, stop with `blocked-config`.
+6. If mode is `optional`, lack of Superpowers must not block Fur planning; ask the missing clarification questions yourself and keep the task in `backlog/` until ready criteria are met.
+7. Next-work selection and tracker-routing-only imports do not need brainstorming unless they create new scope or AC.
+8. When a bridge skill is selected, obey that skill's approval gates before writing implementation-ready Fur tasks.
 
 ### Phase 3: Resolve tracker (if external)
 
@@ -128,10 +131,11 @@ Bridge selection rules:
    - `low`: ask only when a blocker prevents a safe task or tracker route.
    - `normal`: ask when AC, verification, or scope boundary is missing or contradictory.
    - `high`: ask when product intent, edge cases, rollout expectations, UX/API behavior, or risk tolerance are thin.
-4. If bridge triage selected `superpowers:brainstorming`, use it before task writing; its clarifying dialogue satisfies this phase only after a design/spec is approved.
-5. If required information is missing after discovery, ask 1-3 concrete questions and stop. Prefer one high-signal question when possible; use 2-3 only when each answer blocks a different ready-gate field.
-6. If the user cannot answer yet, create only a `backlog/` draft with `Open Questions`; do not promote it to `ready/`.
-7. Every local task must gain **Acceptance criteria** (checkboxes) and **Verification** (commands or explicit manual steps) before promotion to `ready/`.
+4. `questionLevel: low` never removes the minimum ready gate for task/plan creation. Before `ready/` promotion, behavior change, success criteria, verification, and scope boundary must be explicit.
+5. If bridge triage selected `superpowers:brainstorming`, use it before task writing; its clarifying dialogue satisfies this phase only after a design/spec is approved.
+6. If required information is missing after discovery, ask 1-3 concrete questions and stop. Prefer one high-signal question when possible; use 2-3 only when each answer blocks a different ready-gate field.
+7. If the user cannot answer yet, create only a `backlog/` draft with `Open Questions`; do not promote it to `ready/`.
+8. Every local task must gain **Acceptance criteria** (checkboxes) and **Verification** (commands or explicit manual steps) before promotion to `ready/`.
 
 Clarification bias:
 
@@ -160,8 +164,11 @@ Assign exactly one `Task size` in the task body:
    - Fill YAML frontmatter: `plan_version`, `slug`, `title`, `status`, `estimated_tasks`, `created`, `updated`.
    - Do **not** write schedule fields in new plans.
    - Fill the **Task manifest** table with **every** planned slice (use `planned` until a file exists).
-   - Create only the **next** actionable task file(s) now; do not silently drop future slices from the manifest.
-   - Each created task must include `Plan: plans/<slug>.md` and `Plan task ID: Tn` under Implementation notes.
+   - Fill `Subagent execution notes` with independent slices, suggested worktree/subagent ownership, plan lock, and closure rules.
+   - Create only the **next** actionable wave now; if multiple independent tasks are unblocked and immediately actionable, create task files for all of them.
+   - Keep future blocked tasks as `planned` until their blockers close.
+   - Each created task must include `Plan: plans/<slug>.md`, `Plan task ID: Tn`, `Plan lock: <slug>`, `Parallel/Subagent slice: <slice>`, `Batch group: <slug>-wave-N`, `Batch mode: parallel`, and `Batch dependencies: ...` under Implementation notes.
+   - When no explicit execution preference is supplied, mark multi-task plans for `subagent-driven` execution.
    - In chat, give a compact rollup: `N tasks · X% complete (done Y/N) · next: T1 <title>`.
    - Render compact `## Plan summary` in chat per `src/references/plan-ai-output.md`.
 4. **Tracker sync block**: always fill the template footer (`Source`, `External ID`, `Sync status`, …) — use `unsynced` / `drafted` until an ID exists.
@@ -201,7 +208,8 @@ If any answer is no, continue working before responding.
 - Keep each task small enough for **one** focused `fur-do` session; split instead of bundling.
 - Ambiguous external references → question, never silent default.
 - Deeper questioning is governed by `questionLevel`; do not spawn a separate "interview" skill.
-- `superpowers:brainstorming` is the preferred bridge for ambiguous product, architecture, UX/API, or feature-design requests when the bridge is enabled.
+- `superpowers:brainstorming` is the default task/plan creation bridge when enabled and `brainstormingPolicy` is missing or `config-mandatory`.
+- Do not create a `ready/` task before the brainstorming/spec approval gate when that policy applies.
 - External writes require explicit user approval **or** clear workspace permission (AGENTS.md).
 - Long research belongs in `plans/` or `context/archive/` with a short pointer in the task file.
 

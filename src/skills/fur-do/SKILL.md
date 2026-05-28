@@ -59,6 +59,7 @@ Load in this order:
 3. Project verification defaults (`context/verification.md`).
 4. Only the code paths directly touched by the task.
 5. `src/references/superpowers-bridge.md` when task risk or plan execution may warrant heavier methodology.
+6. `.fur.planning/state.json` to confirm the active plan lock before selecting or executing work.
 
 Do not load unrelated history unless the active task depends on it.
 
@@ -80,16 +81,31 @@ Do not load unrelated history unless the active task depends on it.
 
 Use fur-skills execution for tiny clear fixes and single-scope tasks. Never delegate blindly.
 
-If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider these optional routes:
+If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider these routes:
 
 - `superpowers:using-git-worktrees` when implementation should not happen directly on the current branch.
 - `superpowers:test-driven-development` for production behavior changes, critical flows, and bugfixes with acceptance criteria.
-- `superpowers:subagent-driven-development` when applying an approved multi-task plan and subagents are available.
+- `superpowers:subagent-driven-development` is the default for plan-linked multi-task work when subagents are available and `planning.defaultExecution` is missing or `subagent-driven`.
 - `superpowers:executing-plans` when applying an approved multi-task plan without subagent support.
 
 Superpowers delegation does not replace Fur state management. After delegated execution, update Fur progress/task state as usual.
 
 Fur remains responsible for selected task state, `.fur.planning` progress, `responseDepth`, `verificationStrictness`, acceptance criteria coverage, and final handoff format. If Superpowers is unavailable and mode is `optional`, continue with fur-skills execution and record the fallback.
+
+Plan lock rules:
+
+1. When the task contains `Plan lock: <slug>` or `Plan: plans/<slug>.md`, execute only that plan's scope.
+2. If `.fur.planning/state.json` says multiple active plans exist and no plan lock is selected, stop and ask for an explicit task/plan; do not pick the first ready task.
+3. If the selected task belongs to a different plan than the active plan lock, stop and route to `fur-task` or `fur-status` for selection.
+4. Do not load or continue unrelated ready tasks after finishing the selected task.
+
+Batch execution rules:
+
+1. If `.fur.planning/state.json` contains `readyBatch` for the active plan and the user invokes `fur-do <batch-group>`, execute every task in that batch and no other tasks.
+2. A batch is valid only when all tasks share the active `Plan lock` and `Batch group`, and no task in the batch blocks another task in the same batch.
+3. With `planning.defaultExecution: subagent-driven`, dispatch one subagent/worktree per batch task when subagents are available.
+4. If subagents are unavailable and config is optional, run the batch sequentially in the same session and record `Batch mode: sequential-fallback`.
+5. Preserve per-task acceptance criteria coverage, files changed, verification, residual risk, and handoff evidence in the output.
 
 ### Phase 3: Implement
 
@@ -129,6 +145,9 @@ If any answer is no, continue working before responding.
 - If halfway through the work you discover missing requirements, **stop** and hand back to `fur-task`.
 - Superpowers delegation does not replace Fur state management.
 - After delegated execution, update Fur progress/task state as usual.
+- For plan-linked multi-task work, prefer subagent-driven execution by default and record the selected bridge in the control plane.
+- For ready batch waves, execute the whole batch in one `fur-do` run when requested by `Batch group`.
+- Respect plan lock isolation; never jump to another plan or conversation's ready task automatically.
 - Context hygiene: if the session is huge, suggest summarizing via `fur compact` / `progress/latest.md` per `src/references/context-window.md`.
 
 ## Output
@@ -172,6 +191,10 @@ status: implemented | closed | blocked | needs-clarification
 next_skill: fur-done | fur-do | fur-task | fur-debug
 # Optional only when useful:
 verification_state: complete | partial | not-run
+batch:
+  group: auth-refactor-wave-2
+  task_ids: [T2, T3, T4]
+  mode: parallel | sequential-fallback
 methodology_bridge:
   provider: superpowers
   selected_skill: superpowers:test-driven-development

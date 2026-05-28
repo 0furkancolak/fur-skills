@@ -30,6 +30,19 @@ export interface ManifestRow {
   estimate: string;
   status: TaskManifestStatus;
   taskFile: string;
+  slice?: string;
+  subagent?: string;
+  closure?: string;
+}
+
+export type PlanDependencies = Record<string, string[]>;
+
+export interface ReadyBatch {
+  plan: string;
+  group: string;
+  taskIds: string[];
+  taskFiles: string[];
+  execution: "subagent-driven" | "sequential-fallback";
 }
 
 /** Weighted progress: done=100%, ready=50%, backlog=25%, planned/deferred/cancelled=0% */
@@ -58,6 +71,7 @@ export interface PlanReport extends PlanMetrics {
   path: string;
   frontmatter: PlanFrontmatter;
   rows: ManifestRow[];
+  dependencies: PlanDependencies;
 }
 
 export function computePlanMetrics(rows: ManifestRow[]): PlanMetrics {
@@ -134,7 +148,8 @@ function parseManifestTable(body: string): ManifestRow[] {
       .filter((_, idx, arr) => idx > 0 && idx < arr.length - 1);
 
     if (cells.length < 6) continue;
-    const [id, title, phase, estimate, status, taskFile] = cells;
+    const [id, title, phase, estimate, status, taskFile, slice, subagent, closure] =
+      cells;
     if (!id || id === "ID") continue;
 
     rows.push({
@@ -144,6 +159,9 @@ function parseManifestTable(body: string): ManifestRow[] {
       estimate: estimate ?? "",
       status: normalizeStatus(status ?? ""),
       taskFile: taskFile ?? "",
+      slice,
+      subagent,
+      closure,
     });
   }
   return rows;
@@ -159,6 +177,25 @@ function parseFrontmatter(text: string): {
   }
   const fm = YAML.parse(match[1]!) as PlanFrontmatter;
   return { frontmatter: fm ?? {}, body: match[2]! };
+}
+
+function idsFromDependencyList(raw: string): string[] {
+  return raw.match(/T\d+/gi)?.map((id) => id.toUpperCase()) ?? [];
+}
+
+function parseDependencies(body: string): PlanDependencies {
+  const dependencies: PlanDependencies = {};
+  for (const line of body.split("\n")) {
+    const match = line.match(/((?:T\d+\s*,?\s*)+)\s+blocks on\s+((?:T\d+\s*,?\s*)+)/i);
+    if (!match) continue;
+    const blockedTasks = idsFromDependencyList(match[1] ?? "");
+    const blockers = idsFromDependencyList(match[2] ?? "");
+    for (const taskId of blockedTasks) {
+      const existing = dependencies[taskId] ?? [];
+      dependencies[taskId] = Array.from(new Set([...existing, ...blockers]));
+    }
+  }
+  return dependencies;
 }
 
 export function slugFromPlanPath(planPath: string): string {
@@ -180,6 +217,7 @@ export async function loadPlan(
   const text = await readFile(abs, "utf-8");
   const { frontmatter, body } = parseFrontmatter(text);
   const rows = parseManifestTable(body);
+  const dependencies = parseDependencies(body);
   const slug = frontmatter.slug ?? slugFromPlanPath(abs);
 
   const metrics = computePlanMetrics(rows);
@@ -189,6 +227,7 @@ export async function loadPlan(
     path: abs.replace(`${root}/`, "").replace(/^\//, ""),
     frontmatter,
     rows,
+    dependencies,
     ...metrics,
   };
 }
@@ -249,7 +288,31 @@ export async function reconcilePlanFromDisk(
   return {
     ...report,
     rows,
+    dependencies: report.dependencies,
     ...computePlanMetrics(rows),
+  };
+}
+
+export function computeReadyBatch(
+  report: PlanReport,
+  execution: "subagent-driven" | "sequential-fallback",
+): ReadyBatch | null {
+  const done = new Set(
+    report.rows.filter((row) => row.status === "done").map((row) => row.id),
+  );
+  const readyRows = report.rows.filter((row) => {
+    if (row.status !== "ready") return false;
+    const blockers = report.dependencies[row.id] ?? [];
+    return blockers.every((blocker) => done.has(blocker));
+  });
+  if (readyRows.length === 0) return null;
+  const waveNumber = report.doneCount + 1;
+  return {
+    plan: report.slug,
+    group: `${report.slug}-wave-${waveNumber}`,
+    taskIds: readyRows.map((row) => row.id),
+    taskFiles: readyRows.map((row) => row.taskFile).filter((file) => file.length > 0),
+    execution,
   };
 }
 
