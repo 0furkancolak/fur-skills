@@ -1,4 +1,4 @@
-# Golden Output 2: Small Opt-Out Task
+# Golden Output 2: Small Ready Task
 
 ## Task Result
 
@@ -16,7 +16,7 @@
 
 ## Clarifications
 
-None — config explicitly opted out of mandatory brainstorming for small docs chores, and behavior, success criteria, verification, and scope boundary were explicit.
+None — behavior, success criteria, verification, and scope boundary were explicit.
 
 ## Next
 
@@ -25,7 +25,4 @@ Run `fur-do` on the ready task.
 ```yaml
 status: created
 next_skill: fur-do
-methodology_bridge:
-  provider: superpowers
-  fallback: fur-skills
 ```

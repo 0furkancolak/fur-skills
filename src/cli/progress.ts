@@ -19,36 +19,11 @@ import {
   reportWorkspaceHint,
 } from "../lib/workspace.ts";
 
-interface SuperpowersBridgeConfig {
-  enabled?: boolean;
-  mode?: string;
-  fallback?: string;
-  brainstormingPolicy?: string;
-}
-
 interface PlanningRuntimeConfig {
   planning?: {
     planLock?: string | boolean;
     activePlan?: string;
-    defaultExecution?: string;
-    batchExecution?: string | boolean;
   };
-}
-
-async function readSuperpowersBridge(
-  projectRoot: string,
-): Promise<SuperpowersBridgeConfig | null> {
-  const configPath = join(planningDir(projectRoot), "config.json");
-  if (!existsSync(configPath)) return null;
-  try {
-    const raw = await readFile(configPath, "utf-8");
-    const parsed = JSON.parse(raw) as {
-      methodology?: { superpowers?: SuperpowersBridgeConfig };
-    };
-    return parsed.methodology?.superpowers ?? null;
-  } catch {
-    return null;
-  }
 }
 
 async function readPlanningRuntimeConfig(
@@ -61,18 +36,6 @@ async function readPlanningRuntimeConfig(
   } catch {
     return {};
   }
-}
-
-function formatSuperpowersBridge(
-  bridge: SuperpowersBridgeConfig | null,
-): string {
-  if (!bridge) return "- Superpowers bridge: not configured\n";
-  return `Superpowers bridge:
-  enabled: ${String(bridge.enabled)}
-  mode: ${bridge.mode ?? "unknown"}
-  fallback: ${bridge.fallback ?? "unknown"}
-  brainstormingPolicy: ${bridge.brainstormingPolicy ?? "config-mandatory"}
-`;
 }
 
 async function gitInfo(projectRoot: string): Promise<{
@@ -132,7 +95,6 @@ export async function cmdRefresh(): Promise<number> {
   const git = await gitInfo(projectRoot);
 
   const workspaceConfigPath = findWorkspaceConfig(projectRoot);
-  const superpowersBridge = await readSuperpowersBridge(projectRoot);
   const runtimeConfig = await readPlanningRuntimeConfig(projectRoot);
   let trackerSection = "";
   if (workspaceConfigPath) {
@@ -211,17 +173,12 @@ ${plansSection || "_none_"}
 ## Tracker sync
 
 ${trackerSection}
-## Methodology bridge
-
-${formatSuperpowersBridge(superpowersBridge)}
 ## Plan lock
 
 - Enabled: ${String(state.planLock.enabled)}
 - Source: ${state.planLock.source}
 - Active plan: ${state.planLock.activePlan ?? "none"}
-- Default execution: ${state.defaultExecution}
 - Config planLock: ${String(runtimeConfig.planning?.planLock ?? "enabled")}
-- Batch execution: ${String(runtimeConfig.planning?.batchExecution ?? "enabled")}
 - Ready batch: ${
     state.readyBatch
       ? `${state.readyBatch.group} (${state.readyBatch.taskIds.join(", ")})`
@@ -276,22 +233,11 @@ export async function cmdProgress(): Promise<number> {
   console.log(`- Ready: ${await countMd(join(planning, "tasks", "ready"))}`);
   console.log(`- Done: ${await countMd(join(planning, "tasks", "done"))}`);
   console.log(`- Plans: ${await countMd(join(planning, "plans"))}`);
-  const superpowersBridge = await readSuperpowersBridge(projectRoot);
   const runtimeConfig = await readPlanningRuntimeConfig(projectRoot);
-  console.log("");
-  console.log("Methodology bridge");
-  console.log("------------------");
-  console.log(formatSuperpowersBridge(superpowersBridge).trimEnd());
   console.log("");
   console.log("Plan lock");
   console.log("---------");
   console.log(`- Config planLock: ${String(runtimeConfig.planning?.planLock ?? "enabled")}`);
-  console.log(
-    `- Default execution: ${runtimeConfig.planning?.defaultExecution ?? "subagent-driven"}`,
-  );
-  console.log(
-    `- Batch execution: ${String(runtimeConfig.planning?.batchExecution ?? "enabled")}`,
-  );
   const planPaths = await listPlans(projectRoot);
   if (planPaths.length > 0) {
     console.log("");

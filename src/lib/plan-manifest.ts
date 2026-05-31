@@ -31,7 +31,6 @@ export interface ManifestRow {
   status: TaskManifestStatus;
   taskFile: string;
   slice?: string;
-  subagent?: string;
   closure?: string;
 }
 
@@ -42,7 +41,6 @@ export interface ReadyBatch {
   group: string;
   taskIds: string[];
   taskFiles: string[];
-  execution: "subagent-driven" | "sequential-fallback";
 }
 
 /** Weighted progress: done=100%, ready=50%, backlog=25%, planned/deferred/cancelled=0% */
@@ -148,7 +146,17 @@ function parseManifestTable(body: string): ManifestRow[] {
       .filter((_, idx, arr) => idx > 0 && idx < arr.length - 1);
 
     if (cells.length < 6) continue;
-    const [id, title, phase, estimate, status, taskFile, slice, subagent, closure] =
+    const [
+      id,
+      title,
+      phase,
+      estimate,
+      status,
+      taskFile,
+      slice,
+      closureOrLegacyField,
+      legacyClosure,
+    ] =
       cells;
     if (!id || id === "ID") continue;
 
@@ -160,8 +168,7 @@ function parseManifestTable(body: string): ManifestRow[] {
       status: normalizeStatus(status ?? ""),
       taskFile: taskFile ?? "",
       slice,
-      subagent,
-      closure,
+      closure: legacyClosure ?? closureOrLegacyField,
     });
   }
   return rows;
@@ -293,10 +300,7 @@ export async function reconcilePlanFromDisk(
   };
 }
 
-export function computeReadyBatch(
-  report: PlanReport,
-  execution: "subagent-driven" | "sequential-fallback",
-): ReadyBatch | null {
+export function computeReadyBatch(report: PlanReport): ReadyBatch | null {
   const done = new Set(
     report.rows.filter((row) => row.status === "done").map((row) => row.id),
   );
@@ -312,7 +316,6 @@ export function computeReadyBatch(
     group: `${report.slug}-wave-${waveNumber}`,
     taskIds: readyRows.map((row) => row.id),
     taskFiles: readyRows.map((row) => row.taskFile).filter((file) => file.length > 0),
-    execution,
   };
 }
 

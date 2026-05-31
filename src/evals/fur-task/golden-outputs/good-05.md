@@ -16,7 +16,7 @@
 
 ## Clarifications
 
-None — brainstorming/spec approval already exists, so the task can be promoted to `ready/`.
+None — the approved spec provides behavior, success criteria, verification, and scope boundary.
 
 ## Next
 
@@ -25,7 +25,4 @@ Run `fur-do` on the ready task.
 ```yaml
 status: created
 next_skill: fur-do
-methodology_bridge:
-  provider: superpowers
-  selected_skill: superpowers:brainstorming
 ```

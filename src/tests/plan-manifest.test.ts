@@ -131,11 +131,11 @@ describe("plan-manifest", () => {
 
   test("computeReadyBatch returns unblocked independent ready tasks", async () => {
     await writeFile(
-      join(root, ".fur.planning", "plans", "parallel.md"),
+      join(root, ".fur.planning", "plans", "wave.md"),
       `---
 plan_version: 2
-slug: parallel
-title: Parallel
+slug: wave
+title: Wave
 estimated_tasks: 4
 ---
 
@@ -156,18 +156,17 @@ estimated_tasks: 4
 `,
     );
 
-    const report = await loadPlan("plans/parallel.md", root);
-    const batch = computeReadyBatch(report!, "subagent-driven");
+    const report = await loadPlan("plans/wave.md", root);
+    const batch = computeReadyBatch(report!);
     expect(batch).toEqual({
-      plan: "parallel",
-      group: "parallel-wave-2",
+      plan: "wave",
+      group: "wave-wave-2",
       taskIds: ["T2", "T3", "T4"],
       taskFiles: [
         "tasks/ready/20260101-1000-a.md",
         "tasks/ready/20260101-1000-b.md",
         "tasks/ready/20260101-1000-c.md",
       ],
-      execution: "subagent-driven",
     });
   });
 
@@ -199,7 +198,7 @@ estimated_tasks: 3
     );
 
     const report = await loadPlan("plans/blocked-wave.md", root);
-    const batch = computeReadyBatch(report!, "subagent-driven");
+    const batch = computeReadyBatch(report!);
     expect(batch?.taskIds).toEqual(["T2"]);
   });
 });

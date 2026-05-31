@@ -38,7 +38,7 @@ Always read in this order, stopping early if the task is trivial:
 
 - Do not paste full text of completed tasks; provide file paths.
 - Move stale backlog items to `context/archive/`; leave a 5–10 line summary + link.
-- For parallel work, load only the current slice; link to the plan file.
+- For sliced work, load only the current slice; link to the plan file.
 - Never carry the full text of more than 2–3 active tasks in chat context at once.
 - Link to files instead of pasting when content is longer than ~50 lines.
 - For long sessions, suggest `fur compact` to archive old progress.

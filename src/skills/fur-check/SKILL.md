@@ -61,7 +61,6 @@ Load in this order:
 2. `fur-do` output or user's summary of intended behavior.
 3. `context/verification.md` for repo-standard commands when the task is silent.
 4. Changed files diff (only the files touched by the task).
-5. `src/references/superpowers-bridge.md` when strict verification, independent review, or review feedback handling is in scope.
 
 Do not load unrelated code paths.
 
@@ -83,17 +82,9 @@ Do not load unrelated code paths.
 1. Execute the task’s verification steps; if absent, run the narrowest relevant defaults from `context/verification.md`.
 2. Record **commands + outcomes** (pass/fail/skip with reason). Partial runs must be labeled partial.
 
-### Phase 3b: Optional methodology bridge
+### Phase 3b: Fur-native verification boundary
 
-Use fur-skills verification by default.
-
-If `.fur.planning/config.json` has `methodology.superpowers.enabled: true`, consider these optional routes:
-
-- `superpowers:verification-before-completion` when `verificationStrictness` is strict or the task touches critical production behavior.
-- `superpowers:requesting-code-review` when the branch/task requires independent review.
-- `superpowers:receiving-code-review` when review feedback must be processed and applied.
-
-Fur remains responsible for final accept/reject gate status. If Superpowers is unavailable and mode is `optional`, continue with fur-skills verification and record the fallback.
+Use fur-skills verification for the gate decision. Do not delegate completion verification, independent review, or review feedback handling to another methodology from inside this skill.
 
 ### Phase 4: Structured review
 
@@ -132,7 +123,7 @@ If any answer is no, continue working before responding.
 - Blockers: state user-visible impact + suggested fix direction.
 - Honesty beats optimism: unknown = "not verified", not assumed OK.
 - UI pixel-perfect / brand reviews → defer detailed notes to `fur-ui-review`; still flag **accessibility** or broken layout blockers here.
-- Fur remains responsible for final accept/reject gate status even when Superpowers methodology is used.
+- Fur remains responsible for final accept/reject gate status.
 
 ## Output
 
@@ -173,10 +164,6 @@ next_skill: fur-done | fur-do | fur-debug
 gate:
   status: accepted | rejected | needs-verification
   blocking_issues: []
-methodology_bridge:
-  provider: superpowers
-  selected_skill: superpowers:verification-before-completion
-  fallback: fur-skills
 ```
 
 ## Anti-patterns

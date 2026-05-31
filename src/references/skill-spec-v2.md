@@ -80,7 +80,7 @@ status: <state>
 next_skill: <skill-name>
 ```
 
-Add optional fields such as `verification_state`, `risk_level`, `gate`, or `methodology_bridge` only when they materially help downstream routing. On hosts without structured output, this block is still recommended as a fenced YAML block inside the markdown.
+Add optional fields such as `verification_state`, `risk_level`, or `gate` only when they materially help downstream routing. On hosts without structured output, this block is still recommended as a fenced YAML block inside the markdown.
 
 ## Few-shot Requirement
 

@@ -1,4 +1,4 @@
-# Golden Output 3: Split Plan With Subagent Notes
+# Golden Output 3: Split Plan With Execution Notes
 
 ## Task Result
 
@@ -12,7 +12,7 @@
 | AC | Status | Evidence |
 |---|---|---|
 | Plan manifest created | met | `plans/auth-refactor.md` includes every slice |
-| Subagent notes included | met | plan includes `Subagent execution notes` |
+| Execution notes included | met | plan includes `Execution notes` |
 | Batch metadata included | met | ready wave tasks include `Batch group: auth-refactor-wave-1` |
 
 ## Plan summary
@@ -21,18 +21,15 @@
 
 ## Clarifications
 
-Brainstorming/spec was approved before writing ready tasks. Plan lock is `auth-refactor`; other active plans are out of scope.
+Plan lock is `auth-refactor`; other active plans are out of scope.
 
 ## Next
 
-Run `fur-do` on the ready wave. Multi-task execution should use `superpowers:subagent-driven-development` when available.
+Run `fur-do` on the ready wave.
 
 ```yaml
 status: created
 next_skill: fur-do
-methodology_bridge:
-  provider: superpowers
-  selected_skill: superpowers:writing-plans
 plan_lock:
   active_plan: auth-refactor
   source: single-active-plan

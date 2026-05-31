@@ -33,18 +33,9 @@ describe("cmdInit", () => {
     expect(config.responseDepth).toBe("standard");
     expect(config.automationMode).toBe("guided");
     expect(config.gitignore).toBe(true);
-    expect(config.methodology).toEqual({
-      superpowers: {
-        enabled: true,
-        mode: "optional",
-        fallback: "fur-skills",
-        brainstormingPolicy: "config-mandatory",
-      },
-    });
+    expect(config.methodology).toBeUndefined();
     expect(config.planning).toEqual({
       planLock: "enabled",
-      defaultExecution: "subagent-driven",
-      batchExecution: "enabled",
     });
   });
 });

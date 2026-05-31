@@ -60,19 +60,14 @@ Load in this order:
 2. Relevant logs, traces, or error messages.
 3. Code paths directly related to the symptom.
 4. Recent changes (git log, dependency bumps) if the symptom is a regression.
-5. `src/references/superpowers-bridge.md` when root cause is unknown or fix verification needs stricter methodology.
 
 Do not load unrelated code paths.
 
 ## Workflow
 
-### Phase 0: Optional methodology bridge
+### Phase 0: Fur-native diagnostic boundary
 
-If the root cause is unknown and Superpowers is available, delegate to `superpowers:systematic-debugging` before proposing fixes.
-
-If Superpowers is unavailable and mode is `optional`, continue with fur-skills diagnostic loop.
-
-After a fix is applied and completion must be verified, consider `superpowers:verification-before-completion`.
+Use the Fur diagnostic loop for root-cause analysis and fix verification. Do not delegate debugging or completion verification to another methodology from inside this skill.
 
 Do not bypass Fur's diagnostic contract:
 
@@ -179,7 +174,7 @@ If any answer is no, continue working before responding.
 - If verification cannot run here, say exactly what was manually proven instead.
 - **Evidence before claims** — same bar as `fur-check`: cite command output, stack lines, or counters.
 - Context hygiene: long transcripts belong in task notes or `context/archive/` per `src/references/context-window.md`; keep chat to deltas + paths.
-- If root cause is unknown and Superpowers is available, delegate to `superpowers:systematic-debugging`; if unavailable, continue fur-skills.
+- If root cause is unknown, continue the Fur diagnostic loop until the cause is known or a blocker is explicit.
 
 ## Output
 
@@ -224,10 +219,6 @@ status: diagnosed | blocked | needs-clarification
 next_skill: fur-check | fur-task | fur-debug
 # Optional only when useful:
 verification_state: complete | partial | not-run
-methodology_bridge:
-  provider: superpowers
-  selected_skill: superpowers:systematic-debugging
-  fallback: fur-skills
 ```
 
 ## Anti-patterns

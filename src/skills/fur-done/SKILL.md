@@ -62,7 +62,6 @@ Load in this order:
 3. `.fur.planning/state.json` when present, including plan lock state.
 4. `.fur.workspace/config.json` if tracker sync is in play.
 5. `progress/latest.md` for continuity.
-6. `src/references/superpowers-bridge.md` when branch/worktree finishing decisions are in scope.
 
 Do not load unrelated tasks or history.
 
@@ -99,17 +98,9 @@ Batch closure:
 3. **Jira transition**: only if `transitionAllowed` true and transition name/ID is configured; never guess transitions.
 4. If anything is ambiguous, complete **local** steps only and document the manual tracker action for the user.
 
-### Phase 4b: Optional methodology bridge
+### Phase 4b: Branch cleanup boundary
 
-Use fur-skills completion for local task archival and tracker sync.
-
-Delegate to `superpowers:finishing-a-development-branch` only when:
-
-- work happened on a branch/worktree
-- merge/PR/keep/discard decision is needed
-- final branch cleanup matters
-
-After delegation, Fur still owns moving the task to `done/`, writing the progress snapshot, and syncing tracker completion when config permits. If Superpowers is unavailable and mode is `optional`, continue with fur-skills completion and record the fallback.
+Keep branch, PR, merge, or worktree cleanup as an explicit user decision. Fur owns moving the task to `done/`, writing the progress snapshot, and syncing tracker completion when config permits.
 
 ### Phase 5: Self-review
 
@@ -143,7 +134,7 @@ If any answer is no, continue working before responding.
 - Never fabricate tracker comments, transitions, or timestamps.
 - If config forbids external writes, stop after local move + `fur refresh`.
 - Avoid spawning new tasks automatically; note follow-up **risks** instead unless the user wants `fur-task`.
-- Superpowers branch finishing does not replace Fur local closure, progress snapshots, or permitted tracker sync.
+- Branch finishing does not replace Fur local closure, progress snapshots, or permitted tracker sync.
 - Completion does not imply permission to jump to another conversation's task. Stay within the closed task's plan lock or stop at status.
 - Batch closure is limited to one active plan lock and one `Batch group`; never batch-close arbitrary ready tasks.
 
@@ -183,10 +174,6 @@ batch:
   group: auth-refactor-wave-2
   closed_task_ids: [T2, T3]
   remaining_task_ids: [T4]
-methodology_bridge:
-  provider: superpowers
-  selected_skill: superpowers:finishing-a-development-branch
-  fallback: fur-skills
 ```
 
 ## Anti-patterns

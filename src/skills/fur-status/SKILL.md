@@ -59,7 +59,6 @@ Load in this order:
 3. `tasks/{backlog,ready,done}` counts.
 4. `progress/latest.md` head (~80-120 lines).
 5. `.fur.workspace/config.json` if present.
-6. `methodology.superpowers` from `.fur.planning/config.json` for display only.
 
 Do not load full task bodies or archived snapshots.
 
@@ -83,20 +82,6 @@ Do not load full task bodies or archived snapshots.
 1. If parent `.fur.workspace/config.json` exists, note `defaultTaskSource`, write policy, and whether this repo path appears under `repositories[]`.
 2. If not registered, the next external import/write may be blocked — say so plainly.
 
-### Phase 3b: Methodology bridge status
-
-Do not delegate to Superpowers from `fur-status`. Only report methodology bridge status if project config contains it:
-
-```txt
-Methodology bridge:
-- Superpowers: enabled
-- Mode: optional
-- Fallback: fur-skills
-- Last delegation: none
-```
-
-Do not trigger heavy methodology from `fur-status`.
-
 ### Phase 4: Recommend a single next step
 
 Pick exactly **one** of: `fur-task`, `fur-do` (name the ready file), `fur-check`, `fur-done`, `fur refresh`, `fur compact`, `fur workspace doctor`, `fur-init`.
@@ -118,7 +103,7 @@ If any answer is no, continue working before responding.
 - Never claim work is complete without matching task location + verification trail.
 - Prefer paths and counts over pasting markdown.
 - If `progress/` is huge, suggest `fur compact` and mention `FUR_PROGRESS_KEEP` override (default keep is `8`).
-- Do not delegate to Superpowers from `fur-status`; display bridge status only.
+- Do not trigger external methodology from `fur-status`.
 
 ## Output
 
@@ -133,7 +118,6 @@ If any answer is no, continue working before responding.
 - Plans: [n]
 - Workspace: found | missing
 - Repo registered: yes [id] | no
-- Methodology bridge: Superpowers enabled | disabled | not configured
 
 ## Plan summary
 

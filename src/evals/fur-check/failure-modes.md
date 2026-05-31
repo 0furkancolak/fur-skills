@@ -8,5 +8,5 @@
 | Missing severity | Findings have no blocker/major/minor tag | Severity column check | Severity mandatory for every finding |
 | Wrong verdict | Ready when AC not met | AC coverage check | Map every AC before verdict |
 | Missing next skill | No Suggested Next Step | Output contract check | next_skill mandatory in control plane |
-| Normal check over-delegated | Small low-risk check selects Superpowers | Bridge fixture expects `used: false` | fur-skills verification remains default |
-| Strict check not escalated | Critical strict verification omits bridge route | Expected selected skill missing | Use verification-before-completion when strict or critical |
+| External methodology delegation | Check selects an external methodology from inside Fur | Output contains external skill routing | fur-skills verification remains the gate |
+| Strict check under-verified | Critical strict verification lacks enough evidence | Verification section is partial or vague | Run stricter Fur verification or report Needs verification |

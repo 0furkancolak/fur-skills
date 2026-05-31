@@ -51,9 +51,8 @@ When the task belongs to a multi-task plan, include:
 Plan: plans/<slug>.md
 Plan task ID: T1
 Plan lock: <slug>
-Parallel/Subagent slice: A
+Execution slice: A
 Batch group: <slug>-wave-1
-Batch mode: parallel
 Batch dependencies: none
 ```
 
@@ -74,15 +73,15 @@ Possible regressions, open questions, or areas of uncertainty.
 
 Required only when the task is not ready. A task with open blocking questions stays in `tasks/backlog/`.
 
-## Optional: Parallel Slices
+## Optional: Slices
 
-If independent streams exist, name slices (A/B/...) and add branch or `git worktree` hints here or in `plans/`. Do not duplicate long plans across chat and files.
+If independent streams exist, name slices (A/B/...) here or in `plans/`. Do not duplicate long plans across chat and files.
 
-For plan-linked work, include the slice name from the plan and any subagent/worktree constraints needed to keep this conversation isolated from other active plans.
+For plan-linked work, include the slice name from the plan and any constraints needed to keep this conversation isolated from other active plans.
 
 ## Optional: Batch Execution
 
-For independent tasks in the same ready wave, include the same `Batch group`. Use `Batch mode: parallel` when subagents/worktrees should run the wave together, or `sequential-fallback` when subagents are unavailable. `Batch dependencies` lists completed blocker IDs, or `none`.
+For independent tasks in the same ready wave, include the same `Batch group`. `Batch dependencies` lists completed blocker IDs, or `none`.
 
 ## Tracker Sync
 

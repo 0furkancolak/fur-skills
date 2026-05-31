@@ -51,7 +51,7 @@ Every skill follows the shared contract in `AGENTS.md`:
 - Multi-repo tracker routing lives in `.fur.workspace/config.json`.
 - Repo-local behavior lives in `.fur.planning/config.json`.
 - Question asking is controlled by `questionLevel`; answer depth is controlled by `responseDepth`.
-- Superpowers can be used as an optional methodology bridge for heavier work; Fur remains primary.
+- Fur skills do not delegate to external methodology packages from inside the core loop.
 - Old context should stay in files, not in chat; use `progress/latest.md` and `fur compact`.
 - Evidence before claims: every non-trivial assertion ties to a source.
 - Config over convention: `responseDepth`, `evidenceStyle`, and `verificationStrictness` live in config.
@@ -180,44 +180,23 @@ Defaults:
 | `normal` | Run available checks; note gaps honestly. |
 | `strict` | All verification steps must run; missing tooling is a blocker to report. |
 
-## Optional Superpowers Bridge
+## External Methodologies
 
-fur-skills can optionally delegate heavier methodology steps to Superpowers. Fur remains the primary workflow and owns task state, progress, tracker routing, and final handoffs.
+fur-skills is self-contained. The core loop does not invoke external methodology packages on its own.
 
-By default, `fur-task` uses Superpowers brainstorming for task/plan creation, and small clear tasks use fur-skills flow only when config explicitly opts out or Superpowers is unavailable in optional mode. Use Superpowers delegation for risky, debugging-heavy, TDD-heavy, review-heavy, branch-finishing, or multi-step work. Superpowers is never installed automatically and is not required by default.
+If a user explicitly invokes another workflow in the same conversation, treat its output as user-provided context and return to the Fur skill that owns the current state transition. Fur remains responsible for task files, plan manifests, progress snapshots, tracker routing, verification reporting, and final handoffs.
 
 Default config:
 
 ```json
 {
-  "methodology": {
-    "superpowers": {
-      "enabled": true,
-      "mode": "optional",
-      "fallback": "fur-skills",
-      "brainstormingPolicy": "config-mandatory"
-    }
-  },
   "planning": {
-    "planLock": "enabled",
-    "defaultExecution": "subagent-driven",
-    "batchExecution": "enabled"
+    "planLock": "enabled"
   }
 }
 ```
 
-With this default, `fur-task` and split/plan creation use `superpowers:brainstorming` unless config explicitly opts out for a small local task class. Multi-task plans prefer subagent-driven execution, `batchExecution` lets independent ready waves run together, and `planLock` prevents one conversation from jumping into another plan's queued task.
-
-Routing:
-
-| Fur skill | Optional Superpowers delegation |
-|---|---|
-| `fur-task` | `brainstorming` by default for task/plan creation, `writing-plans` for approved specs |
-| `fur-do` | `using-git-worktrees`, `test-driven-development`, `subagent-driven-development` for approved multi-task plans, `executing-plans` fallback |
-| `fur-debug` | `systematic-debugging`, `verification-before-completion` |
-| `fur-check` | `verification-before-completion`, `requesting-code-review`, `receiving-code-review` |
-| `fur-done` | `finishing-a-development-branch` |
-| `fur-status` | no delegation |
+With this default, multi-task plans run through Fur's own task queue. `planLock` prevents one conversation from jumping into another plan's queued task.
 
 ## Automation Mode
 

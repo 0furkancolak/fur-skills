@@ -62,9 +62,9 @@ Olası gerilemeler, açık sorular veya belirsizlik alanları.
 
 Yalnızca task hazır değilse gereklidir. Bloklayıcı açık soruları olan task `tasks/backlog/` altında kalır.
 
-## İsteğe Bağlı: Paralel Dilimler
+## İsteğe Bağlı: Dilimler
 
-Bağımsız iş akışları varsa, dilimleri (A/B/...) adlandırın ve branch veya `git worktree` ipuçlarını burada veya `plans/` klasöründe belirtin. Uzun planları chat ve dosyalar arasında çift tutmayın.
+Bağımsız iş akışları varsa, dilimleri (A/B/...) burada veya `plans/` klasöründe adlandırın. Uzun planları chat ve dosyalar arasında çift tutmayın.
 
 ## Tracker Sync
 

@@ -1,4 +1,4 @@
-# Golden Output 1: Brainstorming Gate
+# Golden Output 1: Clarification Gate
 
 ## Task Result
 
@@ -11,23 +11,20 @@
 
 | AC | Status | Evidence |
 |---|---|---|
-| Behavior change identified | partial | brainstorming approval is still required |
+| Behavior change identified | partial | open question remains |
 | Verification method defined | partial | draft contains proposed command |
 
 ## Clarifications
 
-`superpowers:brainstorming` is required by `brainstormingPolicy: config-mandatory`; the task stays in backlog until the user approves the design/spec and confirms acceptance criteria.
+The task stays in backlog until the user confirms the missing behavior detail and acceptance criteria.
 
 ## Next
 
-Continue `superpowers:brainstorming`; promote the task to `ready/` only after approval.
+Continue `fur-task`; promote the task to `ready/` only after the ready gate is complete.
 
 ```yaml
 status: blocked
 next_skill: fur-task
-methodology_bridge:
-  provider: superpowers
-  selected_skill: superpowers:brainstorming
 plan_lock:
   active_plan: null
   source: none

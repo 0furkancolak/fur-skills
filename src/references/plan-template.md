@@ -59,22 +59,21 @@ Status values: `planned` (not filed yet) · `backlog` · `ready` · `done` · `d
 
 Size values: `S` · `M` · `L` · `XL`
 
-| ID | Title | Phase | Est. | Status | Task file | Slice | Subagent/worktree | Closure |
-|----|-------|-------|------|--------|-----------|-------|-------------------|---------|
-| T1 | Extract auth service | phase-1 | M | ready | tasks/ready/20260518-1200-extract-auth.md | A | subagent-a / worktree auth-service | close with fur-done before T2 |
-| T2 | Add session middleware | phase-1 | S | backlog | tasks/backlog/20260518-1210-session-middleware.md | A | subagent-a / same plan lock | close with fur-done before T4 |
-| T3 | Unit tests for auth | phase-1 | M | planned | | B | subagent-b / worktree auth-tests | close independently when tests pass |
-| T4 | Migrate login API | phase-2 | L | planned | | C | subagent-c / worktree login-api | close after T2 |
-| T5 | Migrate signup API | phase-2 | L | planned | | D | subagent-d / worktree signup-api | close after T2 |
-| T6 | Deprecate legacy routes | phase-2 | M | planned | | E | subagent-e / worktree legacy-routes | close after T4/T5 |
-| T7 | Update README + runbook | phase-3 | S | planned | | F | subagent-f / docs worktree | close after API behavior settles |
-| T8 | Remove dead code | phase-3 | S | planned | | E | subagent-e / same plan lock | close after T4/T5/T6 |
+| ID | Title | Phase | Est. | Status | Task file | Slice | Closure |
+|----|-------|-------|------|--------|-----------|-------|---------|
+| T1 | Extract auth service | phase-1 | M | ready | tasks/ready/20260518-1200-extract-auth.md | A | close with fur-done before T2 |
+| T2 | Add session middleware | phase-1 | S | backlog | tasks/backlog/20260518-1210-session-middleware.md | A | close with fur-done before T4 |
+| T3 | Unit tests for auth | phase-1 | M | planned | | B | close independently when tests pass |
+| T4 | Migrate login API | phase-2 | L | planned | | C | close after T2 |
+| T5 | Migrate signup API | phase-2 | L | planned | | D | close after T2 |
+| T6 | Deprecate legacy routes | phase-2 | M | planned | | E | close after T4/T5 |
+| T7 | Update README + runbook | phase-3 | S | planned | | F | close after API behavior settles |
+| T8 | Remove dead code | phase-3 | S | planned | | E | close after T4/T5/T6 |
 
-## Subagent execution notes
+## Execution notes
 
 - Plan lock: `auth-refactor`; every created task must include `Plan lock: auth-refactor`.
-- Default execution: `subagent-driven` unless the user explicitly chooses sequential execution.
-- Independent slices may run in separate subagents/worktrees when dependencies allow; each subagent must stay inside its assigned slice and report verification evidence before `fur-done`.
+- Independent slices may be grouped into ready waves when dependencies allow; each slice must report verification evidence before `fur-done`.
 - Ready wave batch groups use `<slug>-wave-N`. Tasks in the same wave share a `Batch group` and may be executed by one `fur-do` batch.
 - `fur-done` closes tasks for this plan only. When the manifest reaches 100%, report that the plan is complete and do not suggest unrelated queued work.
 
@@ -100,10 +99,10 @@ Size values: `S` · `M` · `L` · `XL`
 1. Create or update `plans/<slug>.md` with a full task manifest before creating task files.
 2. Put every planned slice in the manifest, including tasks not yet filed (`planned`).
 3. Frontmatter must not contain schedule fields.
-4. Add `Subagent execution notes` with plan lock, independent slices, suggested subagent/worktree ownership, and closure behavior.
+4. Add `Execution notes` with plan lock, independent slices, and closure behavior.
 5. Create only the next actionable task file(s) now; do not silently drop future slices from the manifest.
 6. When the next executable wave has multiple independent ready tasks, create task files for the whole wave and give each task the same `Batch group`.
-7. Each created task must include `Plan: plans/<slug>.md`, `Plan task ID: Tn`, `Plan lock: <slug>`, `Parallel/Subagent slice: <slice>`, `Batch group: <slug>-wave-N`, `Batch mode: parallel`, and `Batch dependencies: ...` under Implementation notes.
+7. Each created task must include `Plan: plans/<slug>.md`, `Plan task ID: Tn`, `Plan lock: <slug>`, `Execution slice: <slice>`, `Batch group: <slug>-wave-N`, and `Batch dependencies: ...` under Implementation notes.
 8. Chat rollup: `8 tasks · 0% complete (0/8) · next: T1 Extract auth service`.
 9. AI must show `## Plan summary` in chat — see `src/references/plan-ai-output.md`.
 
@@ -115,8 +114,7 @@ Size values: `S` · `M` · `L` · `XL`
 Plan: plans/auth-refactor.md
 Plan task ID: T1
 Plan lock: auth-refactor
-Parallel/Subagent slice: A
+Execution slice: A
 Batch group: auth-refactor-wave-1
-Batch mode: parallel
 Batch dependencies: none
 ```

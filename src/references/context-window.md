@@ -13,14 +13,14 @@ Purpose: Keep only **currently relevant** information in the agent or chat conte
 
 - **Completed tasks**: Do not paste the full text into chat; provide a **file path or link** to `tasks/done/`.
 - **Backlog items far behind or stale**: Move long bodies to `context/archive/`; leave a 5–10 line **summary + link to archive** in the original file (agents can do this automatically).
-- **Plan files**: For parallel or multi-step work, define branches in a single plan file under `plans/`. Do not load the entire plan history each time; summarize the current section.
+- **Plan files**: For multi-step work, define slices in a single plan file under `plans/`. Do not load the entire plan history each time; summarize the current section.
 
-## Parallel Work (No Separate Skill)
+## Sliced Work
 
-Parallel work is defined **when writing tasks or plans**:
+Multi-step work is defined **when writing tasks or plans**:
 
-- Independent slices (branch / worktree / owner) are documented clearly in the plan text.
-- Example: In the same plan file, use `## Parallel Slice A`, `## Parallel Slice B`, each with `git worktree add ...` suggestions.
+- Independent slices are documented clearly in the plan text.
+- Example: In the same plan file, use `## Slice A`, `## Slice B`, each with scope and dependencies.
 
 ## Automatic Compaction (CLI)
 

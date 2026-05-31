@@ -13,14 +13,14 @@ Amaç: Sohbet veya agent context'ine **gereksiz eski detay** taşımadan yalnız
 
 - **Tamamlanan task**: Tam metni chat'e yapıştırmayın; `tasks/done/` altındaki dosyaya **bağlantı veya dosya yolu** verin.
 - **Backlog'da çok geride kalan / devre dışı**: Uzun gövdeyi `context/archive/` altına taşıyın; orijinal dosyada 5–10 satırlık **özet + archive'a link** bırakın (agent bunu yapabilir).
-- **Plan dosyaları**: Paralel veya çok adımlı işler için `plans/` içinde tek plan dosyasında dallanın; her seferinde tüm plan geçmişini yüklemeyin; güncel bölümü özetleyin.
+- **Plan dosyaları**: Çok adımlı işler için `plans/` içinde tek plan dosyasında dilimleri tanımlayın; her seferinde tüm plan geçmişini yüklemeyin; güncel bölümü özetleyin.
 
-## Paralel Çalışma (Ayrı Skill Yok)
+## Dilimli Çalışma
 
-Paralel iş, **task veya plan yazarken** tanımlanır:
+Dilimli iş, **task veya plan yazarken** tanımlanır:
 
-- Bağımsız dilimler (branch / worktree / sorumlu) plan metninde net yazılır.
-- Örnek: aynı plan dosyasında `## Paralel Dilim A`, `## Paralel Dilim B` ve her biri için `git worktree add ...` önerisi.
+- Bağımsız dilimler plan metninde net yazılır.
+- Örnek: aynı plan dosyasında `## Dilim A`, `## Dilim B` ve her biri için kapsam ile bağımlılıklar.
 
 ## Otomatik Sıkıştırma (CLI)
 

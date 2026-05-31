@@ -43,7 +43,6 @@ describe("fur refresh state", () => {
       activePlan: null,
       source: "none",
     });
-    expect(state.defaultExecution).toBe("subagent-driven");
     expect(state.readyBatch).toBeNull();
 
     const latest = await readFile(
@@ -124,7 +123,6 @@ estimated_tasks: 1
           planning: {
             planLock: "enabled",
             activePlan: "beta",
-            defaultExecution: "subagent-driven",
           },
         },
         null,

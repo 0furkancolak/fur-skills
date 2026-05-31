@@ -148,9 +148,3 @@ Machine-checkable YAML block at the end.
 ```
 
 When structured output is not available, still emit the YAML block inside the markdown.
-
-## Superpowers Bridge Notes
-
-When Superpowers is installed as a Claude Code plugin, prefer native skill invocation when available.
-
-If native invocation is not available, state the selected Superpowers skill explicitly in the control plane and continue with Fur fallback if mode is optional.

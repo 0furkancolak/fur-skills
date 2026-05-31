@@ -8,9 +8,9 @@ Execute the `auth-refactor-wave-2` batch inside the `auth-refactor` plan lock; d
 
 | AC | Status | Evidence | Notes |
 |---|---|---|---|
-| T2 middleware behavior | met | `bun test src/tests/auth-middleware.test.ts` | subagent-a |
-| T3 auth unit coverage | met | `bun test src/tests/auth-service.test.ts` | subagent-b |
-| T4 login API migration | met | `bun test src/tests/login-api.test.ts` | subagent-c |
+| T2 middleware behavior | met | `bun test src/tests/auth-middleware.test.ts` | slice-a |
+| T3 auth unit coverage | met | `bun test src/tests/auth-service.test.ts` | slice-b |
+| T4 login API migration | met | `bun test src/tests/login-api.test.ts` | slice-c |
 
 ## Implementation Details
 
@@ -37,8 +37,4 @@ verification_state: complete
 batch:
   group: auth-refactor-wave-2
   task_ids: [T2, T3, T4]
-  mode: parallel
-methodology_bridge:
-  provider: superpowers
-  selected_skill: superpowers:subagent-driven-development
 ```

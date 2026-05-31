@@ -148,11 +148,3 @@ When `responseDepth: concise`, add:
 DEPTH: concise
 Operational handoff only. 1-3 sentences + file list + next step.
 ```
-
-## Superpowers Bridge Notes
-
-Do not assume Superpowers is installed.
-
-Use the methodology bridge decision rules.
-
-If the host cannot load `superpowers:*` skills, use `fur-skills` fallback and record it in `control_plane.methodology_bridge` only when bridge routing was considered.

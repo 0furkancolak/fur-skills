@@ -162,18 +162,8 @@ export async function writeConfig(
     evidenceStyle: config.evidenceStyle,
     verificationStrictness: config.verificationStrictness,
     automationMode: config.automationMode,
-    methodology: {
-      superpowers: {
-        enabled: true,
-        mode: "optional",
-        fallback: "fur-skills",
-        brainstormingPolicy: "config-mandatory",
-      },
-    },
     planning: {
       planLock: "enabled",
-      defaultExecution: "subagent-driven",
-      batchExecution: "enabled",
     },
     questionPolicy: {
       askBeforeSplittingLargeTasks: true,

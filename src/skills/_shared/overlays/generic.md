@@ -133,10 +133,4 @@ status: implemented | blocked | needs-clarification
 next_skill: fur-check | fur-task | fur-debug
 ```
 
-Add optional fields only when they are needed for routing, such as `methodology_bridge` after a bridge decision.
-
-## Superpowers Bridge Notes
-
-Superpowers support is optional.
-
-Never fail a task only because Superpowers is missing unless config mode is `required`.
+Add optional fields only when they are needed for routing.

@@ -55,7 +55,6 @@ Load in this order:
 1. Project root directory.
 2. Existing `.fur.planning/` if present (to avoid overwriting).
 3. Parent directories for `.fur.workspace/config.json`.
-4. `src/references/superpowers-bridge.md` when explaining methodology bridge defaults.
 
 Do not load unrelated project code or history.
 
@@ -87,11 +86,9 @@ fur init --gitignore --project-maturity established --question-level normal --au
 ### Phase 3: Verify layout and config
 
 1. Confirm the **Created structure** below exists (folders + `README.md` + `context/*.md` stubs).
-2. Open `.fur.planning/config.json` and confirm keys: `questionLevel`, `projectMaturity`, `responseDepth`, `evidenceStyle`, `verificationStrictness`, `automationMode`, `methodology.superpowers`, `planning`, `questionPolicy`, `localTaskMode`, `gitignore` (boolean reflects CLI).
-3. Confirm the default methodology bridge config: `methodology.superpowers.enabled = true`, `methodology.superpowers.mode = optional`, `methodology.superpowers.fallback = fur-skills`, and `methodology.superpowers.brainstormingPolicy = config-mandatory`.
-4. Confirm the default planning config: `planning.planLock = enabled`, `planning.defaultExecution = subagent-driven`, and `planning.batchExecution = enabled`.
-4. Do not attempt to install Superpowers. Do not block initialization if Superpowers is missing.
-5. Optionally run `fur progress` — it may say no snapshot yet; that is OK until the first `fur refresh`.
+2. Open `.fur.planning/config.json` and confirm keys: `questionLevel`, `projectMaturity`, `responseDepth`, `evidenceStyle`, `verificationStrictness`, `automationMode`, `planning`, `questionPolicy`, `localTaskMode`, `gitignore` (boolean reflects CLI).
+3. Confirm the default planning config: `planning.planLock = enabled`.
+4. Optionally run `fur progress` — it may say no snapshot yet; that is OK until the first `fur refresh`.
 
 ### Phase 4: Workspace discovery
 
@@ -147,8 +144,8 @@ If any answer is no, continue working before responding.
 - Do not over-design folders beyond what `fur init` creates unless the user asks.
 - Never delete an existing `.fur.planning/` tree without explicit user approval.
 - Repo-local `config.json` is for planning behavior only; tracker routing lives in `.fur.workspace/config.json`.
-- Include `methodology.superpowers` and `planning` when creating or updating `.fur.planning/config.json`.
-- Superpowers is optional by default; do not install it, require it, or fail init when it is missing.
+- Include `planning` when creating or updating `.fur.planning/config.json`.
+- Do not install, require, or configure external methodology packages during Fur init.
 - Point long explanations to `plans/` or `context/archive/` per `src/references/context-window.md` instead of bloating chat.
 
 ## Output
@@ -167,7 +164,6 @@ If any answer is no, continue working before responding.
 - evidenceStyle: paths-only | inline | inline-plus-paths
 - verificationStrictness: loose | normal | strict
 - automationMode: guided | streamlined
-- Methodology bridge: Superpowers enabled optional, fallback fur-skills
 - Workspace config: found [path] | not found
 - Repo registered in workspace: yes [id] | no (action: add repositories[] entry)
 - Next CLI hints: fur refresh | fur task (skill)

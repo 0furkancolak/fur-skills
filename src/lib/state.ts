@@ -41,7 +41,6 @@ export interface FurState {
     activePlan: string | null;
     source: "config" | "single-active-plan" | "disabled" | "ambiguous" | "none";
   };
-  defaultExecution: "subagent-driven" | "fur";
   readyBatch: ReadyBatch | null;
   counts: TaskCounts;
   plans: PlanStateSummary[];
@@ -62,8 +61,6 @@ interface PlanningRuntimeConfig {
   planning?: {
     planLock?: string | boolean;
     activePlan?: string;
-    defaultExecution?: string;
-    batchExecution?: string | boolean;
   };
 }
 
@@ -80,18 +77,6 @@ async function readRuntimeConfig(
 }
 
 function isPlanLockEnabled(value: string | boolean | undefined): boolean {
-  if (value === false) return false;
-  if (typeof value === "string") {
-    return value.toLowerCase() !== "disabled";
-  }
-  return true;
-}
-
-function defaultExecution(value: string | undefined): "subagent-driven" | "fur" {
-  return value === "fur" ? "fur" : "subagent-driven";
-}
-
-function batchExecutionEnabled(value: string | boolean | undefined): boolean {
   if (value === false) return false;
   if (typeof value === "string") {
     return value.toLowerCase() !== "disabled";
@@ -225,19 +210,14 @@ export async function buildFurState(
   let activePlan = planLock.activePlan;
   let nextRecommendedAction = "work complete; new work can be started when desired";
   let readyBatch: ReadyBatch | null = null;
-  const execution = defaultExecution(config.planning?.defaultExecution);
-  const batchEnabled = batchExecutionEnabled(config.planning?.batchExecution);
 
   if (planLock.enabled && planLock.source === "ambiguous") {
     nextRecommendedAction =
       "select or set a plan lock before running fur-do; multiple active plans exist";
   } else if (activePlan) {
     const activeReport = planReports.get(activePlan);
-    if (batchEnabled && activeReport) {
-      readyBatch = computeReadyBatch(
-        activeReport,
-        execution === "subagent-driven" ? "subagent-driven" : "sequential-fallback",
-      );
+    if (activeReport) {
+      readyBatch = computeReadyBatch(activeReport);
     }
     const readyForPlan = await tasksForPlan(projectRoot, readyFiles, "ready", activePlan);
     const backlogForPlan = await tasksForPlan(
@@ -295,7 +275,6 @@ export async function buildFurState(
     activeTask,
     activePlan,
     planLock,
-    defaultExecution: execution,
     readyBatch,
     counts: {
       backlog: backlogFiles.length,

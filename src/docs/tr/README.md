@@ -52,7 +52,7 @@ fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidi
 - **Contract-first**: Her skill net bir kalite sözleşmesine sahiptir (`skill-spec-v2.md`).
 - **Provider-aware**: Claude, OpenAI reasoning ve generic hostlar için ayrı overlay yaklaşımı vardır (`src/skills/_shared/overlays/`).
 - **Eval-driven**: Skill kalitesi prompt setleri, golden output'lar ve grader'lar ile ölçülür (`src/evals/`).
-- **Opsiyonel metodoloji köprüsü**: Superpowers ağır işlerde kullanılabilir, ama Fur ana workflow olarak kalır.
+- **Bağımsız core loop**: Fur skill'leri core akış içinde dış metodoloji paketlerine delegasyon yapmaz.
 
 ## Skill Sınıfları
 
@@ -90,11 +90,9 @@ fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidi
 | `normal` | Mevcut kontroller koşulur, eksikler açıkça yazılır. |
 | `strict` | Kontrol eksikse blocker olarak raporlanır. |
 
-## Opsiyonel Superpowers Köprüsü
+## Dış Metodolojiler
 
-Superpowers task/plan üretiminde varsayılan brainstorming kapısıdır (`brainstormingPolicy: config-mandatory`). Küçük ve net işlerde fur-skills flow yalnızca config açıkça opt-out verirse veya Superpowers `optional` modda yoksa kullanılır. Çok adımlı planlarda varsayılan uygulama `subagent-driven` olur, `batchExecution` bağımsız ready wave'lerin tek batch olarak yürütülmesini sağlar ve `planLock` farklı conversation'ların birbirinin işine atlamasını engeller.
-
-Detay: [`superpowers-bridge.md`](superpowers-bridge.md)
+fur-skills kendi içinde tamamlanan bir akıştır. Başka bir metodoloji kullanıcı tarafından ayrıca çağrılırsa, çıktısı Fur için sadece bağlam sayılır; task dosyaları, plan manifestleri, progress snapshot'ları, tracker routing ve kapanış Fur tarafından yönetilir.
 
 ## Soru Seviyeleri
 
