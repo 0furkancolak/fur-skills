@@ -27,8 +27,6 @@ jobs:
         run: |
           bun src/cli.ts eval meta fur-task
           bun src/cli.ts eval meta fur-do
-          bun src/cli.ts eval meta fur-check
-          bun src/cli.ts eval meta fur-debug
 
       - name: Run tests
         run: bun test

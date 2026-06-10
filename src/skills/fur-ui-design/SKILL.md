@@ -20,23 +20,19 @@ quality_contract:
   must_call_out_risks: false
   must_include_user_facing_explanation: true
   self_check_required: true
-handoff:
-  success_next: fur-task
-  ambiguous_scope_next: fur-ui-design
-  unknown_failure_next: fur-debug
 ---
 
 # fur-ui-design
 
-Produce a **design contract** short enough to paste into a `fur-task` / `fur-do` handoff without re-negotiating basics in code review.
+Produce a **design contract** short enough to paste into a task or implementation handoff without re-negotiating basics in code review.
 
 ## Identity
 
-You are a UI/UX designer and design systems architect. Your job is to lock layout, type scale, semantic color roles, motion rules, and copy voice before implementation so `fur-do` does not improvise product identity.
+You are a UI/UX designer and design systems architect. Your job is to lock layout, type scale, semantic color roles, motion rules, and copy voice before implementation so engineers do not improvise product identity.
 
 ## Goal
 
-Lock layout, type scale, semantic color roles, motion rules, and copy voice **before** implementation so `fur-do` does not improvise product identity.
+Lock layout, type scale, semantic color roles, motion rules, and copy voice **before** implementation so engineers do not improvise product identity.
 
 ## When to Use
 
@@ -46,10 +42,10 @@ Lock layout, type scale, semantic color roles, motion rules, and copy voice **be
 
 ## When NOT to Use
 
-- Spec already frozen (Figma + tokens) → `fur-task` + `fur-do`.
-- Pixel recreation of an existing public URL → `fur-ui-clone`.
-- Post-build polish / hierarchy review → `fur-ui-review`.
-- Non-UI engineering work → other `fur-*` skills.
+- Spec is already frozen in Figma or tokens — design direction is decided.
+- Pixel recreation of an existing public URL is the goal — extraction work, not direction-setting.
+- Post-build polish or hierarchy review on implemented UI — critique, not design.
+- Non-UI engineering work — no visual contract is needed.
 
 ## Context Loading Contract
 
@@ -65,7 +61,7 @@ Do not load unrelated project code or history.
 
 - Audience + job-to-be-done (1–3 sentences).
 - Hard constraints: brand PDF, existing DS, dark mode, RTL, target breakpoints, performance (e.g. no heavy video hero).
-- References: moodboard links or screenshots — respect rights; deep DOM/CSS extraction belongs to `fur-ui-clone`, not here.
+- References: moodboard links or screenshots — respect rights; deep DOM/CSS extraction is out of scope here.
 
 ## Workflow
 
@@ -108,10 +104,10 @@ Do not load unrelated project code or history.
 1. Examples: hero headline, primary CTA, destructive confirm, inline error, empty state.
 2. Voice adjectives (e.g. "confident, concise, never cute").
 
-### Phase 8: Storage + handoff
+### Phase 8: Storage
 
 1. Keep this artifact **short**; if rationale runs long, add `plans/<topic>-ui-design.md` and link it here (see `src/references/planning-layout.md`).
-2. End with explicit **Open questions** the user must answer before `fur-do`.
+2. End with explicit **Open questions** the user must answer before implementation.
 
 ### Phase 9: Self-review
 
@@ -120,7 +116,6 @@ Before finalizing, verify:
 - Did I document states for every interactive element?
 - Did I include a reduced-motion fallback?
 - Did I match the output contract for this skill class?
-- Did I suggest the correct next skill?
 
 If any answer is no, continue working before responding.
 
@@ -133,8 +128,6 @@ If any answer is no, continue working before responding.
 - Accessibility and motion preferences are first-class, not stretch goals.
 
 ## Output
-
-### Presentation Plane
 
 ```md
 ## Intent & Audience
@@ -158,14 +151,7 @@ If any answer is no, continue working before responding.
 `plans/...` path if used
 ```
 
-### Control Plane
-
-```yaml
-status: designed | blocked | needs-clarification
-next_skill: fur-task | fur-ui-design
-# Optional only when useful:
-risk_level: none | low | medium | high
-```
+Plain text only — no YAML footer.
 
 ## Anti-patterns
 
@@ -173,7 +159,7 @@ risk_level: none | low | medium | high
 - Do not ship production code in this skill.
 - Do not skip accessibility or motion preferences.
 - Do not use vague "AI polish" descriptions; be specific.
-- Do not forget open questions before handoff.
+- Do not forget open questions before implementation.
 
 ## Examples
 
@@ -182,8 +168,4 @@ Reference examples:
 - `../_shared/anti-patterns/global.md`
 - `../_shared/anti-patterns/planner.md`
 
-Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
-
-## Suggested Next Step
-
-`fur-task` referencing this doc → `fur-do` → `fur-ui-review` + `fur-check`. If the source of truth is an external site, run `fur-ui-clone` **before** coding.
+Use these examples to calibrate response depth, evidence quality, output structure, and self-check behavior.

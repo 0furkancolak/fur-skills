@@ -18,10 +18,6 @@ quality_contract:
   must_call_out_risks: false
   must_include_user_facing_explanation: false
   self_check_required: true
-handoff:
-  success_next: fur-status
-  ambiguous_scope_next: fur-task
-  unknown_failure_next: fur-debug
 ---
 
 # fur-session-handoff
@@ -43,9 +39,9 @@ Emit a single copy-paste-ready Turkish prompt that lets the next conversation co
 
 ## When NOT to Use
 
-- User wants code changes; use the owning implementation skill.
-- User wants queue status; use `fur-status`.
-- User wants branch/PR shipping; use `fur-ship`.
+- User wants code changes — this skill produces prompts only.
+- User wants a queue snapshot — read `docs/ai/` instead of compressing a session.
+- User wants branch/PR shipping — git/GitHub work is out of scope.
 
 ## Context Loading Contract
 
@@ -192,7 +188,3 @@ Handoff hazır. Aşağıdaki prompt'u kopyala:
 ...
 ```
 ````
-
-## Suggested Next Step
-
-Paste the prompt into the next conversation, then use `fur-status` there for orientation.

@@ -40,12 +40,8 @@ Implementation is complete. The test failure appears to be environment-related r
 
 ```yaml
 status: blocked
-next_skill: fur-debug
 scope_respected: true
 verification_state: partial
 risk_level: medium
 ```
 
-## Suggested Next Step
-
-Route to `fur-debug` to diagnose the test environment issue before closing.

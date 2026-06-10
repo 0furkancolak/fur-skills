@@ -11,11 +11,6 @@ export interface GraderResult {
   notes: string[];
 }
 
-const YAML_REQUIRED_KEYS = [
-  "status",
-  "next_skill",
-];
-
 const VAGUE_PATTERNS = [
   /- .*pass\s*✅\s*\n(?![\s\S]*?`)/,
   /All tests pass/,
@@ -29,12 +24,12 @@ export function gradeOutput(
 ): GraderResult {
   const results: GraderResult = {
     headings_ok: false,
-    yaml_valid: false,
+    yaml_valid: true,
     no_fabricated_checks: true,
     ac_coverage: false,
     control_plane: false,
     score: 0,
-    max_score: 5,
+    max_score: 3,
     notes: [],
   };
 
@@ -46,21 +41,9 @@ export function gradeOutput(
     results.notes.push(`Missing headings: ${JSON.stringify(missing)}`);
   }
 
-  const yamlBlock = outputText.match(/```yaml\n([\s\S]*?)\n```/);
-  if (yamlBlock) {
-    const yamlText = yamlBlock[1] ?? "";
-    const yamlOk = YAML_REQUIRED_KEYS.every((k) => yamlText.includes(k));
-    if (yamlOk) {
-      results.yaml_valid = true;
-      results.score += 1;
-    } else {
-      results.notes.push("YAML control plane missing required keys");
-    }
-  } else {
-    results.notes.push("Missing YAML control plane");
-  }
-
-  const isBlocked = outputText.includes("status: blocked");
+  const isBlocked =
+    outputText.includes("status: blocked") ||
+    /blocked/i.test(outputText);
   const hasExplicitFail =
     /\|\s*fail\s*\|/.test(outputText) ||
     /Result:\s*fail/.test(outputText) ||
@@ -90,9 +73,7 @@ export function gradeOutput(
 
   if (outputText.includes("```yaml")) {
     results.control_plane = true;
-    results.score += 1;
-  } else {
-    results.notes.push("Missing control plane block");
+    results.notes.push("Legacy control-plane YAML present (optional; prefer plain text)");
   }
 
   return results;

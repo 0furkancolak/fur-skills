@@ -91,8 +91,10 @@ pnpm test
 
 const CONVENTIONS_CONTENT = `# Agent Conventions
 
-- Use Turkish for user-facing Fur repo conversation unless the user asks otherwise.
-- Prefer caveman-style concise output; keep technical terms exact.
+- Use Turkish for user-facing conversation unless the user asks otherwise.
+- Prefer short plain-text replies; no YAML control-plane blocks at the end of messages.
+- Use caveman style only when the user invokes caveman or \`responseDepth: concise\` clearly allows it.
+- Superpowers skills (debug, TDD, verification) apply when the user attaches them — not by default.
 - Do not add AI attribution, model names, or co-author lines to commits or PR bodies.
 - Commits and PR creation require explicit user approval.
 - External writes require explicit approval or clear workspace config permission.
@@ -148,15 +150,14 @@ ${await discoverProjectSummary(projectRoot)}
 }
 
 function agentInstructionsBlock(): string {
-  return `<!-- fur-docs-ai:start -->
-## Fur / AI Context
+  return `<!-- docs-ai:start -->
+## AI Context
 
-- Runtime docs live in \`docs/ai/\`.
-- Start with \`docs/ai/config.json\`, \`docs/ai/progress/latest.md\`, and relevant files under \`docs/ai/context/\`.
-- Use \`docs/ai/tasks/\` for local task state and \`docs/ai/plans/\` for larger implementation plans.
-- Keep responses concise by default; caveman style is preferred when it does not reduce clarity.
+- Durable docs: \`docs/ai/\` — see \`docs/ai/README.md\`.
+- Load \`docs/ai/config.json\`, \`docs/ai/progress/latest.md\`, and \`docs/ai/context/*\` before deep work.
+- Optional tasks: \`docs/ai/tasks/\`; plans: \`docs/ai/plans/\`.
 - Commit and PR creation require explicit user approval.
-<!-- fur-docs-ai:end -->`;
+<!-- docs-ai:end -->`;
 }
 
 async function upsertBlock(path: string, fallbackTitle: string): Promise<void> {
@@ -166,7 +167,8 @@ async function upsertBlock(path: string, fallbackTitle: string): Promise<void> {
     return;
   }
   const current = await readFile(path, "utf-8");
-  const pattern = /<!-- fur-docs-ai:start -->[\s\S]*?<!-- fur-docs-ai:end -->/m;
+  const pattern =
+    /<!-- (?:fur-docs-ai|docs-ai):start -->[\s\S]*?<!-- (?:fur-docs-ai|docs-ai):end -->/m;
   const next = pattern.test(current)
     ? current.replace(pattern, block)
     : `${current.trimEnd()}\n\n${block}\n`;
@@ -178,15 +180,9 @@ async function writeAgentRedirects(projectRoot: string): Promise<void> {
   const claudePath = join(projectRoot, "CLAUDE.md");
   const redirect = `# Claude Instructions
 
-Read \`AGENTS.md\` first. Fur runtime docs live in \`docs/ai/\`.
+Read \`AGENTS.md\`.
 `;
-  if (!existsSync(claudePath)) {
-    await writeFile(claudePath, `${redirect}\n`);
-    return;
-  }
-  const current = await readFile(claudePath, "utf-8");
-  if (current.includes("Read `AGENTS.md` first")) return;
-  await writeFile(claudePath, `${redirect}\n${current}`);
+  await writeFile(claudePath, `${redirect}\n`);
 }
 
 export function planningDir(projectRoot: string): string {
@@ -243,7 +239,7 @@ export async function addGitignoreEntry(projectRoot: string): Promise<void> {
   if (!content.split("\n").some((line) => line.trim() === `${PLANNING_DIR}/`)) {
     await appendFile(
       gitignoreFile,
-      `\n# Fur agent planning workspace\n${PLANNING_DIR}/\n`,
+      `\n# Agent context workspace\n${PLANNING_DIR}/\n`,
     );
   }
 }

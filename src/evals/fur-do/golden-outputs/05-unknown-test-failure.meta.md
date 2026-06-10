@@ -1,4 +1,4 @@
-# Golden Output 5: Unknown Test Failure During Verification (Route to fur-debug)
+# Golden Output 5: Unknown Test Failure During Verification (Blocked)
 
 ## Input
 
@@ -11,7 +11,7 @@ TypeError: Cannot read properties of undefined (reading 'setAttribute')
 
 Line 15 of the test file is `expect(document.documentElement.getAttribute('data-theme')).toBe('dark')`.
 
-## Expected Output (Blocked → fur-debug)
+## Expected Output (Blocked)
 
 ```markdown
 ## Task Understanding
@@ -56,15 +56,11 @@ Implementation is complete. The test failure appears to be environment-related r
 
 ```yaml
 status: blocked
-next_skill: fur-debug
 scope_respected: true
 verification_state: partial
 risk_level: medium
 ```
 
-## Suggested Next Step
-
-Route to `fur-debug` to diagnose the test environment issue before closing.
 ```
 
 ## Rubric Scores
@@ -72,6 +68,6 @@ Route to `fur-debug` to diagnose the test environment issue before closing.
 | Dimension | Score | Notes |
 |---|---|---|
 | Depth | 8/16 | Brief restatement, assumptions labeled, no trade-offs, edge case (test env issue), self-check implicit, file list with intent, verification with honest failure report, risk with severity. |
-| Quality | 9/10 | AC mapped honestly (met / not met), claims tied to evidence, routing correct (fur-debug), format matches, no invented green status. |
+| Quality | 9/10 | AC mapped honestly (met / not met), claims tied to evidence, blocked status correct, format matches, no invented green status. |
 | Evidence | 2/3 | Error message inlined + file paths. No full test file snippet. |
 | Risk | medium | Correct: unknown test failure is a meaningful gap. |

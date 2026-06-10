@@ -11,19 +11,16 @@ const SHARED_PATHS = [
   "src/skills/_shared/overlays/openai-reasoning.md",
   "src/skills/_shared/overlays/generic.md",
   "src/skills/_shared/examples/executor-example.md",
-  "src/skills/_shared/examples/gate-example.md",
-  "src/skills/_shared/examples/diagnostic-example.md",
   "src/skills/_shared/examples/planner-example.md",
   "src/skills/_shared/examples/orchestrator-example.md",
   "src/skills/_shared/anti-patterns/global.md",
   "src/skills/_shared/anti-patterns/executor.md",
   "src/skills/_shared/anti-patterns/gate.md",
-  "src/skills/_shared/anti-patterns/diagnostic.md",
   "src/skills/_shared/anti-patterns/planner.md",
   "src/skills/_shared/anti-patterns/orchestrator.md",
 ] as const;
 
-const CORE_EVAL_SKILLS = ["fur-task", "fur-do", "fur-check", "fur-debug"] as const;
+const CORE_EVAL_SKILLS = ["fur-task", "fur-do"] as const;
 
 const REMAINING_EVAL_SKILLS = [
   "fur-init",

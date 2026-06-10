@@ -108,21 +108,6 @@ To prevent a flash of unstyled content on SSR, I added a small inline script in 
 - **Cross-browser risk**: `localStorage` is widely supported, but private browsing modes may behave differently. Risk level: **low**.
 - **Accessibility**: The toggle uses a `<Switch />` component, but aria-label was not verified. Suggested follow-up: run `axe-core` on the settings page.
 
-## Control Plane
-
-```yaml
-status: implemented
-next_skill: fur-done
-task_size: standard
-auto_closed: false
-scope_respected: true
-verification_state: complete
-risk_level: low
-```
-
-## Suggested Next Step
-
-Route to `fur-done`; it will run the internal check gate before closing the task.
 ```
 
 ## Why This Output Is Good

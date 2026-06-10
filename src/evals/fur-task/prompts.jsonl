@@ -1,6 +1,6 @@
 {"input":"Create a task to refactor the auth module into a dedicated service with clear AC","expected_routing":"fur-task","min_scores":{"depth":2,"quality":2,"evidence":1,"risk":1}}
 {"input":"Add a new task: update README with installation steps. Should be small and self-contained.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":2,"evidence":1,"risk":1}}
-{"input":"I need a task to fix the flaky login test in auth.spec.ts. It fails about 30% of the time.","expected_routing":"fur-debug","min_scores":{"depth":2,"quality":2,"evidence":2,"risk":1}}
+{"input":"I need a task to fix the flaky login test in auth.spec.ts. It fails about 30% of the time.","expected_routing":"blocked","min_scores":{"depth":2,"quality":2,"evidence":2,"risk":1}}
 {"input":"Create task for implementing rate limiting on the public API endpoints","expected_routing":"fur-task","min_scores":{"depth":2,"quality":2,"evidence":1,"risk":1}}
 {"input":"Draft a task to migrate from Jest to Vitest. Include phase breakdown.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":2,"evidence":1,"risk":1}}
 {"input":"User says 'fix the thing' with no context, no repo, no error message. What should we do?","expected_routing":"fur-task","min_scores":{"depth":2,"quality":1,"evidence":1,"risk":2}}

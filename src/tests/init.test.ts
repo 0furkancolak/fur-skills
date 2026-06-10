@@ -25,13 +25,14 @@ describe("cmdInit", () => {
 
     const configPath = join(tempDir, "docs", "ai", "config.json");
     expect(existsSync(configPath)).toBe(true);
-    expect(existsSync(join(tempDir, ".fur.planning"))).toBe(false);
     expect(existsSync(join(tempDir, "docs", "ai", "context", "architecture.md"))).toBe(true);
     expect(existsSync(join(tempDir, "docs", "ai", "context", "conventions.md"))).toBe(true);
     expect(existsSync(join(tempDir, "AGENTS.md"))).toBe(true);
     expect(existsSync(join(tempDir, "CLAUDE.md"))).toBe(true);
-    expect(await readFile(join(tempDir, "AGENTS.md"), "utf-8")).toContain("Runtime docs live in `docs/ai/`");
-    expect(await readFile(join(tempDir, "CLAUDE.md"), "utf-8")).toContain("Read `AGENTS.md` first");
+    expect(await readFile(join(tempDir, "AGENTS.md"), "utf-8")).toContain("Durable docs: `docs/ai/`");
+    expect((await readFile(join(tempDir, "CLAUDE.md"), "utf-8")).trim()).toBe(
+      "# Claude Instructions\n\nRead `AGENTS.md`.",
+    );
 
     const raw = await readFile(configPath, "utf-8");
     const config = JSON.parse(raw) as Record<string, unknown>;

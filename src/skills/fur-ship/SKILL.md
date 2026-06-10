@@ -19,10 +19,6 @@ quality_contract:
   must_call_out_risks: true
   must_include_user_facing_explanation: true
   self_check_required: true
-handoff:
-  success_next: fur-done
-  ambiguous_scope_next: fur-task
-  unknown_failure_next: fur-debug
 ---
 
 # fur-ship
@@ -43,9 +39,9 @@ Ensure the current work is on a proper branch and has a GitHub PR with clean tit
 
 ## When NOT to Use
 
-- Work is not implemented or verified; use `fur-do` or `fur-check`.
-- The problem is a failing test with unknown cause; use `fur-debug`.
-- User only needs local task closure; use `fur-done`.
+- Work is not implemented or verified — ship assumes code is ready to present.
+- The problem is a failing test with unknown cause — diagnose before opening a PR.
+- User only needs local task closure in `docs/ai/` — this skill handles git/GitHub only.
 
 ## Context Loading Contract
 
@@ -101,7 +97,6 @@ Before final output, verify:
 - Did I avoid unauthorized commit/PR creation?
 - Did I sanitize commit and PR text?
 - Did I include template usage status?
-- Did I suggest the correct next skill?
 
 ## Rules
 
@@ -114,7 +109,7 @@ Before final output, verify:
 
 ## Output
 
-### Presentation Plane
+Plain text only. No YAML after Next Action. Caveman OK when concise.
 
 ```md
 ## Ship State
@@ -134,14 +129,7 @@ Before final output, verify:
 
 ## Next Action
 
-[one action, including approval request if needed]
-```
-
-### Control Plane
-
-```yaml
-status: ready | needs_approval | blocked
-next_skill: fur-done | fur-check | fur-debug
+[one action, including approval request if needed — prose only]
 ```
 
 ## Anti-patterns
@@ -189,7 +177,3 @@ feat(ECW - checkout): fix total
 Generated with Codex
 Co-authored-by: ChatGPT <bot@example.com>
 ```
-
-## Suggested Next Step
-
-If PR exists and checks pass, use `fur-done`; if verification is missing, use `fur-check`.

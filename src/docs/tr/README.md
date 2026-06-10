@@ -37,23 +37,11 @@ Installer ayrıca OpenCode için global komut kurar:
 /clone-website <url>
 ```
 
-## Temel Döngü
+## Bağlam
 
-```txt
-fur-init -> fur-task -> fur-do -> fur-done
-                 \-> fur-check (opsiyonel/gömülü) ->/
-                 \-> fur-debug ->/
-```
+`fur init` ile `docs/ai/` kurulur veya yenilenir. Skill'ler birbirinden bağımsızdır; superpowers veya başka toolchain'lerle birlikte kullanılabilir.
 
-## v3 Mimari
-
-fur-skills v3; `docs/ai` tabanlı, contract-first, provider-aware ve eval-driven bir skill sistemidir.
-
-- **Contract-first**: Her skill net bir kalite sözleşmesine sahiptir (`skill-spec-v2.md`).
-- **Provider-aware**: Claude, OpenAI reasoning ve generic hostlar için ayrı overlay yaklaşımı vardır (`src/skills/_shared/overlays/`).
-- **Eval-driven**: Skill kalitesi prompt setleri, golden output'lar ve grader'lar ile ölçülür (`src/evals/`).
-- **Birleşebilir akış**: Kullanıcı isterse Fur skill'leri başka skill/tool çıktılarıyla birlikte kullanılabilir; Fur yerel task/state contract'ını korur.
-- **Caveman varsayılanı**: Netliği bozmuyorsa kısa, düşük gürültülü caveman tarzı çıktı tercih edilir.
+Ayrıntı: kök `README.md` ve `AGENTS.md`.
 
 ## Skill Sınıfları
 
@@ -62,8 +50,7 @@ fur-skills v3; `docs/ai` tabanlı, contract-first, provider-aware ve eval-driven
 | **orchestrator** | Yönlendirme, özetleme, arşivleme | concise |
 | **planner** | Ayrıştırma, netleştirme, tasarım | standard |
 | **executor** | Tek kapsamlı task uygulama | deep |
-| **gate** | Doğrulama, review, kabul/red | standard |
-| **diagnostic** | Bilinmeyen kök neden analizi | deep |
+| **gate** | UI review | standard |
 
 ## responseDepth
 
@@ -117,19 +104,15 @@ Her skill şu kurallara uyar:
 - Acceptance criteria tek tek karşılanır veya açıkça gap olarak belirtilir.
 - Verification sonucu uydurulmaz.
 - Riskler seviyeleriyle yazılır.
-- Çıktı sonunda doğru sonraki skill önerilir.
-
-## Core Skill'ler
+## Skill'ler
 
 | Skill | Sınıf | Görev |
 |---|---|---|
 | `fur-init` | orchestrator | `docs/ai`, context dosyaları, local config, AGENTS yönlendirmesi, CLAUDE redirect'i ve workspace ipuçlarını kurar/günceller. |
 | `fur-task` | planner | Local/Jira/GitHub kaynaklardan küçük task üretir, seçer veya böler. |
 | `fur-do` | executor | Seçili task'ı uygular. |
-| `fur-check` | gate | Standalone veya gömülü acceptance, test, typecheck/lint ve review kapısıdır. |
-| `fur-done` | orchestrator | İç check kapısını çalıştırır, doğrulanmış task'ı done'a taşır, snapshot/state alır, config izinliyse tracker sync yapar. |
-| `fur-status` | orchestrator | İstendiğinde nerede kalındığını ve sıradaki tek aksiyonu gösterir. |
-| `fur-debug` | diagnostic | Kök nedeni bilinmeyen bug'lar için fazlı debug akışıdır. |
+| `fur-done` | orchestrator | Doğrulanmış task'ı kapatır, snapshot/state alır. |
+| `fur-status` | orchestrator | İstendiğinde ilerleme özeti. |
 | `fur-session-handoff` | orchestrator | Yeni conversation için kopyala-yapıştır hazır Türkçe devam prompt'u üretir. |
 | `fur-ship` | orchestrator | Branch/PR durumunu kontrol eder, commit/PR metninden AI attribution temizler, approval gate ile GitHub PR akışını hazırlar. |
 

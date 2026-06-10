@@ -39,6 +39,3 @@ verification_state: complete
 risk_level: none
 ```
 
-## Suggested Next Step
-
-Route to `fur-done` for internal check and closure.

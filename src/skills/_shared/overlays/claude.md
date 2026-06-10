@@ -132,19 +132,8 @@ Operational handoff only. 1-3 sentences + file list + next step.
 </depth>
 ```
 
-## Output Plane Split
+## Output format
 
-When structured output is available, request:
+Human-readable markdown with deterministic headings. No trailing YAML (`status`, `next_skill`).
 
-```xml
-<output_planes>
-<presentation>
-Human-readable markdown with deterministic headings.
-</presentation>
-<control>
-Machine-checkable YAML block at the end.
-</control>
-</output_planes>
-```
-
-When structured output is not available, still emit the YAML block inside the markdown.
+Caveman only when user invoked caveman or `responseDepth: concise`. Superpowers skills apply when the user attached them.

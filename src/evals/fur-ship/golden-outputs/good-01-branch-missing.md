@@ -21,5 +21,5 @@ Approval needed: create/switch to `codex/ecw-checkout-fix`, then run verificatio
 
 ```yaml
 status: needs_approval
-next_skill: fur-check
+status: blocked
 ```

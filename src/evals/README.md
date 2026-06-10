@@ -1,6 +1,6 @@
 # fur-skills Eval System
 
-This directory contains evaluation fixtures for the fur-skills v2 skill family. Eval-driven development means: define success, measure, then improve.
+Evaluation fixtures per skill. Define success, measure, improve.
 
 ## Structure
 
@@ -13,7 +13,7 @@ src/evals/
     golden-outputs/      # Reference outputs for human calibration
     graders/
       deterministic.ts   # Checks frontmatter, headings, YAML validity
-  fur-check/             # Eval fixtures for fur-check
+  fur-init/
   ...
 ```
 

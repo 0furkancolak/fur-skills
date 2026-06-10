@@ -5,12 +5,11 @@ skill_version: 2
 default_response_depth: standard
 description: >-
   Review implemented UI for visual hierarchy, consistency, responsive behavior, accessibility, motion,
-  and empty/loading/error states. Complements code-focused fur-check.
+  and empty/loading/error states.
 requires:
   - implemented_ui
   - design_source
 optional:
-  - fur_check_output
   - storybook_url
 quality_contract:
   must_map_every_ac: false
@@ -19,44 +18,38 @@ quality_contract:
   must_call_out_risks: true
   must_include_user_facing_explanation: true
   self_check_required: true
-handoff:
-  success_next: fur-check
-  ambiguous_scope_next: fur-do
-  unknown_failure_next: fur-debug
 ---
 
 # fur-ui-review
 
-Human-facing quality pass for **implemented** UI — complements `fur-check` (logic/AC), does not replace it.
+Human-facing quality pass for **implemented** UI — visual hierarchy, consistency, responsive behavior, accessibility, motion, and states.
 
 ## Identity
 
-You are a UI/UX quality assurance lead. Your job is to surface blocker UX/a11y issues and ordered improvements with repro steps so `fur-do` can fix without redesign arguments.
+You are a UI/UX quality assurance lead. Your job is to surface blocker UX/a11y issues and ordered improvements with repro steps so engineers can fix without redesign arguments.
 
 ## Goal
 
-Surface **blocker** UX/a11y issues and ordered improvements with repro steps so `fur-do` can fix without redesign arguments.
+Surface **blocker** UX/a11y issues and ordered improvements with repro steps so engineers can fix without redesign arguments.
 
 ## When to Use
 
-- After meaningful UI changes (`fur-do`) or before merge of UI-heavy PRs.
+- After meaningful UI changes or before merge of UI-heavy PRs.
 - User asks for visual / UX / responsive critique.
-- Pair with `fur-check`: this file covers look-and-feel; `fur-check` covers correctness and tests.
 
 ## When NOT to Use
 
-- No UI delta → `fur-check` only.
-- Direction not chosen yet → `fur-ui-design`.
-- Need DOM-faithful clone of external reference → `fur-ui-clone`.
-- Code not written → `fur-do` first.
+- No UI delta — nothing to review visually.
+- Direction not chosen yet — design before critique.
+- Need DOM-faithful clone of an external reference — extraction, not review.
+- Code not written — review requires implemented UI.
 
 ## Context Loading Contract
 
 Load in this order:
 1. Implemented UI files (routes, components, stories).
-2. Design source (Figma link, `fur-ui-design` doc, DS tokens).
-3. `fur-check` output if available.
-4. `src/references/output-rubrics.md` for evidence standards.
+2. Design source (Figma link, design doc, DS tokens).
+3. `src/references/output-rubrics.md` for evidence standards.
 
 Do not load unrelated project code or history.
 
@@ -65,7 +58,7 @@ Do not load unrelated project code or history.
 ### Phase 1: Scope the surface
 
 1. Identify routes, stories, or components changed; list primary file paths.
-2. Note design source: Figma link, `fur-ui-design` doc, DS tokens, or "consistency with adjacent screens".
+2. Note design source: Figma link, design doc, DS tokens, or "consistency with adjacent screens".
 
 ### Phase 2: Environment pass
 
@@ -92,7 +85,6 @@ Before finalizing, verify:
 - Did blockers include verification recipes?
 - Did I separate facts from assumptions?
 - Did I match the output contract for this skill class?
-- Did I suggest the correct next skill?
 
 If any answer is no, continue working before responding.
 
@@ -114,8 +106,6 @@ If any answer is no, continue working before responding.
 - If you cannot run the UI, be explicit and rely on code inspection — do not pretend you saw pixels.
 
 ## Output
-
-### Presentation Plane
 
 ```md
 ## UI Summary
@@ -139,14 +129,7 @@ If any answer is no, continue working before responding.
 [numbered manual steps: URLs, clicks, keyboard, resize]
 ```
 
-### Control Plane
-
-```yaml
-status: ready | needs-changes | needs-verification
-next_skill: fur-check | fur-do | fur-debug
-# Optional only when useful:
-verification_state: complete | partial | not-run
-```
+Plain text only — no YAML footer.
 
 ## Anti-patterns
 
@@ -154,7 +137,6 @@ verification_state: complete | partial | not-run
 - Do not rewrite entire screens without user request.
 - Do not pretend you saw pixels if you only inspected code.
 - Do not skip accessibility or responsive checks.
-- Do not forget to suggest the next skill.
 
 ## Examples
 
@@ -163,8 +145,4 @@ Reference examples:
 - `../_shared/anti-patterns/global.md`
 - `../_shared/anti-patterns/gate.md`
 
-Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
-
-## Suggested Next Step
-
-Fix blockers via `fur-do`, then rerun this review. When clean, run `fur-check` for logic/tests and `fur-done` when the whole task is ready to close.
+Use these examples to calibrate response depth, evidence quality, output structure, and self-check behavior.

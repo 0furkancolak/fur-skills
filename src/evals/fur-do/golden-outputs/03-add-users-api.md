@@ -46,6 +46,3 @@ verification_state: partial
 risk_level: medium
 ```
 
-## Suggested Next Step
-
-Route to `fur-done` for internal check and closure. Follow-up: create a task for API route tests.

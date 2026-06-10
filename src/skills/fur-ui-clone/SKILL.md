@@ -25,10 +25,6 @@ quality_contract:
   must_call_out_risks: true
   must_include_user_facing_explanation: true
   self_check_required: true
-handoff:
-  success_next: fur-ui-review
-  ambiguous_scope_next: fur-task
-  unknown_failure_next: fur-debug
 ---
 
 # fur-ui-clone
@@ -52,8 +48,8 @@ Rebuild whatever is visible at the target URL(s) as a pixel-perfect front-end cl
 
 ## When NOT to Use
 
-- Original product UI direction is needed — use `fur-ui-design`.
-- A scoped implementation task is already defined — use `fur-do`.
+- Original product UI direction is needed — design before cloning.
+- A scoped implementation task is already defined and the reference is not the source of truth.
 - The reference is private, paywalled, DRM-limited, or you lack rights to reuse its assets or structure.
 - Browser automation is unavailable and no screenshots or reference bundle were provided.
 
@@ -527,7 +523,6 @@ Before finalizing, verify:
 - Did `npm run build` pass after assembly?
 - Did I perform the visual QA diff?
 - Did I match the output contract for this skill class?
-- Did I suggest the correct next skill?
 
 If any answer is no, continue working before responding.
 
@@ -568,8 +563,6 @@ External writes (remote repos, issue trackers, and similar) require explicit use
 
 ## Output
 
-### Presentation Plane
-
 ```md
 ## Clone Summary
 
@@ -604,14 +597,7 @@ Cover trade-offs, edge cases, and why the chosen approach was preferable.
 Include residual technical risk, missing coverage, and any suggested follow-up task.
 ```
 
-### Control Plane
-
-```yaml
-status: implemented | blocked | needs-clarification
-next_skill: fur-ui-review | fur-check | fur-task
-# Optional only when useful:
-verification_state: complete | partial | not-run
-```
+Plain text only — no YAML footer.
 
 ## Anti-patterns
 
@@ -629,8 +615,4 @@ Reference examples:
 - `../_shared/anti-patterns/global.md`
 - `../_shared/anti-patterns/executor.md`
 
-Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
-
-## Suggested Next Step
-
-Run `fur-ui-review` for visual QA, then `fur-check` and `fur-done` when the clone is verified.
+Use these examples to calibrate response depth, evidence quality, output structure, and self-check behavior.

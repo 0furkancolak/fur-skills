@@ -8,11 +8,11 @@ Prompts: 5 (from `src/evals/fur-do/prompts.jsonl`)
 
 | Prompt ID | Description | Depth | Quality | Evidence | Risk | Status |
 |---|---|---|---|---|---|---|
-| 01 | Dark mode toggle (happy path, deep) | 16/16 | 10/10 | 3/3 | low | implemented → fur-check |
-| 02 | TypeScript any fix (tiny, concise) | 6/16 | 8/10 | 2/3 | none | implemented → fur-check |
-| 03 | Add users API (medium, standard) | 9/16 | 9/10 | 2/3 | medium | implemented → fur-check |
+| 01 | Dark mode toggle (happy path, deep) | 16/16 | 10/10 | 3/3 | low | implemented |
+| 02 | TypeScript any fix (tiny, concise) | 6/16 | 8/10 | 2/3 | none | implemented |
+| 03 | Add users API (medium, standard) | 9/16 | 9/10 | 2/3 | medium | implemented |
 | 04 | Missing AC (boundary) | 6/16 | 8/10 | 1/3 | high | blocked → fur-task |
-| 05 | Unknown test failure (boundary) | 8/16 | 9/10 | 2/3 | medium | blocked → fur-debug |
+| 05 | Unknown test failure (boundary) | 8/16 | 9/10 | 2/3 | medium | blocked |
 
 ## Depth Analysis
 
@@ -106,9 +106,6 @@ Grader alignment: 5/5 golden outputs pass deterministic checks. The grader corre
 }
 ```
 
-## Suggested Next Step
-
-1. Run the full 20-prompt suite against the grader.
 2. Record any failures as known failure modes.
 3. Scale to LLM grader calibration when subjective dimensions are needed.
 4. Record final baseline scores in `baselines/v2-baseline.json`.

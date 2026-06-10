@@ -11,7 +11,6 @@ const REQUIRED_SECTIONS: RegExp[] = [
   /##\s*Rules/i,
   /##\s*Output/i,
   /##\s*Anti-patterns/i,
-  /##\s*Suggested Next Step/i,
 ];
 
 function extractFrontmatter(text: string): string | null {

@@ -9,7 +9,7 @@
 {"input": "Close a task that has no linked tracker issue. Should skip sync step.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "fur-done on a task that was already marked done previously. Should report idempotency.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "Done and request Jira transition but the Jira API token is missing.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
-{"input": "Close a task with a blocker that has not been resolved.", "expected_routing": "fur-debug", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 3}}
+{"input": "Close a task with a blocker that has not been resolved.", "expected_routing": "blocked", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 3}}
 {"input": "Mark done with evidenceStyle: inline. Expect inline snippets in the snapshot.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 2, "evidence": 2, "risk": 1}}
 {"input": "fur-done after a task that required user approval for a commit that was never given.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
 {"input": "Close task and the snapshot directory is not writable.", "expected_routing": "fur-do", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}

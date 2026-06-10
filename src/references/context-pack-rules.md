@@ -32,7 +32,7 @@ Always read in this order, stopping early if the task is trivial:
 - Add source files directly touched by the task.
 - Add related tests or fixtures.
 - Add architectural docs or ADRs referenced in the task.
-- For `fur-debug`, add logs, traces, or reproduction artifacts.
+- For unknown failures, add logs, traces, or reproduction artifacts to context before deep investigation.
 
 ## Context Hygiene Rules
 

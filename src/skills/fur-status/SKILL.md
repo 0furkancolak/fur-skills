@@ -21,10 +21,6 @@ quality_contract:
   must_call_out_risks: false
   must_include_user_facing_explanation: true
   self_check_required: true
-handoff:
-  success_next: fur-do
-  ambiguous_scope_next: fur-task
-  unknown_failure_next: fur-debug
 ---
 
 # fur-status
@@ -42,14 +38,14 @@ Summarize queue depth, latest `fur refresh` snapshot, workspace registration, an
 ## When to Use
 
 - "Where are we?", "what's next?", "what's in ready?"
-- Right after `fur-done` to pick the next task.
+- Right after closing a task to pick the next unit of work.
 - Long session: quick re-ground before more edits.
 
 ## When NOT to Use
 
-- Need to **create** or **reshape** tasks from raw notes → `fur-task`.
-- Need implementation → `fur-do`.
-- Need verification or closure → `fur-check` / `fur-done`.
+- Need to **create** or **reshape** tasks from raw notes — this skill is read-only.
+- Need implementation — status does not write code.
+- Need verification or task closure — status does not move tasks or run gates.
 
 ## Context Loading Contract
 
@@ -84,7 +80,7 @@ Do not load full task bodies or archived snapshots.
 
 ### Phase 4: Recommend a single next step
 
-Pick exactly **one** of: `fur-task`, `fur-do` (name the ready file), `fur-check`, `fur-done`, `fur refresh`, `fur compact`, `fur workspace doctor`, `fur-init`.
+Pick exactly **one** concrete next action: name a ready task file, run `fur refresh` / `fur compact` / `fur workspace doctor`, run `fur init`, or state what is blocked.
 
 ### Phase 5: Self-review
 
@@ -93,7 +89,6 @@ Before finalizing, verify:
 - Did I read only the head of `progress/latest.md`?
 - Did I recommend exactly one next action?
 - Did I match the output contract for this skill class?
-- Did I suggest the correct next skill?
 
 If any answer is no, continue working before responding.
 
@@ -102,12 +97,14 @@ If any answer is no, continue working before responding.
 - Read-only: **no** file mutations in this skill.
 - Never claim work is complete without matching task location + verification trail.
 - Prefer paths and counts over pasting markdown.
+- **Next Action** = one short plain-text sentence (or caveman fragment if `responseDepth: concise` or user invoked caveman). Never append YAML (`status`, `next_skill`).
+- If user attached superpowers or caveman skills, follow those for tone/process; this skill stays read-only.
 - If `progress/` is huge, suggest `fur compact` and mention `FUR_PROGRESS_KEEP` override (default keep is `8`).
-- Do not trigger external methodology from `fur-status`.
+- Do not trigger external methodology from this skill.
 
 ## Output
 
-### Presentation Plane
+Plain markdown only. End with **Next Action** as prose — no YAML block.
 
 ```md
 ## Summary
@@ -129,14 +126,7 @@ If any answer is no, continue working before responding.
 
 ## Next Action
 
-[exactly one recommended action]
-```
-
-### Control Plane
-
-```yaml
-status: orienting
-next_skill: fur-do | fur-task | fur-check | fur-done | fur-init
+[One short sentence. Example: CI yeşil olunca merge; sonra Epic 7 audit.]
 ```
 
 ## Anti-patterns
@@ -145,7 +135,6 @@ next_skill: fur-do | fur-task | fur-check | fur-done | fur-init
 - Do not recommend more than one next action.
 - Do not mutate files in this skill.
 - Do not load full archived snapshots.
-- Do not forget to suggest the next skill.
 
 ## Examples
 
@@ -154,8 +143,4 @@ Reference examples:
 - `../_shared/anti-patterns/global.md`
 - `../_shared/anti-patterns/orchestrator.md`
 
-Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
-
-## Suggested Next Step
-
-Whatever the **Next Action** line names — usually `fur-do` on the top ready task or `fur-task` when the queue is empty/stale.
+Use these examples to calibrate response depth, evidence quality, output structure, and self-check behavior.

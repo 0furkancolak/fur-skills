@@ -75,6 +75,3 @@ verification_state: complete
 risk_level: low
 ```
 
-## Suggested Next Step
-
-Route to `fur-done`; it will run the internal check gate before closing the task.

@@ -12,7 +12,6 @@ const V2_REQUIRED = [
   "skill_class",
   "default_response_depth",
   "quality_contract",
-  "handoff",
 ] as const;
 
 const QC_REQUIRED = [
@@ -22,12 +21,6 @@ const QC_REQUIRED = [
   "must_call_out_risks",
   "must_include_user_facing_explanation",
   "self_check_required",
-] as const;
-
-const HO_REQUIRED = [
-  "success_next",
-  "ambiguous_scope_next",
-  "unknown_failure_next",
 ] as const;
 
 function extractFrontmatter(text: string): string | null {
@@ -81,16 +74,6 @@ export function validateSkillFrontmatter(
     return {
       name,
       message: `v2 quality_contract missing: ${qcMissing.join(", ")}`,
-      level: "error",
-    };
-  }
-
-  const ho = data.handoff as Record<string, unknown> | undefined;
-  const hoMissing = HO_REQUIRED.filter((k) => !ho || !(k in ho));
-  if (hoMissing.length > 0) {
-    return {
-      name,
-      message: `v2 handoff missing: ${hoMissing.join(", ")}`,
       level: "error",
     };
   }

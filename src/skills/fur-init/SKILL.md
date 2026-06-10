@@ -20,10 +20,6 @@ quality_contract:
   must_call_out_risks: false
   must_include_user_facing_explanation: true
   self_check_required: true
-handoff:
-  success_next: fur-task
-  ambiguous_scope_next: fur-task
-  unknown_failure_next: fur-debug
 ---
 
 # fur-init
@@ -45,10 +41,10 @@ Create or refresh `docs/ai/`, route agents through `AGENTS.md`, point `CLAUDE.md
 
 ## When NOT to Use
 
-- You need to create implementation tasks only; use `fur-task`.
-- You need to implement application code; use `fur-do`.
-- You need a short queue/status view; use `fur-status`.
-- You need to ship a branch/PR; use `fur-ship`.
+- You only need to create or reshape tasks — init does not plan work.
+- You need to implement application code — init does not touch product source.
+- You only need a queue snapshot — init is heavier than a read-only status pass.
+- You need git branch or PR operations — init does not ship code.
 
 ## Context Loading Contract
 
@@ -116,7 +112,6 @@ Before final output, verify:
 - Did I refresh context files from actual repo signals?
 - Did I preserve user-authored AGENTS/CLAUDE content outside the managed block?
 - Did I report checks and residual risk honestly?
-- Did I suggest the correct next skill?
 
 ## Rules
 
@@ -125,12 +120,10 @@ Before final output, verify:
 - Do not delete existing `docs/ai/` files without explicit user approval.
 - Do not overwrite user-authored AGENTS/CLAUDE content outside the managed Fur block.
 - Keep context concise; archive long digests under `docs/ai/context/archive/`.
-- Prefer caveman-style concise user output when clarity is not harmed.
+- Plain-text output only — no YAML footer. Caveman only if user invoked caveman or `responseDepth: concise`.
 - External writes require explicit approval or clear `.fur.workspace/config.json` permission.
 
 ## Output
-
-### Presentation Plane
 
 ```md
 ## Summary
@@ -154,19 +147,12 @@ Before final output, verify:
 
 ## Next Action
 
-[one concrete next skill/action]
-```
-
-### Control Plane
-
-```yaml
-status: initialized | refreshed | blocked
-next_skill: fur-task | fur-status | fur-debug
+[one concrete next action — plain sentence, no YAML]
 ```
 
 ## Anti-patterns
 
-- Do not migrate from `.fur.planning`; v3 is a hard switch.
+- Do not use legacy `.fur.planning` paths.
 - Do not turn init into broad architecture documentation work.
 - Do not claim context is refreshed without inspecting repo signals.
 - Do not add AI attribution to generated agent docs.
@@ -188,7 +174,7 @@ Good:
 
 ## Next Action
 
-Use `fur-task` to capture the first unit of work.
+Capture the first unit of work in `docs/ai/tasks/`.
 ```
 
 Good refresh:
@@ -203,15 +189,11 @@ Good refresh:
 
 ## Next Action
 
-Run `fur-status` if you need queue orientation.
+Review `tasks/ready/` if you need queue orientation.
 ```
 
 Bad:
 
 ```md
-I rewrote half the README and moved old `.fur.planning` files automatically.
+I rewrote half the README without inspecting repo signals.
 ```
-
-## Suggested Next Step
-
-`fur-task` to capture work, or `fur-status` if `docs/ai` already contains active tasks.

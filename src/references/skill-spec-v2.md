@@ -26,10 +26,6 @@ quality_contract:
   must_call_out_risks: true | false
   must_include_user_facing_explanation: true | false
   self_check_required: true | false
-handoff:
-  success_next: <skill-name>
-  ambiguous_scope_next: <skill-name>
-  unknown_failure_next: <skill-name>
 ---
 ```
 
@@ -37,7 +33,7 @@ Notes:
 - `skill_version` without this field implies v1 and triggers a migration prompt.
 - `default_response_depth` is the fallback when config does not specify one.
 - `quality_contract` booleans declare what the skill promises to verify before finishing.
-- `handoff` declares the routing table used in `Suggested Next Step`.
+- Skills are independent; do not route to other skills in output.
 
 ## Mandatory Sections
 
@@ -46,12 +42,11 @@ After frontmatter, the body must include these sections in order:
 1. **Identity** (optional but recommended) — role framing for the model.
 2. **Goal** — what success looks like in one sentence.
 3. **When to Use** — bullet list of trigger conditions.
-4. **When NOT to Use** — bullet list of misuses and the correct skill to use instead.
+4. **When NOT to Use** — bullet list of scope boundaries (no cross-skill routing).
 5. **Workflow** — labeled phases (e.g., `### Phase 1: ...`).
 6. **Rules** — hard constraints that must never be violated.
 7. **Output** — exact output sections, headings, or schema.
-8. **Anti-patterns** (v2 addition) — at least one negative example of what not to do.
-9. **Suggested Next Step** — deterministic routing based on outcome.
+8. **Anti-patterns** — at least one negative example of what not to do.
 
 Optional but recommended:
 - **Context Loading Contract** — ordered list of what to load and what to skip.
@@ -59,28 +54,16 @@ Optional but recommended:
 
 ## Output Contract
 
-### Presentation Plane
-
-The human-readable markdown output must use deterministic headings. The exact set depends on `skill_class`:
+Plain markdown only — deterministic headings, no trailing YAML (`status`, `next_skill`).
 
 | Class | Required headings |
 |---|---|
-| orchestrator | Summary, Counts / State, Next Action |
+| orchestrator | Summary, Next Action (plain prose) |
 | executor | Task Understanding, Acceptance Criteria Coverage, Implementation Details, Files Changed, Verification, Risks and Follow-ups |
-| gate | Check Result, Findings, Acceptance Criteria, Verification, Gaps |
-| diagnostic | Root Cause, Feedback Loop, Hypotheses Tested, Fix, Verification, Remaining Risk, Prevention |
+| gate | Review Result, Findings, Acceptance Criteria, Verification, Gaps |
 | planner | Task Result, Clarifications, Next |
 
-### Control Plane
-
-When supported by the host, the skill should also emit a machine-checkable YAML block at the end of the response:
-
-```yaml
-status: <state>
-next_skill: <skill-name>
-```
-
-Add optional fields such as `verification_state`, `risk_level`, or `gate` only when they materially help downstream routing. On hosts without structured output, this block is still recommended as a fenced YAML block inside the markdown.
+Caveman tone only when user invoked caveman or `responseDepth: concise`. Superpowers apply when the user attached them.
 
 ## Few-shot Requirement
 

@@ -105,25 +105,7 @@ Before finalizing, verify:
 - [ ] Did I separate facts from assumptions?
 ```
 
-## 7. Wrong Next-Skill Routing
-
-**Bad**:
-```markdown
-## Suggested Next Step
-fur-done
-```
-
-When neither `fur-do` micro auto-close nor `fur-done` internal check gate will run.
-
-**Why it is bad**: Bypasses the quality gate. Micro tasks may auto-close from `fur-do`; standard and major tasks must route to `fur-done`, which runs the internal check gate.
-
-**Good**:
-```markdown
-## Suggested Next Step
-Route to `fur-done`; it will run the internal check gate before closing.
-```
-
-## 8. Invented Check Results
+## 7. Invented Check Results
 
 **Bad**:
 ```markdown
@@ -142,7 +124,7 @@ When tests were not actually run.
 - Manual check: verified toggle works in local dev server ✅
 ```
 
-## 9. Scope Creep in Output
+## 8. Scope Creep in Output
 
 **Bad**:
 ```markdown
@@ -158,18 +140,23 @@ Also refactored the auth module and updated the landing page while I was at it.
 Applied the narrowest diff that satisfies the task AC. No unrelated files touched.
 ```
 
-## 10. Missing Control Plane
+## 9. YAML Footer After Next Action
 
 **Bad**:
-No YAML block at the end.
+```markdown
+## Next Action
 
-**Why it is bad**: The output is not machine-parseable for automation, regression testing, or eval grading.
+CI yeşil olunca merge.
+
+status: ready
+next_skill: fur-check
+```
+
+**Why it is bad**: Footer YAML adds noise; skills do not route to other skills.
 
 **Good**:
-```yaml
-status: implemented
-next_skill: fur-done
-scope_respected: true
-verification_state: complete
-risk_level: low
+```markdown
+## Next Action
+
+CI yeşil olunca merge; sonra Epic 7 audit.
 ```

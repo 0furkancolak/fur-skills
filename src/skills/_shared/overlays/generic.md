@@ -101,7 +101,6 @@ Before finalizing, verify:
 - [ ] Did I separate facts from assumptions?
 - [ ] Did I report checks and residual risk honestly?
 - [ ] Did I match the output contract?
-- [ ] Did I suggest the correct next skill?
 
 If any answer is no, continue working before responding.
 ```
@@ -121,16 +120,17 @@ When `responseDepth: concise`, add:
 
 ```markdown
 **Depth**: concise
-Operational handoff only. 1-3 sentences + file list + next step.
+Operational summary only. 1-3 sentences + file list + residual risk.
 ```
 
-## Control Plane
+## Output format
 
-Always emit a fenced YAML block at the end of the output, even if the host does not parse it:
+Plain markdown only. Do **not** append YAML control-plane blocks (`status`, `next_skill`).
 
-```yaml
-status: implemented | blocked | needs-clarification
-next_skill: fur-check | fur-task | fur-debug
-```
+## Caveman
 
-Add optional fields only when they are needed for routing.
+Use caveman tone only when the user invoked caveman or `responseDepth: concise` allows compression without ambiguity.
+
+## Superpowers
+
+If the user attached superpowers skills (`using-superpowers`, `systematic-debugging`, `verification-before-completion`, etc.), follow them for implementation/debug workflow.

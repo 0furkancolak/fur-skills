@@ -79,30 +79,11 @@ When the API supports `reasoning.effort`:
 
 Do not add visible chain-of-thought prompts when reasoning effort is configured; the model reasons internally.
 
-## Structured Output Schema
+## Output format
 
-When `structuredOutput: true` in config, provide a JSON schema for the control plane:
+Plain markdown headings only. Do not append YAML or JSON control-plane footers in chat output.
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "status": {
-      "type": "string",
-      "enum": ["implemented", "blocked", "needs-clarification"]
-    },
-    "next_skill": {
-      "type": "string",
-      "enum": ["fur-check", "fur-task", "fur-debug"]
-    },
-    "verification_state": {
-      "type": "string",
-      "enum": ["complete", "partial", "not-run"]
-    }
-  },
-  "required": ["status", "next_skill"]
-}
-```
+Caveman when user invoked caveman or `responseDepth: concise`. Superpowers when user attached those skills.
 
 ## Success Criteria
 
@@ -128,7 +109,6 @@ SELF-CHECK (internal, do not show in output unless responseDepth: deep)
 - [ ] Did I separate facts from assumptions?
 - [ ] Did I report checks and residual risk honestly?
 - [ ] Did I match the output contract?
-- [ ] Did I suggest the correct next skill?
 ```
 
 ## Response Depth Control
@@ -146,5 +126,5 @@ When `responseDepth: concise`, add:
 
 ```
 DEPTH: concise
-Operational handoff only. 1-3 sentences + file list + next step.
+Operational summary only. 1-3 sentences + file list + residual risk.
 ```

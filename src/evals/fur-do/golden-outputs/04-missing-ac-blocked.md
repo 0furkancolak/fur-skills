@@ -37,6 +37,3 @@ verification_state: not-run
 risk_level: high
 ```
 
-## Suggested Next Step
-
-Route to `fur-task` to add acceptance criteria before implementation.

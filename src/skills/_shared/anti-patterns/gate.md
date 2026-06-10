@@ -1,83 +1,84 @@
 # Gate Anti-Patterns
 
-Anti-patterns specific to gate skills (`fur-check`, `fur-ui-review`).
+Anti-patterns specific to gate skills (`fur-ui-review`).
 
 ## 1. False Optimism
 
 **Bad**:
 ```markdown
-## Check Result
-Ready
+## UI Summary
+Ready for merge.
 
-## Findings
+## Blockers
 None.
 
-## Gaps
+## Accessibility Notes
 None.
 ```
 
-When verification steps were skipped.
+When accessibility and responsive checks were skipped.
 
 **Good**:
 ```markdown
-## Check Result
-Ready
+## UI Summary
+Mostly ready; one blocker remains.
 
-## Findings
-Minor: missing aria-label on toggle.
+## Blockers
+| Severity | Finding | Evidence | Suggested Fix |
+|---|---|---|---|
+| Blocker | Icon-only toggle missing `aria-label` | `ThemeToggle.tsx:14` | Add `aria-label="Toggle dark mode"` |
 
-## Gaps
-- Accessibility scan not run (risk: low).
+## Accessibility Notes
+Keyboard path verified for nav; toggle not yet checked.
 ```
 
 ## 2. Vague Findings Without Evidence
 
 **Bad**:
 ```markdown
-## Findings
-The code looks okay but could be cleaner.
+## Suggestions
+The layout could be cleaner.
 ```
 
 **Good**:
 ```markdown
-## Findings
+## Suggestions
 | Severity | Finding | Evidence | Suggested Fix |
 |---|---|---|---|
-| Minor | `ThemeToggle.tsx` missing `aria-label` | `ThemeToggle.tsx:14` | Add `aria-label="Toggle dark mode"` |
+| Suggestion | Hero CTA competes with secondary link | `Hero.tsx:31-38` | Increase primary button weight and reduce secondary link contrast |
 ```
 
 ## 3. Rewriting Instead of Reviewing
 
 **Bad**:
 ```markdown
-## Implemented
+## UI Summary
 I rewrote the component using a better pattern.
 ```
 
-In a `fur-check` output.
+In a `fur-ui-review` output.
 
 **Good**:
 ```markdown
-## Findings
+## Suggestions
 | Severity | Finding | Evidence | Suggested Fix |
 |---|---|---|---|
-| Major | Component uses inline styles instead of CSS variables | `ThemeProvider.tsx:22` | Refactor to use CSS variables for maintainability |
+| Suggestion | Component uses inline styles instead of design tokens | `ThemeProvider.tsx:22` | Refactor to use CSS variables for maintainability |
 ```
 
 ## 4. Missing Severity
 
 **Bad**:
 ```markdown
-## Findings
-- Missing tests
+## Blockers
+- Missing focus styles
 - Hardcoded color values
 ```
 
 **Good**:
 ```markdown
-## Findings
+## Blockers
 | Severity | Finding | Evidence |
 |---|---|---|
-| Medium | Missing tests for edge cases | `ThemeProvider.test.ts` does not cover private browsing |
-| Minor | Hardcoded color values | `variables.css:12` |
+| Blocker | Focus ring missing on primary CTA | `Hero.tsx:44` |
 ```

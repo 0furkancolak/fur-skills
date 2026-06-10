@@ -29,7 +29,7 @@ Each skill needs at least **20 representative prompts** covering:
 
 1. **Happy path** — typical, well-scoped request.
 2. **Edge cases** — missing AC, contradictory requirements, large scope.
-3. **Failure modes** — known ways the skill can fail (e.g., `fur-debug` with no repro loop).
+3. **Failure modes** — known ways the skill can fail (e.g., no repro loop).
 4. **Boundary triggers** — cases near the edge of this skill vs. another skill.
 5. **Depth variance** — same prompt at `concise`, `standard`, and `deep` depths.
 
@@ -98,7 +98,7 @@ src/evals/
     baselines/
       v1-baseline.json
       v2-baseline.json
-  fur-check/
+  fur-init/
     ...
 ```
 
@@ -109,7 +109,7 @@ Every skill must document its known failure modes:
 | Failure mode | Symptom | Detection | Mitigation |
 |---|---|---|---|
 | Example: `fur-do` scope creep | Changes files outside task AC | File list grader | Reinforce "non-goals" in task template |
-| Example: `fur-check` false optimism | Risk marked "none" when tests skipped | Verification grader | Require `low` minimum when checks skipped |
+| Example: false optimism | Risk marked "none" when tests skipped | Verification grader | Require `low` minimum when checks skipped |
 
 ## Golden Data Set
 

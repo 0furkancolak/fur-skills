@@ -98,4 +98,6 @@ export const OBSOLETE_SKILLS = [
   "fur-progress",
   "fur-grill",
   "fur-simplify",
+  "fur-check",
+  "fur-debug",
 ] as const;

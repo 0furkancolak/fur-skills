@@ -12,7 +12,6 @@ requires:
   - verification_context
 optional:
   - related_plan
-  - prior_check_notes
 quality_contract:
   must_map_every_ac: true
   must_report_assumptions: true
@@ -20,10 +19,6 @@ quality_contract:
   must_call_out_risks: true
   must_include_user_facing_explanation: true
   self_check_required: true
-handoff:
-  success_next: fur-done
-  ambiguous_scope_next: fur-task
-  unknown_failure_next: fur-debug
 ---
 
 # fur-do
@@ -46,10 +41,10 @@ Deliver the smallest **complete** change set that satisfies every acceptance cri
 
 ## When NOT to Use
 
-- Requirements or AC are missing or contradictory → `fur-task`.
-- Failure mode unknown → `fur-debug` until the cause is known.
-- Implementation done; need review → `fur-check`.
-- Verified and ready to archive → `fur-done`.
+- Requirements or acceptance criteria are missing or contradictory — clarify scope before coding.
+- Failure mode is unknown — diagnose before attempting another fix.
+- Implementation is complete and only needs archival or tracker sync — this skill does not close tasks.
+- You need broad review or task planning — this skill implements one scoped unit only.
 
 ## Context Loading Contract
 
@@ -80,13 +75,13 @@ Do not load unrelated history unless the active task depends on it.
 
 Use fur-skills execution for the selected task. Do not delegate implementation, TDD, plan execution, or orchestration to another methodology from inside this skill.
 
-Fur remains responsible for selected task state, `docs/ai` progress, `responseDepth`, `verificationStrictness`, acceptance criteria coverage, and final handoff format. If the user explicitly invokes an external workflow in the same conversation, treat its result as context and return here before closing or reporting the Fur task.
+Fur remains responsible for selected task state, `docs/ai` progress, `responseDepth`, `verificationStrictness`, and acceptance criteria coverage. If the user explicitly invokes an external workflow in the same conversation, treat its result as context and return here before closing or reporting the Fur task.
 
 Plan lock rules:
 
 1. When the task contains `Plan lock: <slug>` or `Plan: plans/<slug>.md`, execute only that plan's scope.
 2. If `docs/ai/state.json` says multiple active plans exist and no plan lock is selected, stop and ask for an explicit task/plan; do not pick the first ready task.
-3. If the selected task belongs to a different plan than the active plan lock, stop and route to `fur-task` or `fur-status` for selection.
+3. If the selected task belongs to a different plan than the active plan lock, stop and ask for an explicit task/plan selection.
 4. Do not load or continue unrelated ready tasks after finishing the selected task.
 
 Batch execution rules:
@@ -94,7 +89,7 @@ Batch execution rules:
 1. If `docs/ai/state.json` contains `readyBatch` for the active plan and the user invokes `fur-do <batch-group>`, execute every task in that batch and no other tasks.
 2. A batch is valid only when all tasks share the active `Plan lock` and `Batch group`, and no task in the batch blocks another task in the same batch.
 3. Run the batch in the same Fur session unless the user explicitly asks for another execution style.
-4. Preserve per-task acceptance criteria coverage, files changed, verification, residual risk, and handoff evidence in the output.
+4. Preserve per-task acceptance criteria coverage, files changed, verification, residual risk, and audit evidence in the output.
 
 ### Phase 3: Implement
 
@@ -120,27 +115,26 @@ If any answer is no, continue working before responding.
 
 ### Phase 6: Close or report
 
-1. If `Task size: micro` and verification passes, run the `fur-done` closure behavior automatically: apply the internal check gate, move the task to `done/`, and run `fur refresh`.
-2. If `Task size: micro` and verification fails, do not close; route to `fur-do` for a scoped fix or `fur-debug` for unknown failure.
-3. If `Task size: standard` or `major`, summarize files, risks, and commands with real output snippets and route to `fur-done`; `fur-done` will run the internal check gate before closing.
+1. If `Task size: micro` and verification passes, apply the internal check gate, move the task to `done/`, and run `fur refresh`.
+2. If `Task size: micro` and verification fails, do not close; report gaps and remaining work.
+3. If `Task size: standard` or `major`, summarize files, risks, and commands with real output snippets; closure happens only after the user confirms or runs a separate close step.
 
 ## Rules
 
 - No scope creep, no product redesign, no speculative features.
-- No tracker comments, transitions, or GitHub/Jira writes — `fur-task` / `fur-done` own that boundary.
-- Do **not** mark standard or major tasks complete in markdown; `fur-done` owns closure after its internal check gate.
+- No tracker comments, transitions, or GitHub/Jira writes during implementation.
+- Do **not** mark standard or major tasks complete in markdown without explicit closure approval.
 - For micro tasks only, automatic check + done is allowed when all acceptance criteria and verification pass.
 - **Commits and PRs** always need explicit user approval (AGENTS.md); do not `git commit` or open PRs unless asked.
-- If halfway through the work you discover missing requirements, **stop** and hand back to `fur-task`.
+- If halfway through the work you discover missing requirements, **stop** and report what clarification is needed.
 - Fur state management remains in this skill; update progress/task state as usual.
 - For plan-linked multi-task work, preserve plan lock isolation and batch boundaries.
-- For ready batch waves, execute the whole batch in one `fur-do` run when requested by `Batch group`.
+- For ready batch waves, execute the whole batch in one run when requested by `Batch group`.
 - Respect plan lock isolation; never jump to another plan or conversation's ready task automatically.
 - Context hygiene: if the session is huge, suggest summarizing via `fur compact` / `progress/latest.md` per `src/references/context-window.md`.
+- Plain-text output only — no YAML footer. Caveman when user invoked caveman or `responseDepth: concise`. If user attached superpowers (TDD, debug, verification), follow that skill for process.
 
 ## Output
-
-### Presentation Plane
 
 ```md
 ## Task Understanding
@@ -172,18 +166,6 @@ Only residual risk or follow-up that matters.
 [If task has Plan: / Plan task ID:, include only the compact one-line summary from src/references/plan-ai-output.md unless the user asks for details.]
 ```
 
-### Control Plane
-
-```yaml
-status: implemented | closed | blocked | needs-clarification
-next_skill: fur-done | fur-do | fur-task | fur-debug
-# Optional only when useful:
-verification_state: complete | partial | not-run
-batch:
-  group: auth-refactor-wave-2
-  task_ids: [T2, T3, T4]
-```
-
 ## Anti-patterns
 
 - Do not say "done" without mapping each acceptance criterion.
@@ -199,8 +181,4 @@ Reference examples:
 - `../_shared/anti-patterns/global.md`
 - `../_shared/anti-patterns/executor.md`
 
-Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
-
-## Suggested Next Step
-
-For micro tasks, auto-close after successful internal check + done. For standard and major tasks, route to `fur-done`, which runs the check gate before closing. If requirements are unclear, route to `fur-task`. If verification fails for an unknown reason, route to `fur-debug`.
+Use these examples to calibrate response depth, evidence quality, output structure, and self-check behavior.

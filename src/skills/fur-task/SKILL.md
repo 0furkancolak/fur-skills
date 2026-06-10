@@ -23,10 +23,6 @@ quality_contract:
   must_call_out_risks: false
   must_include_user_facing_explanation: true
   self_check_required: true
-handoff:
-  success_next: fur-do
-  ambiguous_scope_next: fur-task
-  unknown_failure_next: fur-debug
 ---
 
 # fur-task
@@ -51,11 +47,10 @@ Create or select a focused task with clear acceptance criteria and verification,
 
 ## When NOT to Use
 
-- A task is already chosen and ready to implement → `fur-do`.
-- Root cause unknown → `fur-debug` first, then return here with a crisp task.
-- Post-implementation quality gate → `fur-check`.
-- Closing verified work → `fur-done`.
-- Read-only orientation → `fur-status`.
+- A task is already chosen and ready to implement — plan, do not re-plan.
+- Root cause of a failure is still unknown — diagnose before drafting new scope.
+- Implementation is done and needs closure — this skill does not archive tasks.
+- You only need a read-only queue snapshot — task creation mutates `docs/ai/`.
 
 ## Context Loading Contract
 
@@ -74,7 +69,7 @@ Do not load unrelated history.
 
 1. Read `docs/ai/config.json` when present: `questionLevel`, `projectMaturity`, `questionPolicy`.
 2. Read `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
-3. If neither file exists, recommend `fur-init` (skill) before continuing unless the user is only brainstorming.
+3. If neither file exists, recommend running `fur init` before continuing unless the user is only brainstorming.
 
 ### Phase 2: Classify input
 
@@ -90,7 +85,7 @@ Pick exactly one primary mode:
 
 ### Phase 2b: Fur-native planning boundary
 
-Fur owns task creation, tracker routing, plan manifests, `questionLevel`, `responseDepth`, and final handoff. Do not delegate task creation, clarification, or plan splitting to another methodology from inside this skill.
+Fur owns task creation, tracker routing, plan manifests, `questionLevel`, and `responseDepth`. Do not delegate task creation, clarification, or plan splitting to another methodology from inside this skill.
 
 Planning rules:
 
@@ -137,9 +132,9 @@ Assign exactly one `Task size` in the task body:
 
 | Size | Criteria | Default path |
 |------|----------|--------------|
-| `micro` | One file or one symbol, low risk, no external write, no migration/auth/security/data contract impact, AC and verification are obvious. | `fur-do` may run check and done automatically. |
-| `standard` | Clear scoped change that may touch several files and needs normal verification. | `fur-do`, then `fur-done` runs the internal check gate. |
-| `major` | Multi-module, architectural, migration, auth/security, data contract, unclear rollout, or high-risk work. | split/plan mode, then `fur-do`, then `fur-done` with strict check gate. |
+| `micro` | One file or one symbol, low risk, no external write, no migration/auth/security/data contract impact, AC and verification are obvious. | Single focused implementation session; may auto-close when verified. |
+| `standard` | Clear scoped change that may touch several files and needs normal verification. | Implement, verify, then close when acceptance criteria pass. |
+| `major` | Multi-module, architectural, migration, auth/security, data contract, unclear rollout, or high-risk work. | Split into a plan first; implement and verify each slice before closure. |
 
 ### Phase 5: Write artifacts
 
@@ -162,12 +157,11 @@ Assign exactly one `Task size` in the task body:
 ### Phase 6: Self-review
 
 Before finalizing, verify:
-- Did I create a task small enough for one `fur-do` session?
+- Did I create a task small enough for one implementation session?
 - Did every task have acceptance criteria and verification?
 - Did I respect `questionLevel` when deciding whether to ask the user?
 - Did I avoid inventing missing product intent when I should have asked?
 - Did I match the output contract for this skill class?
-- Did I suggest the correct next skill?
 
 If any answer is no, continue working before responding.
 
@@ -178,26 +172,19 @@ If any answer is no, continue working before responding.
 3. Optional cross-check: `fur plan status <slug>` in shell — never a substitute for the chat block.
 4. Return relative paths only for artifacts; avoid pasting full plan bodies outside the dashboard block.
 
-### Phase 8: Handoff
-
-1. Name the next skill: usually `fur-do`; sometimes `fur-status` or config fix instructions.
-2. For `micro` tasks, say that `fur-do` should run check + done automatically if verification passes.
-
 ## Rules
 
 - Do not implement product code in this skill.
 - Do not write time, duration, session, due-date, or target-date estimates.
 - Do not invent tracker metadata (labels, assignees, statuses, IDs).
 - Do not invent product intent, edge-case policy, or rollout expectations to avoid asking a question.
-- Keep each task small enough for **one** focused `fur-do` session; split instead of bundling.
+- Keep each task small enough for **one** focused implementation session; split instead of bundling.
 - Ambiguous external references → question, never silent default.
 - Deeper questioning is governed by `questionLevel`; do not spawn a separate "interview" skill.
 - External writes require explicit user approval **or** clear workspace permission (AGENTS.md).
 - Long research belongs in `plans/` or `context/archive/` with a short pointer in the task file.
 
 ## Output
-
-### Presentation Plane
 
 ```md
 ## Task Result
@@ -220,24 +207,13 @@ If any answer is no, continue working before responding.
 ## Risks
 
 [any risks identified during planning, or "none"]
-
-## Next
-
-fur-do | fur-status | fur-init | fix .fur.workspace config
 ```
 
-### Control Plane
-
-```yaml
-status: created | selected | split | blocked-config
-next_skill: fur-do | fur-status | fur-init
-# Optional only when useful:
-task_size: micro | standard | major
-```
+Plain text only — no YAML footer.
 
 ## Anti-patterns
 
-- Do not create a task too big for one `fur-do` session.
+- Do not create a task too big for one implementation session.
 - Do not invent tracker metadata without config permission.
 - Do not skip acceptance criteria or verification.
 - Do not promote a task to `ready/` while required clarification fields are missing.
@@ -245,7 +221,6 @@ task_size: micro | standard | major
 - Do not include time or date estimates in plan output.
 - Do not guess external tracker routing when ambiguous.
 - Do not delegate task creation or plan splitting to another methodology from inside Fur.
-- Do not forget to suggest the next skill.
 
 ## Examples
 
@@ -254,8 +229,4 @@ Reference examples:
 - `../_shared/anti-patterns/global.md`
 - `../_shared/anti-patterns/planner.md`
 
-Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
-
-## Suggested Next Step
-
-`fur-do` on the chosen `ready/` task, or `fur-status` if the user only needed queue orientation.
+Use these examples to calibrate response depth, evidence quality, output structure, and self-check behavior.

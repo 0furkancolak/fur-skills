@@ -17,11 +17,9 @@ Internal check gate could not determine the root cause: the task behavior appear
 
 ## Risks and Follow-ups
 
-Route to `fur-debug` to isolate the unknown failure before closure.
 
 ```yaml
 status: blocked
-next_skill: fur-debug
 internal_check: needs-verification
 scope_respected: true
 verification_state: partial
