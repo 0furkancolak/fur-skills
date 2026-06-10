@@ -1,7 +1,7 @@
 {"input": "Initialize the fur planning system in this new repository.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
-{"input": "Set up .fur.planning with questionLevel: high and projectMaturity: new.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Set up docs/ai with questionLevel: high and projectMaturity: new.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "Init fur workflow in an established project with existing task trackers.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
-{"input": "Run fur-init but the directory already has a .fur.planning folder with config.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Run fur-init but the directory already has a docs/ai folder with config.", "expected_routing": "fur-check", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "Initialize fur planning with custom workspace tracker routing in config.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "fur-init in a monorepo with multiple packages. Which root should it use?", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 2}}
 {"input": "Run fur-init with responseDepth: concise. Expect short summary and next action only.", "expected_routing": "fur-task", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}

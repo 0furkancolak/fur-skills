@@ -25,7 +25,7 @@ Usage:
   fur eval grade <skill> <skill_md> <output_md>
 
 Commands:
-  init                  Create .fur.planning; TTY prompts, non-TTY defaults
+  init                  Create docs/ai; TTY prompts, non-TTY defaults
   workspace init        Create .fur.workspace/config.json
   workspace doctor      Validate .fur.workspace/config.json
   refresh               Create a progress snapshot and state.json

@@ -3,7 +3,7 @@
 `fur init` repo-local planlama durumunu oluşturur:
 
 ```txt
-.fur.planning/
+docs/ai/
   README.md
   config.json
   tasks/
@@ -23,12 +23,12 @@
 
 ## Repo-Local Config
 
-`.fur.planning/config.json` local ajan davranışını yönetir:
+`docs/ai/config.json` local ajan davranışını yönetir:
 
 ```json
 {
   "version": 1,
-  "planningDir": ".fur.planning",
+  "planningDir": "docs/ai",
   "gitignore": true,
   "localTaskMode": "local-markdown",
   "questionLevel": "high",

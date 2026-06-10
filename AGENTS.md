@@ -11,6 +11,8 @@ This repo contains a personal AI agent skill set for a small, fast project workf
 - External writes require either explicit user approval or clear `.fur.workspace/config.json` permission for the target repo/tracker.
 - Commit and PR creation always require explicit user approval.
 - Every skill output must end with a suggested next step.
+- Prefer caveman-style concise output when clarity and safety allow it.
+- Users may combine Fur with other skills/tools; Fur owns `docs/ai` task/state contracts.
 - Context hygiene: follow `src/references/context-window.md` and use `fur compact` / `progress/latest.md`.
 
 ## Skill Quality Standards
@@ -41,13 +43,15 @@ src/
   tests/          -> bun test src/tests
   skills/
     _shared/      -> overlays, examples, anti-patterns
-    fur-init/     -> Initialize .fur.planning and local behavior config
+    fur-init/     -> Initialize docs/ai and local behavior config
     fur-task/     -> Create/select/split/import/draft tasks
     fur-do/       -> Implement one selected task
     fur-check/    -> Review and verify implemented work
     fur-done/     -> Close local task, snapshot, optional tracker sync
     fur-status/   -> Show progress and next action
     fur-debug/    -> Diagnose unknown root cause
+    fur-session-handoff/ -> Copy-paste-ready Turkish continuation prompt
+    fur-ship/     -> Branch/PR readiness and GitHub PR flow
     fur-ui-design/ -> UI design direction before coding
     fur-ui-clone/ -> Pixel-perfect website clone pipeline
     fur-ui-review/ -> UI/UX review for implemented interfaces
@@ -79,7 +83,7 @@ fur-quick
 ## Config
 
 - Workspace tracker routing: `.fur.workspace/config.json`
-- Repo-local behavior: `.fur.planning/config.json`
+- Repo-local behavior: `docs/ai/config.json`
 - `questionLevel`: `low`, `normal`, or `high`
 - `projectMaturity`: `new` or `established`
 - `responseDepth`: `concise`, `standard`, or `deep`
@@ -91,6 +95,7 @@ Default preference:
 - New projects use `questionLevel: high`.
 - Established projects usually use `questionLevel: normal`.
 - `responseDepth` defaults to `standard` and is independent of `questionLevel`.
+- General Fur replies should use caveman-style brevity unless approval, safety, or multi-step clarity needs full prose.
 
 ## Learned User Preferences
 
@@ -107,6 +112,8 @@ Default preference:
 - Kurulum `fur install` veya `make install` ile yapılır; `OBSOLETE_SKILLS` symlink’leri install sırasında kaldırılır (`src/lib/paths.ts`).
 - `SKILL.md` `description` frontmatter’ında tırnaksız `:` YAML parse hatasına yol açar; quoted veya folded scalar (`description: >-`) kullan; `fur repo-doctor` frontmatter doğrular.
 - `fur-ui-clone`, JCodesMore/ai-website-cloner-template (`.claude/skills/clone-website`) boru hattıyla hizalanır.
+- v3 runtime kökü `docs/ai`; `.fur.planning` hard-switch ile bırakıldı, backcompat/migrate yok.
+- `fur-ship`, commit/PR metnindeki AI attribution, co-author, generated-by ve model/agent adı izlerini otomatik temizlemelidir.
 
 ---
 
@@ -120,7 +127,7 @@ This constitution defines the shared quality contract for every skill in the fur
 
 1. **Scope is small; explanation is proportional.** A skill may touch only one file, but its output must include the evidence needed to trust the result without dumping unrelated detail.
 2. **Evidence before claims.** Every non-trivial assertion must tie to a source: file path, command output, diff line, or external reference.
-3. **Config over convention.** Prefer `responseDepth`, `evidenceStyle`, and `verificationStrictness` in `.fur.planning/config.json` instead of hard-coding depth in each skill.
+3. **Config over convention.** Prefer `responseDepth`, `evidenceStyle`, and `verificationStrictness` in `docs/ai/config.json` instead of hard-coding depth in each skill.
 4. **Provider-aware, not provider-locked.** The base skill language is host-agnostic. Provider-specific optimizations (XML tags for Claude, developer messages for OpenAI reasoning, structured outputs where supported) live in `src/skills/_shared/overlays/` and are applied as overlays, not forks.
 5. **Eval-driven improvement.** Before a skill is changed, the expected behavior must be observable: at least 20 representative prompts, a rubric, and known failure modes.
 
@@ -128,7 +135,7 @@ This constitution defines the shared quality contract for every skill in the fur
 
 | Class | Skills | Responsibility |
 |---|---|---|
-| **orchestrator** | `fur-init`, `fur-status`, `fur-done` | Orient, summarize, and archive. Output is short operational handoff + optional rich summary when `responseDepth: deep`. |
+| **orchestrator** | `fur-init`, `fur-status`, `fur-done`, `fur-session-handoff`, `fur-ship` | Orient, summarize, archive, hand off, and ship. Output is short operational handoff + optional rich summary when `responseDepth: deep`. |
 | **executor** | `fur-do`, `fur-ui-clone` | Implement one scoped task. Output must map every acceptance criterion, report assumptions, and include user-facing explanation. |
 | **gate** | `fur-check`, `fur-ui-review` | Verify and review. Output must be evidence-backed, severity-graded, and include a verdict with next-skill routing. |
 | **diagnostic** | `fur-debug` | Unknown root cause. Output must include falsifiable hypotheses, loop description, and regression guard. |

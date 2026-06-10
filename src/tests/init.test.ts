@@ -23,11 +23,19 @@ describe("cmdInit", () => {
     const code = await cmdInit(["--gitignore"]);
     expect(code).toBe(0);
 
-    const configPath = join(tempDir, ".fur.planning", "config.json");
+    const configPath = join(tempDir, "docs", "ai", "config.json");
     expect(existsSync(configPath)).toBe(true);
+    expect(existsSync(join(tempDir, ".fur.planning"))).toBe(false);
+    expect(existsSync(join(tempDir, "docs", "ai", "context", "architecture.md"))).toBe(true);
+    expect(existsSync(join(tempDir, "docs", "ai", "context", "conventions.md"))).toBe(true);
+    expect(existsSync(join(tempDir, "AGENTS.md"))).toBe(true);
+    expect(existsSync(join(tempDir, "CLAUDE.md"))).toBe(true);
+    expect(await readFile(join(tempDir, "AGENTS.md"), "utf-8")).toContain("Runtime docs live in `docs/ai/`");
+    expect(await readFile(join(tempDir, "CLAUDE.md"), "utf-8")).toContain("Read `AGENTS.md` first");
 
     const raw = await readFile(configPath, "utf-8");
     const config = JSON.parse(raw) as Record<string, unknown>;
+    expect(config.planningDir).toBe("docs/ai");
     expect(config.questionLevel).toBe("high");
     expect(config.projectMaturity).toBe("new");
     expect(config.responseDepth).toBe("standard");

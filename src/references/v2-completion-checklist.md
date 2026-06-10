@@ -70,7 +70,7 @@ fur repo-doctor
 tmpdir="$(mktemp -d)"
 cd "$tmpdir"
 ~/bin/fur init --gitignore --project-maturity new --question-level high
-cat .fur.planning/config.json
+cat docs/ai/config.json
 # should contain: responseDepth, evidenceStyle, verificationStrictness
 
 cd /path/to/fur-skills

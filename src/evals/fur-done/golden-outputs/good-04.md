@@ -2,9 +2,9 @@
 
 ## Done
 
-- Task moved: `.fur.planning/tasks/ready/20260524-1100-local.md` -> `.fur.planning/tasks/done/20260524-1100-local.md`
-- Progress snapshot: `.fur.planning/progress/20260524-111500.md` + latest symlink updated: yes
-- State: `.fur.planning/state.json` updated: yes
+- Task moved: `docs/ai/tasks/ready/20260524-1100-local.md` -> `docs/ai/tasks/done/20260524-1100-local.md`
+- Progress snapshot: `docs/ai/progress/20260524-111500.md` + latest symlink updated: yes
+- State: `docs/ai/state.json` updated: yes
 - Tracker sync: local-only (workspace config does not permit external close)
 
 ## Verification Summary

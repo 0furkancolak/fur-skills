@@ -4,10 +4,10 @@ Amaç: Sohbet veya agent context'ine **gereksiz eski detay** taşımadan yalnız
 
 ## Varsayılan Okuma Sırası (Önce Bunlar)
 
-1. `.fur.planning/state.json` — `fur refresh` tarafından üretilen makine-okunur son durum.
-2. `.fur.planning/progress/latest.md` — kısa özet; tüm eski progress dosyalarını tek tek okumayın.
+1. `docs/ai/state.json` — `fur refresh` tarafından üretilen makine-okunur son durum.
+2. `docs/ai/progress/latest.md` — kısa özet; tüm eski progress dosyalarını tek tek okumayın.
 3. **Aktif task** (ready'deki hedef dosya veya kullanıcının verdiği task).
-4. `.fur.planning/context/` içinde yalnızca ilgili dosyalar (ör. `verification.md`, `mcp.md`); hepsini dump etmeyin.
+4. `docs/ai/context/` içinde yalnızca ilgili dosyalar (ör. `verification.md`, `mcp.md`); hepsini dump etmeyin.
 
 ## Eski Task ve Konular
 

@@ -43,7 +43,7 @@ describe("plan-manifest", () => {
   beforeEach(async () => {
     root = join(tmpdir(), `fur-plan-test-${Date.now()}`);
     await ensurePlanningDirs(root);
-    await writeFile(join(root, ".fur.planning", "plans", "demo-plan.md"), SAMPLE_PLAN);
+    await writeFile(join(root, "docs/ai", "plans", "demo-plan.md"), SAMPLE_PLAN);
   });
 
   afterEach(async () => {
@@ -116,7 +116,7 @@ describe("plan-manifest", () => {
   });
 
   test("reconcilePlanFromDisk updates status from task folders", async () => {
-    const readyDir = join(root, ".fur.planning", "tasks", "ready");
+    const readyDir = join(root, "docs/ai", "tasks", "ready");
     await mkdir(readyDir, { recursive: true });
     await writeFile(
       join(readyDir, "20260101-1000-first.md"),
@@ -131,7 +131,7 @@ describe("plan-manifest", () => {
 
   test("computeReadyBatch returns unblocked independent ready tasks", async () => {
     await writeFile(
-      join(root, ".fur.planning", "plans", "wave.md"),
+      join(root, "docs/ai", "plans", "wave.md"),
       `---
 plan_version: 2
 slug: wave
@@ -172,7 +172,7 @@ estimated_tasks: 4
 
   test("computeReadyBatch excludes ready tasks blocked by another ready task", async () => {
     await writeFile(
-      join(root, ".fur.planning", "plans", "blocked-wave.md"),
+      join(root, "docs/ai", "plans", "blocked-wave.md"),
       `---
 plan_version: 2
 slug: blocked-wave

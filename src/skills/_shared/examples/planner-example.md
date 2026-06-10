@@ -12,8 +12,8 @@ User says: "We need to add dark mode to the app."
 ## Task Result
 
 - Mode: split
-- Local task(s): `.fur.planning/tasks/ready/20260115-1000-add-dark-mode.md`
-- Plan: `.fur.planning/plans/dark-mode.md`
+- Local task(s): `docs/ai/tasks/ready/20260115-1000-add-dark-mode.md`
+- Plan: `docs/ai/plans/dark-mode.md`
 - Tracker: local
 - questionLevel / projectMaturity: high / new
 
@@ -37,7 +37,7 @@ User says: "We need to add dark mode to the app."
 | T3 | planned | M | phase-2 | — |
 | T4 | planned | S | phase-2 | — |
 
-_Source: `.fur.planning/plans/dark-mode.md`_
+_Source: `docs/ai/plans/dark-mode.md`_
 
 ## Clarifications
 

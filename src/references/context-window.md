@@ -4,10 +4,10 @@ Purpose: Keep only **currently relevant** information in the agent or chat conte
 
 ## Default Reading Order (Read These First)
 
-1. `.fur.planning/state.json` — latest machine-readable state from `fur refresh`.
-2. `.fur.planning/progress/latest.md` — short human summary; do not load all progress files individually.
+1. `docs/ai/state.json` — latest machine-readable state from `fur refresh`.
+2. `docs/ai/progress/latest.md` — short human summary; do not load all progress files individually.
 3. **Active task** (the target file in `ready/` or the user-provided task).
-4. Only the relevant files under `.fur.planning/context/` (e.g., `verification.md`, `mcp.md`); do not dump everything.
+4. Only the relevant files under `docs/ai/context/` (e.g., `verification.md`, `mcp.md`); do not dump everything.
 
 ## Old Tasks and Topics
 

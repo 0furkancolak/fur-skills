@@ -50,7 +50,7 @@ Use the expanded table only when the user asks for plan details or the task is s
 | T3 | planned | M | phase-1 | — |
 | ... | ... | ... | ... | ... |
 
-_Source: `.fur.planning/plans/auth-refactor.md`_
+_Source: `docs/ai/plans/auth-refactor.md`_
 ````
 
 ## Anti-patterns

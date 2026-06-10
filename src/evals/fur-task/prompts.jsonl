@@ -9,7 +9,7 @@
 {"input":"Create a task that is actually a question about why TypeScript enums are bad.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":1,"evidence":1,"risk":1}}
 {"input":"Meeting notes say 'we should think about caching' with no acceptance criteria or specific changes.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":1,"evidence":1,"risk":2}}
 {"input":"A user asks for a task to implement end-to-end encryption for a hobby project they haven't started yet.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":1,"evidence":1,"risk":2}}
-{"input":"Request to create a task that directly modifies the .fur.planning/config.json without explanation.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":1,"evidence":1,"risk":2}}
+{"input":"Request to create a task that directly modifies the docs/ai/config.json without explanation.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":1,"evidence":1,"risk":2}}
 {"input":"Task request includes a 2000-line paste dump with no structure or clear ask.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":1,"evidence":1,"risk":2}}
 {"input":"User asks to split an existing giant task into smaller ones but provides no criteria for splitting.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":1,"evidence":1,"risk":2}}
 {"input":"Task request with questionLevel: high should trigger clarification questions before decomposition.","expected_routing":"fur-task","min_scores":{"depth":3,"quality":2,"evidence":2,"risk":1}}

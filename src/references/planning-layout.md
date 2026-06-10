@@ -3,7 +3,7 @@
 `fur init` creates repo-local planning state:
 
 ```txt
-.fur.planning/
+docs/ai/
   README.md
   config.json
   tasks/
@@ -22,12 +22,12 @@
 
 ## Repo-Local Config
 
-`.fur.planning/config.json` controls local agent behavior:
+`docs/ai/config.json` controls local agent behavior:
 
 ```json
 {
   "version": 2,
-  "planningDir": ".fur.planning",
+  "planningDir": "docs/ai",
   "gitignore": true,
   "localTaskMode": "local-markdown",
   "questionLevel": "high",

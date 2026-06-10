@@ -1,6 +1,6 @@
 # Task Template
 
-Use this template when creating task files under `.fur.planning/tasks/backlog/` or `.fur.planning/tasks/ready/`.
+Use this template when creating task files under `docs/ai/tasks/backlog/` or `docs/ai/tasks/ready/`.
 
 ## Filename Format
 

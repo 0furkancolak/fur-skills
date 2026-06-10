@@ -1,6 +1,6 @@
 # Plan Template
 
-Use for large work split across multiple `fur-do` sessions. Save as `.fur.planning/plans/<slug>.md`.
+Use for large work split across multiple `fur-do` sessions. Save as `docs/ai/plans/<slug>.md`.
 
 Plans track deterministic completion only. Do not estimate dates, sessions, or hours.
 

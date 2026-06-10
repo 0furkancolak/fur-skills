@@ -54,8 +54,8 @@ Summarize queue depth, latest `fur refresh` snapshot, workspace registration, an
 ## Context Loading Contract
 
 Load in this order:
-1. `.fur.planning/config.json`.
-2. `.fur.planning/state.json` when present.
+1. `docs/ai/config.json`.
+2. `docs/ai/state.json` when present.
 3. `tasks/{backlog,ready,done}` counts.
 4. `progress/latest.md` head (~80-120 lines).
 5. `.fur.workspace/config.json` if present.
@@ -70,7 +70,7 @@ Do not load full task bodies or archived snapshots.
 2. For each plan file: read manifest + reconcile task folder statuses; render one compact `## Plan summary` line per plan.
 3. Do **not** stop at "run `fur plan status`" — the user interacts via AI; the dashboard must appear in this message.
 4. Optional shell: `fur progress` / `fur plan status` for cross-check only.
-5. If `.fur.planning` is missing, report "run `fur init`" and stop.
+5. If `docs/ai` is missing, report "run `fur init`" and stop.
 
 ### Phase 2: Read latest markdown snapshot
 

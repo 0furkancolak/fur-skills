@@ -5,8 +5,8 @@
 - Task moved: `tasks/ready/20260115-1100-t2.md` -> `tasks/done/20260115-1100-t2.md`
 - Task moved: `tasks/ready/20260115-1110-t3.md` -> `tasks/done/20260115-1110-t3.md`
 - Task moved: `tasks/ready/20260115-1120-t4.md` -> `tasks/done/20260115-1120-t4.md`
-- Progress snapshot: `.fur.planning/progress/20260115-113000.md` + latest symlink updated: yes
-- State: `.fur.planning/state.json` updated: yes
+- Progress snapshot: `docs/ai/progress/20260115-113000.md` + latest symlink updated: yes
+- State: `docs/ai/state.json` updated: yes
 - Tracker sync: local-only
 
 ## Verification Summary

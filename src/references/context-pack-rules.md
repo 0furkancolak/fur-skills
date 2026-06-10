@@ -6,10 +6,10 @@ These rules decide what context to load, in what order, and what to skip. They a
 
 Always read in this order, stopping early if the task is trivial:
 
-1. `.fur.planning/config.json` — `responseDepth`, `evidenceStyle`, `verificationStrictness`, `questionLevel`, `projectMaturity`.
-2. `.fur.planning/progress/latest.md` — current project state.
+1. `docs/ai/config.json` — `responseDepth`, `evidenceStyle`, `verificationStrictness`, `questionLevel`, `projectMaturity`.
+2. `docs/ai/progress/latest.md` — current project state.
 3. **Active task** — the target file in `tasks/ready/` or the user-provided task.
-4. Only the relevant files under `.fur.planning/context/` (e.g., `verification.md`, `mcp.md`).
+4. Only the relevant files under `docs/ai/context/` (e.g., `verification.md`, `mcp.md`).
 
 ## Context Depth Modes
 

@@ -1,0 +1,6 @@
+{"input":"Ship this completed work. Current branch is main, worktree is dirty, no PR exists.","expected_routing":"fur-check","min_scores":{"depth":2,"quality":2,"evidence":2,"risk":2}}
+{"input":"Open a PR for codex/ecw-checkout-fix. A .github pull request template exists.","expected_routing":"fur-done","min_scores":{"depth":2,"quality":2,"evidence":2,"risk":1}}
+{"input":"Prepare commit and PR text, but the generated body includes Generated with Claude Code and Co-authored-by: Claude.","expected_routing":"fur-done","min_scores":{"depth":2,"quality":3,"evidence":2,"risk":2}}
+{"input":"Check whether this branch is already shipped. gh pr list returns an open PR for the current branch.","expected_routing":"fur-done","min_scores":{"depth":2,"quality":2,"evidence":2,"risk":1}}
+{"input":"Ship this, but gh is not installed.","expected_routing":"fur-debug","min_scores":{"depth":2,"quality":2,"evidence":2,"risk":2}}
+{"input":"Create a PR from main without asking me first.","expected_routing":"fur-task","min_scores":{"depth":2,"quality":2,"evidence":2,"risk":3}}

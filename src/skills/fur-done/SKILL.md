@@ -59,7 +59,7 @@ Run the internal check gate, move verified task markdown to `tasks/done/`, refre
 Load in this order:
 1. Active task file.
 2. Latest `fur-do` output, `fur-check` output, or user waiver.
-3. `.fur.planning/state.json` when present, including plan lock state.
+3. `docs/ai/state.json` when present, including plan lock state.
 4. `.fur.workspace/config.json` if tracker sync is in play.
 5. `progress/latest.md` for continuity.
 
@@ -88,7 +88,7 @@ Batch closure:
 
 ### Phase 3: Progress snapshot
 
-1. From repo root run `fur refresh` so `progress/latest.md` points at a new timestamped snapshot and `.fur.planning/state.json` is updated.
+1. From repo root run `fur refresh` so `progress/latest.md` points at a new timestamped snapshot and `docs/ai/state.json` is updated.
 2. If snapshots pile up, mention `fur compact` (honors `FUR_PROGRESS_KEEP`, default 8).
 
 ### Phase 4: External tracker (optional)
@@ -147,7 +147,7 @@ If any answer is no, continue working before responding.
 
 - Task moved: [old path] → [new path]
 - Progress snapshot: [timestamped file] + latest symlink updated: yes/no
-- State: `.fur.planning/state.json` updated: yes/no
+- State: `docs/ai/state.json` updated: yes/no
 - Tracker sync: closed | transitioned | drafted-manual-steps | local-only | skipped (reason)
 
 ## Verification Summary

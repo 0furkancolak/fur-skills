@@ -74,7 +74,7 @@ export async function cmdInit(args: string[]): Promise<number> {
   if (!mode) {
     if (isTty()) {
       const answer = await promptChoice(
-        "Ignore .fur.planning in git? yes/no",
+        "Ignore docs/ai in git? yes/no",
         "yes",
       );
       const parsed = parseGitignoreAnswer(answer);
@@ -194,9 +194,9 @@ export async function cmdInit(args: string[]): Promise<number> {
   });
 
   if (useGitignore) {
-    console.log("Initialized .fur.planning and added it to .gitignore");
+    console.log("Initialized docs/ai and added it to .gitignore");
   } else {
-    console.log("Initialized .fur.planning without adding it to .gitignore");
+    console.log("Initialized docs/ai without adding it to .gitignore");
   }
 
   console.log(`Question level: ${questionLevel}`);

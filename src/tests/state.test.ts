@@ -22,7 +22,7 @@ afterEach(async () => {
 describe("fur refresh state", () => {
   test("cmdRefresh writes progress latest and state.json", async () => {
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-demo.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-demo.md"),
       "# Demo\n\n## Acceptance Criteria\n\n- [ ] Works\n",
     );
 
@@ -30,12 +30,12 @@ describe("fur refresh state", () => {
     expect(code).toBe(0);
 
     const stateRaw = await readFile(
-      join(tempDir, ".fur.planning", "state.json"),
+      join(tempDir, "docs/ai", "state.json"),
       "utf-8",
     );
     const state = JSON.parse(stateRaw) as Record<string, unknown>;
     expect(state.activeTask).toBe(
-      ".fur.planning/tasks/ready/20260101-1000-demo.md",
+      "docs/ai/tasks/ready/20260101-1000-demo.md",
     );
     expect(state.nextRecommendedAction).toBe("fur-do 20260101-1000-demo.md");
     expect(state.planLock).toEqual({
@@ -46,7 +46,7 @@ describe("fur refresh state", () => {
     expect(state.readyBatch).toBeNull();
 
     const latest = await readFile(
-      join(tempDir, ".fur.planning", "progress", "latest.md"),
+      join(tempDir, "docs/ai", "progress", "latest.md"),
       "utf-8",
     );
     expect(latest).toContain("State file:");
@@ -56,7 +56,7 @@ describe("fur refresh state", () => {
 
   test("multiple active plans require a plan lock before selecting work", async () => {
     await writeFile(
-      join(tempDir, ".fur.planning", "plans", "alpha.md"),
+      join(tempDir, "docs/ai", "plans", "alpha.md"),
       `---
 plan_version: 2
 slug: alpha
@@ -74,7 +74,7 @@ estimated_tasks: 1
 `,
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "plans", "beta.md"),
+      join(tempDir, "docs/ai", "plans", "beta.md"),
       `---
 plan_version: 2
 slug: beta
@@ -92,11 +92,11 @@ estimated_tasks: 1
 `,
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-alpha.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-alpha.md"),
       "# Alpha\n\nPlan: plans/alpha.md\nPlan task ID: T1\n",
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-beta.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-beta.md"),
       "# Beta\n\nPlan: plans/beta.md\nPlan task ID: T1\n",
     );
 
@@ -104,7 +104,7 @@ estimated_tasks: 1
     expect(code).toBe(0);
 
     const stateRaw = await readFile(
-      join(tempDir, ".fur.planning", "state.json"),
+      join(tempDir, "docs/ai", "state.json"),
       "utf-8",
     );
     const state = JSON.parse(stateRaw) as Record<string, unknown>;
@@ -117,7 +117,7 @@ estimated_tasks: 1
 
   test("configured plan lock selects only that plan's next task", async () => {
     await writeFile(
-      join(tempDir, ".fur.planning", "config.json"),
+      join(tempDir, "docs/ai", "config.json"),
       JSON.stringify(
         {
           planning: {
@@ -130,7 +130,7 @@ estimated_tasks: 1
       ),
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "plans", "alpha.md"),
+      join(tempDir, "docs/ai", "plans", "alpha.md"),
       `---
 plan_version: 2
 slug: alpha
@@ -148,7 +148,7 @@ estimated_tasks: 1
 `,
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "plans", "beta.md"),
+      join(tempDir, "docs/ai", "plans", "beta.md"),
       `---
 plan_version: 2
 slug: beta
@@ -166,11 +166,11 @@ estimated_tasks: 1
 `,
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-alpha.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-alpha.md"),
       "# Alpha\n\nPlan: plans/alpha.md\nPlan task ID: T1\n",
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-beta.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-beta.md"),
       "# Beta\n\nPlan: plans/beta.md\nPlan task ID: T1\n",
     );
 
@@ -178,12 +178,12 @@ estimated_tasks: 1
     expect(code).toBe(0);
 
     const stateRaw = await readFile(
-      join(tempDir, ".fur.planning", "state.json"),
+      join(tempDir, "docs/ai", "state.json"),
       "utf-8",
     );
     const state = JSON.parse(stateRaw) as Record<string, unknown>;
     expect(state.activeTask).toBe(
-      ".fur.planning/tasks/ready/20260101-1000-beta.md",
+      "docs/ai/tasks/ready/20260101-1000-beta.md",
     );
     expect(state.activePlan).toBe("beta");
     expect(state.nextRecommendedAction).toBe("fur-do 20260101-1000-beta.md");
@@ -194,7 +194,7 @@ estimated_tasks: 1
     expect(code).toBe(0);
 
     const stateRaw = await readFile(
-      join(tempDir, ".fur.planning", "state.json"),
+      join(tempDir, "docs/ai", "state.json"),
       "utf-8",
     );
     const state = JSON.parse(stateRaw) as Record<string, unknown>;
@@ -206,7 +206,7 @@ estimated_tasks: 1
 
   test("plan lock exposes ready batch for independent unblocked tasks", async () => {
     await writeFile(
-      join(tempDir, ".fur.planning", "plans", "batch.md"),
+      join(tempDir, "docs/ai", "plans", "batch.md"),
       `---
 plan_version: 2
 slug: batch
@@ -231,15 +231,15 @@ estimated_tasks: 4
 `,
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-a.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-a.md"),
       "# A\n\nPlan: plans/batch.md\nPlan task ID: T2\n",
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-b.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-b.md"),
       "# B\n\nPlan: plans/batch.md\nPlan task ID: T3\n",
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-c.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-c.md"),
       "# C\n\nPlan: plans/batch.md\nPlan task ID: T4\n",
     );
 
@@ -247,7 +247,7 @@ estimated_tasks: 4
     expect(code).toBe(0);
 
     const stateRaw = await readFile(
-      join(tempDir, ".fur.planning", "state.json"),
+      join(tempDir, "docs/ai", "state.json"),
       "utf-8",
     );
     const state = JSON.parse(stateRaw) as {
@@ -261,7 +261,7 @@ estimated_tasks: 4
 
   test("ready batch excludes a ready task blocked by another ready task", async () => {
     await writeFile(
-      join(tempDir, ".fur.planning", "plans", "chain.md"),
+      join(tempDir, "docs/ai", "plans", "chain.md"),
       `---
 plan_version: 2
 slug: chain
@@ -286,11 +286,11 @@ estimated_tasks: 3
 `,
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-a.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-a.md"),
       "# A\n\nPlan: plans/chain.md\nPlan task ID: T2\n",
     );
     await writeFile(
-      join(tempDir, ".fur.planning", "tasks", "ready", "20260101-1000-b.md"),
+      join(tempDir, "docs/ai", "tasks", "ready", "20260101-1000-b.md"),
       "# B\n\nPlan: plans/chain.md\nPlan task ID: T3\n",
     );
 
@@ -298,7 +298,7 @@ estimated_tasks: 3
     expect(code).toBe(0);
 
     const stateRaw = await readFile(
-      join(tempDir, ".fur.planning", "state.json"),
+      join(tempDir, "docs/ai", "state.json"),
       "utf-8",
     );
     const state = JSON.parse(stateRaw) as {

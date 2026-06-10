@@ -2,9 +2,9 @@
 
 ## Done
 
-- Task moved: `.fur.planning/tasks/ready/20260524-1200-final.md` -> `.fur.planning/tasks/done/20260524-1200-final.md`
-- Progress snapshot: `.fur.planning/progress/20260524-121500.md` + latest symlink updated: yes
-- State: `.fur.planning/state.json` updated: yes
+- Task moved: `docs/ai/tasks/ready/20260524-1200-final.md` -> `docs/ai/tasks/done/20260524-1200-final.md`
+- Progress snapshot: `docs/ai/progress/20260524-121500.md` + latest symlink updated: yes
+- State: `docs/ai/state.json` updated: yes
 - Tracker sync: skipped (none)
 
 ## Verification Summary

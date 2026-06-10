@@ -219,7 +219,7 @@ export async function cmdProgress(): Promise<number> {
   const planning = planningDir(projectRoot);
 
   if (!existsSync(planning)) {
-    console.log("No .fur.planning found. Run:");
+    console.log("No docs/ai found. Run:");
     console.log("  fur init --gitignore");
     console.log("or:");
     console.log("  fur init --no-gitignore");

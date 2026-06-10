@@ -75,7 +75,7 @@ Do not bypass Fur's diagnostic contract:
 - reproduce before patch
 - one hypothesis at a time
 - verify before completion
-- record findings in `.fur.planning/progress/latest.md` or the current progress format
+- record findings in `docs/ai/progress/latest.md` or the current progress format
 
 ### Phase 1: Build a feedback loop
 

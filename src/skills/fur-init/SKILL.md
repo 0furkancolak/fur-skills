@@ -4,13 +4,14 @@ skill_class: orchestrator
 skill_version: 2
 default_response_depth: concise
 description: >-
-  Initialize `.fur.planning` in the current project with task folders, local behavior config,
-  questionLevel, projectMaturity, and workspace tracker hints. Use when starting the simplified Fur loop in a repo.
+  Initialize or refresh `docs/ai` project context, local behavior config, task folders,
+  AGENTS.md routing, CLAUDE.md redirect, and workspace tracker hints. Use when starting
+  Fur in a repo or when repository context changed and durable AI context should be updated.
 disable-model-invocation: true
 requires:
   - project_root
 optional:
-  - existing_fur_planning
+  - existing_docs_ai
   - fur_workspace_config
 quality_contract:
   must_map_every_ac: false
@@ -27,171 +28,190 @@ handoff:
 
 # fur-init
 
-Bootstrap the Fur planning workspace so later skills (`fur-task`, `fur-do`, …) have a consistent on-disk contract.
-
 ## Identity
 
-You are a project coordinator. Your job is to set up the planning workspace correctly and hand off to the next skill without implementing product code.
+You are a project context curator. Set up or refresh durable AI context without changing product code.
 
 ## Goal
 
-Create a clean `.fur.planning/` tree, ask setup questions in TTY mode, write `config.json` with behavior settings, seed `context/` stubs, and surface workspace (`/.fur.workspace/`) registration status — without implementing product code.
+Create or refresh `docs/ai/`, route agents through `AGENTS.md`, point `CLAUDE.md` at `AGENTS.md`, and capture current repo architecture, verification, MCP, tracker, and convention context.
 
 ## When to Use
 
-- Starting the Fur loop in a **new** project repository.
-- Cloning a repo that has no `.fur.planning/` yet.
-- Re-orienting after deleting a broken planning folder (only if the user explicitly wants a fresh init).
+- Starting Fur in a repo that has no `docs/ai/`.
+- Re-running Fur setup after repo structure, tooling, verification commands, or agent rules changed.
+- Repairing an incomplete `docs/ai/` tree.
+- Updating `AGENTS.md` / `CLAUDE.md` routing for Fur-aware agents.
 
 ## When NOT to Use
 
-- `.fur.planning/` already exists and is valid — report status; do not blindly overwrite `config.json` without user consent.
-- You need tasks or implementation — use `fur-task` / `fur-do` after init.
-- You only need a progress summary — use `fur-status` or `fur progress`.
+- You need to create implementation tasks only; use `fur-task`.
+- You need to implement application code; use `fur-do`.
+- You need a short queue/status view; use `fur-status`.
+- You need to ship a branch/PR; use `fur-ship`.
 
 ## Context Loading Contract
 
 Load in this order:
-1. Project root directory.
-2. Existing `.fur.planning/` if present (to avoid overwriting).
-3. Parent directories for `.fur.workspace/config.json`.
 
-Do not load unrelated project code or history.
+1. Project root and git root.
+2. Existing `docs/ai/config.json`, `docs/ai/progress/latest.md`, and `docs/ai/context/*.md` when present.
+3. `package.json`, lockfiles, build/test configs, source entrypoints, README/docs index files, and existing `AGENTS.md` / `CLAUDE.md`.
+4. Parent `.fur.workspace/config.json` if present.
+
+Skip product source internals unless needed to identify architecture boundaries or verification commands.
 
 ## Workflow
 
-### Phase 1: Preconditions
+### Phase 1: Discover Repo Context
 
-1. Operate from the **project git root** (or the root the user treats as the repo).
-2. If `.fur.planning/` exists, list `config.json`, `tasks/*`, and `progress/latest.md`; stop unless the user asked to re-init or repair.
-3. Read `src/references/planning-layout.md` if you need the full layout rationale.
+1. Confirm project root.
+2. Inspect package manager, scripts, test/build/lint commands, source directories, app entrypoints, docs folders, CI files, and tracker hints.
+3. Summarize durable facts only; do not paste long transcripts.
 
-### Phase 2: Run the CLI
+### Phase 2: Run or Mirror CLI Setup
 
-1. Choose `questionLevel` and `projectMaturity` using AGENTS.md defaults: **new → `high`**, **established → `normal`** unless the user overrides.
-2. Run `fur init` from the project root. In TTY it asks for gitignore, project maturity, question level, response depth, evidence style, verification strictness, and automation mode. In non-TTY/CI it defaults to `--gitignore`, `--project-maturity new`, `--question-level high`, `--response-depth standard`, `--evidence-style inline`, `--verification-strictness normal`, `--automation-mode guided`.
+1. Run `fur init` from repo root when available.
+2. In non-interactive mode use safe defaults: `--gitignore`, `projectMaturity: new`, `questionLevel: high`, `responseDepth: standard`, `evidenceStyle: inline`, `verificationStrictness: normal`, `automationMode: guided`.
+3. For established repos prefer `--project-maturity established --question-level normal`.
 
-Non-interactive examples:
+### Phase 3: Verify docs/ai Layout
 
-```bash
-fur init --gitignore --project-maturity new --question-level high --automation-mode guided
-```
-
-```bash
-fur init --gitignore --project-maturity established --question-level normal --automation-mode guided
-```
-
-3. If the user must not ignore planning in git, use `--no-gitignore` and explain the tradeoff (commits may include `.fur.planning/`).
-
-### Phase 3: Verify layout and config
-
-1. Confirm the **Created structure** below exists (folders + `README.md` + `context/*.md` stubs).
-2. Open `.fur.planning/config.json` and confirm keys: `questionLevel`, `projectMaturity`, `responseDepth`, `evidenceStyle`, `verificationStrictness`, `automationMode`, `planning`, `questionPolicy`, `localTaskMode`, `gitignore` (boolean reflects CLI).
-3. Confirm the default planning config: `planning.planLock = enabled`.
-4. Optionally run `fur progress` — it may say no snapshot yet; that is OK until the first `fur refresh`.
-
-### Phase 4: Workspace discovery
-
-1. Walk parent directories for `.fur.workspace/config.json` (same behavior as `fur` CLI).
-2. If missing: suggest `fur workspace init` from the **workspace root** when multi-repo tracker routing is desired.
-3. If present: if this repo path is **not** in `repositories[]`, report that external imports/writes stay blocked until registered.
-
-### Phase 5: Self-review
-
-Before finalizing, verify:
-- Did I create the full `.fur.planning/` tree without errors?
-- Did I set `questionLevel` and `projectMaturity` correctly?
-- Did I check for existing config before overwriting?
-- Did I match the output contract for this skill class?
-- Did I suggest the correct next skill?
-
-If any answer is no, continue working before responding.
-
-## Created structure
+Confirm these paths exist:
 
 ```txt
-.fur.planning/
+docs/ai/
   README.md
   config.json
-  tasks/
-    backlog/
-    ready/
-    done/
+  tasks/backlog/
+  tasks/ready/
+  tasks/done/
   plans/
-  progress/
-    archive/     # populated by `fur compact`
-  context/
-    archive/     # optional long digests — see src/references/context-window.md
-    issue-tracker.md
-    mcp.md
-    verification.md
+  progress/archive/
+  context/archive/
+  context/architecture.md
+  context/conventions.md
+  context/issue-tracker.md
+  context/mcp.md
+  context/verification.md
 ```
 
-## Question levels
+### Phase 4: Refresh Agent Routing
 
-- `low`: ask only for blocker ambiguity, unsafe tracker routing, or high-risk irreversible choices.
-- `normal`: ask when scope, acceptance criteria, tracker target, or verification is missing.
-- `high`: also ask product, edge-case, data, and rollout questions when requirements are thin.
+1. Ensure `AGENTS.md` contains a Fur / AI Context block pointing to `docs/ai/`.
+2. Ensure `CLAUDE.md` points readers to `AGENTS.md`.
+3. Keep existing user-authored content; update only the managed Fur block.
 
-## Automation modes
+### Phase 5: Workspace Discovery
 
-- `guided`: default; `fur-do` auto-closes only micro tasks, and `fur-done` runs the internal check gate for standard/major tasks.
-- `streamlined`: same safety gates, but agents should choose the fastest allowed path when config and risk permit.
+1. Walk parent directories for `.fur.workspace/config.json`.
+2. Report whether this repo is registered.
+3. If not registered, external writes stay blocked until config permits them.
+
+### Phase 6: Self-Review
+
+Before final output, verify:
+
+- Did I avoid product code changes?
+- Did I refresh context files from actual repo signals?
+- Did I preserve user-authored AGENTS/CLAUDE content outside the managed block?
+- Did I report checks and residual risk honestly?
+- Did I suggest the correct next skill?
 
 ## Rules
 
-- Do not implement application code or create tracker issues during init.
-- Do not over-design folders beyond what `fur init` creates unless the user asks.
-- Never delete an existing `.fur.planning/` tree without explicit user approval.
-- Repo-local `config.json` is for planning behavior only; tracker routing lives in `.fur.workspace/config.json`.
-- Include `planning` when creating or updating `.fur.planning/config.json`.
-- Do not install, require, or configure external methodology packages during Fur init.
-- Point long explanations to `plans/` or `context/archive/` per `src/references/context-window.md` instead of bloating chat.
+- Use `docs/ai/`; do not create or read `.fur.planning` as a compatibility fallback.
+- Do not implement product code during init.
+- Do not delete existing `docs/ai/` files without explicit user approval.
+- Do not overwrite user-authored AGENTS/CLAUDE content outside the managed Fur block.
+- Keep context concise; archive long digests under `docs/ai/context/archive/`.
+- Prefer caveman-style concise user output when clarity is not harmed.
+- External writes require explicit approval or clear `.fur.workspace/config.json` permission.
 
 ## Output
 
 ### Presentation Plane
 
 ```md
-## Initialization Complete
+## Summary
 
 - Project root: [path]
-- Created or verified folders: [list]
-- .gitignore updated (fur planning): yes / no / skipped
+- Runtime docs: docs/ai
+- Context refreshed: yes/no
+- AGENTS.md routing: created/updated/unchanged
+- CLAUDE.md redirect: created/updated/unchanged
+- Workspace config: found [path] | not found
+- Repo registered: yes [id] | no
+
+## State
+
 - questionLevel: low | normal | high
 - projectMaturity: new | established
 - responseDepth: concise | standard | deep
 - evidenceStyle: paths-only | inline | inline-plus-paths
 - verificationStrictness: loose | normal | strict
 - automationMode: guided | streamlined
-- Workspace config: found [path] | not found
-- Repo registered in workspace: yes [id] | no (action: add repositories[] entry)
-- Next CLI hints: fur refresh | fur task (skill)
+
+## Next Action
+
+[one concrete next skill/action]
 ```
 
 ### Control Plane
 
 ```yaml
-status: initialized | already-exists | blocked
-next_skill: fur-task | fur-status
+status: initialized | refreshed | blocked
+next_skill: fur-task | fur-status | fur-debug
 ```
 
 ## Anti-patterns
 
-- Do not overwrite an existing `.fur.planning/` without user consent.
-- Do not implement product code during init.
-- Do not skip workspace registration check.
-- Do not forget to suggest the next skill.
+- Do not migrate from `.fur.planning`; v3 is a hard switch.
+- Do not turn init into broad architecture documentation work.
+- Do not claim context is refreshed without inspecting repo signals.
+- Do not add AI attribution to generated agent docs.
 
 ## Examples
 
-Reference examples:
-- `../_shared/examples/orchestrator-example.md`
-- `../_shared/anti-patterns/global.md`
-- `../_shared/anti-patterns/orchestrator.md`
+Good:
 
-Use these examples to calibrate response depth, evidence quality, output structure, self-check behavior, and next-skill routing.
+```md
+## Summary
+
+- Project root: `/repo`
+- Runtime docs: `docs/ai`
+- Context refreshed: yes
+- AGENTS.md routing: updated
+- CLAUDE.md redirect: created
+- Workspace config: not found
+- Repo registered: no
+
+## Next Action
+
+Use `fur-task` to capture the first unit of work.
+```
+
+Good refresh:
+
+```md
+## Summary
+
+- Runtime docs: `docs/ai`
+- Context refreshed: yes, verification scripts changed
+- AGENTS.md routing: unchanged
+- CLAUDE.md redirect: unchanged
+
+## Next Action
+
+Run `fur-status` if you need queue orientation.
+```
+
+Bad:
+
+```md
+I rewrote half the README and moved old `.fur.planning` files automatically.
+```
 
 ## Suggested Next Step
 
-`fur-task` to capture the first unit of work, or `fur workspace init` + `fur workspace doctor` if tracker-aware multi-repo setup is needed.
+`fur-task` to capture work, or `fur-status` if `docs/ai` already contains active tasks.

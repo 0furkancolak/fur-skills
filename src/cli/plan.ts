@@ -23,14 +23,14 @@ export async function cmdPlan(args: string[]): Promise<number> {
   const planning = planningDir(root);
 
   if (!existsSync(planning)) {
-    console.error("No .fur.planning found. Run: fur init --gitignore");
+    console.error("No docs/ai found. Run: fur init --gitignore");
     return 1;
   }
 
   if (sub === "list") {
     const plans = await listPlans(root);
     if (plans.length === 0) {
-      console.log("No plans in .fur.planning/plans/");
+      console.log("No plans in docs/ai/plans/");
       console.log("Large work should create plans/<slug>.md — see src/references/plan-template.md");
       return 0;
     }

@@ -45,7 +45,7 @@ Create or select a focused task with clear acceptance criteria and verification,
 
 - Local feature, bug, refactor, chore, meeting notes, or vague request needs to become work.
 - External pointer: Jira key, GitHub `#nn`, full issue URL, or "create issue …".
-- Large body of work must be split into phased **plans** + **tasks** under `.fur.planning/`.
+- Large body of work must be split into phased **plans** + **tasks** under `docs/ai/`.
 - User asks what to pick next from the queue.
 - A finding should become a tracker issue **and** `writeAllowed` / routing is unambiguous.
 
@@ -60,8 +60,8 @@ Create or select a focused task with clear acceptance criteria and verification,
 ## Context Loading Contract
 
 Load in this order:
-1. `.fur.planning/config.json` (questionLevel, projectMaturity, questionPolicy, responseDepth, automationMode, planning).
-2. `.fur.planning/state.json` when present.
+1. `docs/ai/config.json` (questionLevel, projectMaturity, questionPolicy, responseDepth, automationMode, planning).
+2. `docs/ai/state.json` when present.
 3. `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
 4. `progress/latest.md` for current project state.
 5. Existing tasks in `tasks/ready/` and `tasks/backlog/` to avoid duplication.
@@ -72,7 +72,7 @@ Do not load unrelated history.
 
 ### Phase 1: Load policy and workspace
 
-1. Read `.fur.planning/config.json` when present: `questionLevel`, `projectMaturity`, `questionPolicy`.
+1. Read `docs/ai/config.json` when present: `questionLevel`, `projectMaturity`, `questionPolicy`.
 2. Read `.fur.workspace/config.json` only when external routing, imports, or writes are in play.
 3. If neither file exists, recommend `fur-init` (skill) before continuing unless the user is only brainstorming.
 

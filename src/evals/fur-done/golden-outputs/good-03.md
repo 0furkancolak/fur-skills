@@ -4,7 +4,7 @@
 
 - Task moved: not moved
 - Progress snapshot: not created
-- State: `.fur.planning/state.json` updated: no
+- State: `docs/ai/state.json` updated: no
 - Tracker sync: skipped (verification failure is unexplained)
 
 ## Verification Summary

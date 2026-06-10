@@ -1,6 +1,6 @@
 # Task Şablonu
 
-Task dosyaları `.fur.planning/tasks/backlog/` veya `.fur.planning/tasks/ready/` altında oluşturulurken bu şablonu kullanın.
+Task dosyaları `docs/ai/tasks/backlog/` veya `docs/ai/tasks/ready/` altında oluşturulurken bu şablonu kullanın.
 
 ## Dosya Adı Formatı
 

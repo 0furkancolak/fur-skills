@@ -114,7 +114,7 @@ async function tasksForPlan(
 ): Promise<string[]> {
   const matched: string[] = [];
   for (const file of taskFiles) {
-    const rel = join(".fur.planning", "tasks", folder, file);
+    const rel = join("docs/ai", "tasks", folder, file);
     if (await taskMentionsPlan(join(projectRoot, rel), slug)) {
       matched.push(rel);
     }
@@ -242,9 +242,9 @@ export async function buildFurState(
   } else if (!planLock.enabled) {
     activeTask =
       readyFiles.length > 0
-        ? join(".fur.planning", "tasks", "ready", readyFiles[0]!)
+        ? join("docs/ai", "tasks", "ready", readyFiles[0]!)
         : backlogFiles.length > 0
-          ? join(".fur.planning", "tasks", "backlog", backlogFiles[0]!)
+          ? join("docs/ai", "tasks", "backlog", backlogFiles[0]!)
           : null;
     activePlan = null;
     nextRecommendedAction =
@@ -255,7 +255,7 @@ export async function buildFurState(
           : "work complete; new work can be started when desired";
   } else if (planSummaries.length === 0) {
     if (readyFiles.length === 1) {
-      activeTask = join(".fur.planning", "tasks", "ready", readyFiles[0]!);
+      activeTask = join("docs/ai", "tasks", "ready", readyFiles[0]!);
       nextRecommendedAction = `fur-do ${basename(readyFiles[0]!)}`;
     } else if (readyFiles.length > 1) {
       nextRecommendedAction =

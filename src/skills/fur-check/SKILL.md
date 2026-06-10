@@ -70,7 +70,7 @@ Do not load unrelated code paths.
 
 1. Read the task’s Acceptance criteria and Verification sections.
 2. Read `fur-do` output or the user’s summary of intended behavior.
-3. Skim `.fur.planning/context/verification.md` for repo-standard commands when the task is silent.
+3. Skim `docs/ai/context/verification.md` for repo-standard commands when the task is silent.
 
 ### Phase 2: Map the diff
 

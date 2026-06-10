@@ -45,14 +45,15 @@ fur-init -> fur-task -> fur-do -> fur-done
                  \-> fur-debug ->/
 ```
 
-## v2 Mimari
+## v3 Mimari
 
-fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidir.
+fur-skills v3; `docs/ai` tabanlı, contract-first, provider-aware ve eval-driven bir skill sistemidir.
 
 - **Contract-first**: Her skill net bir kalite sözleşmesine sahiptir (`skill-spec-v2.md`).
 - **Provider-aware**: Claude, OpenAI reasoning ve generic hostlar için ayrı overlay yaklaşımı vardır (`src/skills/_shared/overlays/`).
 - **Eval-driven**: Skill kalitesi prompt setleri, golden output'lar ve grader'lar ile ölçülür (`src/evals/`).
-- **Bağımsız core loop**: Fur skill'leri core akış içinde dış metodoloji paketlerine delegasyon yapmaz.
+- **Birleşebilir akış**: Kullanıcı isterse Fur skill'leri başka skill/tool çıktılarıyla birlikte kullanılabilir; Fur yerel task/state contract'ını korur.
+- **Caveman varsayılanı**: Netliği bozmuyorsa kısa, düşük gürültülü caveman tarzı çıktı tercih edilir.
 
 ## Skill Sınıfları
 
@@ -92,7 +93,7 @@ fur-skills v2; contract-first, provider-aware ve eval-driven bir skill sistemidi
 
 ## Dış Metodolojiler
 
-fur-skills kendi içinde tamamlanan bir akıştır. Başka bir metodoloji kullanıcı tarafından ayrıca çağrılırsa, çıktısı Fur için sadece bağlam sayılır; task dosyaları, plan manifestleri, progress snapshot'ları, tracker routing ve kapanış Fur tarafından yönetilir.
+fur-skills başka skill sistemleri ve tool'larla birlikte kullanılabilir. Dış skill çıktısı bağlam sayılır; `docs/ai` task dosyaları, plan manifestleri, progress snapshot'ları, tracker routing, verification raporu ve kapanış Fur tarafından yönetilir.
 
 ## Soru Seviyeleri
 
@@ -122,13 +123,15 @@ Her skill şu kurallara uyar:
 
 | Skill | Sınıf | Görev |
 |---|---|---|
-| `fur-init` | orchestrator | `.fur.planning`, local config, soru seviyesi ve workspace ipuçlarını kurar. |
+| `fur-init` | orchestrator | `docs/ai`, context dosyaları, local config, AGENTS yönlendirmesi, CLAUDE redirect'i ve workspace ipuçlarını kurar/günceller. |
 | `fur-task` | planner | Local/Jira/GitHub kaynaklardan küçük task üretir, seçer veya böler. |
 | `fur-do` | executor | Seçili task'ı uygular. |
 | `fur-check` | gate | Standalone veya gömülü acceptance, test, typecheck/lint ve review kapısıdır. |
 | `fur-done` | orchestrator | İç check kapısını çalıştırır, doğrulanmış task'ı done'a taşır, snapshot/state alır, config izinliyse tracker sync yapar. |
 | `fur-status` | orchestrator | İstendiğinde nerede kalındığını ve sıradaki tek aksiyonu gösterir. |
 | `fur-debug` | diagnostic | Kök nedeni bilinmeyen bug'lar için fazlı debug akışıdır. |
+| `fur-session-handoff` | orchestrator | Yeni conversation için kopyala-yapıştır hazır Türkçe devam prompt'u üretir. |
+| `fur-ship` | orchestrator | Branch/PR durumunu kontrol eder, commit/PR metninden AI attribution temizler, approval gate ile GitHub PR akışını hazırlar. |
 
 ## UI Skill'leri
 
@@ -142,18 +145,18 @@ Her skill şu kurallara uyar:
 
 | Komut | Görev |
 |---|---|
-| `fur init` | TTY'de sorular sorarak, non-TTY'de güvenli defaultlarla `.fur.planning` oluşturur. |
+| `fur init` | TTY'de sorular sorarak, non-TTY'de güvenli defaultlarla `docs/ai` oluşturur. |
 | `fur init --gitignore --question-level high --project-maturity new --response-depth standard --evidence-style inline --verification-strictness normal --automation-mode guided` | Non-interactive init. |
 | `fur workspace init` | `.fur.workspace/config.json` oluşturur. |
 | `fur workspace doctor` | Workspace repo/tracker config'ini doğrular. |
-| `fur refresh` | `fur-done` için progress snapshot ve `.fur.planning/state.json` üreten yardımcı komut. |
+| `fur refresh` | `fur-done` için progress snapshot ve `docs/ai/state.json` üreten yardımcı komut. |
 | `fur progress` | `fur-status` için kısa durum ve plan completion komutu. |
 | `fur compact` | Eski snapshot'ları arşivler. |
 | `fur doctor` | Kurulum, skill symlink, v2 section ve eval fixture durumunu gösterir. |
 
 ## Referanslar
 
-- [`references/planning-layout.md`](../references/planning-layout.md) — `.fur.planning` ve `.fur.workspace` yapısı
+- [`references/planning-layout.md`](../references/planning-layout.md) — `docs/ai` ve `.fur.workspace` yapısı
 - [`references/task-template.md`](../references/task-template.md) — task dosyası şablonu
 - [`references/context-window.md`](../references/context-window.md) — bağlam bütçesi kuralları
 - [`references/skill-spec-v2.md`](../references/skill-spec-v2.md) — zorunlu ortak skill sözleşmesi

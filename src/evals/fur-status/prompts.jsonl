@@ -4,7 +4,7 @@
 {"input": "Check tracker sync state and whether there are pending external transitions.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "Show counts of tasks by state: todo, in-progress, blocked, done.", "expected_routing": "fur-task", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "Status on a project with no tasks created yet. Should report empty state.", "expected_routing": "fur-init", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
-{"input": "Show status when the .fur.planning directory is missing. Should suggest init.", "expected_routing": "fur-init", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
+{"input": "Show status when the docs/ai directory is missing. Should suggest init.", "expected_routing": "fur-init", "min_scores": {"depth": 2, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "Status with a corrupted progress snapshot file that cannot be parsed.", "expected_routing": "fur-debug", "min_scores": {"depth": 2, "quality": 1, "evidence": 1, "risk": 2}}
 {"input": "Show status with responseDepth: concise. Expect counts and next action only.", "expected_routing": "fur-task", "min_scores": {"depth": 1, "quality": 2, "evidence": 1, "risk": 1}}
 {"input": "Show status with responseDepth: deep. Expect rich summary, recent history, and detailed routing.", "expected_routing": "fur-task", "min_scores": {"depth": 3, "quality": 3, "evidence": 2, "risk": 1}}

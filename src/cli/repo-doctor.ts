@@ -29,6 +29,8 @@ const REMAINING_EVAL_SKILLS = [
   "fur-init",
   "fur-done",
   "fur-status",
+  "fur-session-handoff",
+  "fur-ship",
   "fur-ui-design",
   "fur-ui-review",
   "fur-ui-clone",

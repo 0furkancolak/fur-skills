@@ -40,7 +40,7 @@ Deliver the smallest **complete** change set that satisfies every acceptance cri
 
 ## When to Use
 
-- A markdown task exists in `.fur.planning/tasks/ready/` (preferred) or the user explicitly points at one `backlog/` task to implement now.
+- A markdown task exists in `docs/ai/tasks/ready/` (preferred) or the user explicitly points at one `backlog/` task to implement now.
 - A **tiny** unambiguous fix (one file / one symbol) with implicit AC given inline by the user.
 - Follow-up code tweaks right after partial implementation **within the same task scope**.
 
@@ -58,7 +58,7 @@ Load in this order:
 2. Only the linked plan fragments relevant to this task.
 3. Project verification defaults (`context/verification.md`).
 4. Only the code paths directly touched by the task.
-5. `.fur.planning/state.json` to confirm the active plan lock before selecting or executing work.
+5. `docs/ai/state.json` to confirm the active plan lock before selecting or executing work.
 
 Do not load unrelated history unless the active task depends on it.
 
@@ -80,18 +80,18 @@ Do not load unrelated history unless the active task depends on it.
 
 Use fur-skills execution for the selected task. Do not delegate implementation, TDD, plan execution, or orchestration to another methodology from inside this skill.
 
-Fur remains responsible for selected task state, `.fur.planning` progress, `responseDepth`, `verificationStrictness`, acceptance criteria coverage, and final handoff format. If the user explicitly invokes an external workflow in the same conversation, treat its result as context and return here before closing or reporting the Fur task.
+Fur remains responsible for selected task state, `docs/ai` progress, `responseDepth`, `verificationStrictness`, acceptance criteria coverage, and final handoff format. If the user explicitly invokes an external workflow in the same conversation, treat its result as context and return here before closing or reporting the Fur task.
 
 Plan lock rules:
 
 1. When the task contains `Plan lock: <slug>` or `Plan: plans/<slug>.md`, execute only that plan's scope.
-2. If `.fur.planning/state.json` says multiple active plans exist and no plan lock is selected, stop and ask for an explicit task/plan; do not pick the first ready task.
+2. If `docs/ai/state.json` says multiple active plans exist and no plan lock is selected, stop and ask for an explicit task/plan; do not pick the first ready task.
 3. If the selected task belongs to a different plan than the active plan lock, stop and route to `fur-task` or `fur-status` for selection.
 4. Do not load or continue unrelated ready tasks after finishing the selected task.
 
 Batch execution rules:
 
-1. If `.fur.planning/state.json` contains `readyBatch` for the active plan and the user invokes `fur-do <batch-group>`, execute every task in that batch and no other tasks.
+1. If `docs/ai/state.json` contains `readyBatch` for the active plan and the user invokes `fur-do <batch-group>`, execute every task in that batch and no other tasks.
 2. A batch is valid only when all tasks share the active `Plan lock` and `Batch group`, and no task in the batch blocks another task in the same batch.
 3. Run the batch in the same Fur session unless the user explicitly asks for another execution style.
 4. Preserve per-task acceptance criteria coverage, files changed, verification, residual risk, and handoff evidence in the output.

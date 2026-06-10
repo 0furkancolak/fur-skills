@@ -14,9 +14,9 @@ fur-init -> fur-task -> fur-do -> fur-done
 
 UI-specific work stays separate in the UI skills.
 
-## Architecture (v2)
+## Architecture (v3)
 
-fur-skills v2 is a **contract-first, provider-aware, eval-driven** skill platform. Every skill has:
+fur-skills v3 is a **docs/ai-based, contract-first, provider-aware, eval-driven** skill platform. Every skill has:
 
 - **Frontmatter contract** — `skill_class`, `skill_version`, `default_response_depth`, `quality_contract`, `handoff`
 - **Dual-plane output** — `presentation_plane` (human-readable markdown) + `control_plane` (machine-parseable YAML)
@@ -49,9 +49,10 @@ Every skill follows the shared contract in `AGENTS.md`:
 - Keep the core loop small; prefer config over extra skills.
 - External resources (Jira, GitHub, MCP) are optional; local markdown is the fallback.
 - Multi-repo tracker routing lives in `.fur.workspace/config.json`.
-- Repo-local behavior lives in `.fur.planning/config.json`.
+- Repo-local behavior lives in `docs/ai/config.json`.
 - Question asking is controlled by `questionLevel`; answer depth is controlled by `responseDepth`.
-- Fur skills do not delegate to external methodology packages from inside the core loop.
+- Users may combine Fur with other skills and tools; Fur owns local task/state contracts.
+- Caveman-style concise output is preferred when it does not reduce clarity or safety.
 - Old context should stay in files, not in chat; use `progress/latest.md` and `fur compact`.
 - Evidence before claims: every non-trivial assertion ties to a source.
 - Config over convention: `responseDepth`, `evidenceStyle`, and `verificationStrictness` live in config.
@@ -123,13 +124,15 @@ fur workspace doctor
 
 | Skill | Class | Purpose |
 |---|---|---|
-| **fur-init** | orchestrator | Create `.fur.planning/`, local behavior config, question level, and workspace hints. |
+| **fur-init** | orchestrator | Create or refresh `docs/ai/`, context files, local behavior config, AGENTS routing, CLAUDE redirect, and workspace hints. |
 | **fur-task** | planner | Create/select/split local tasks; import Jira/GitHub references; draft/write external tasks when config permits. |
 | **fur-do** | executor | Implement one selected task or tiny clear fix. |
 | **fur-check** | gate | Standalone or embedded review gate for acceptance criteria, tests, risk, and changed code. |
 | **fur-done** | orchestrator | Runs the internal check gate, moves verified task to done, refreshes progress/state, and syncs tracker completion when config permits. |
 | **fur-status** | orchestrator | Optional orientation view for task counts, latest snapshot, tracker sync state, and one next action. |
 | **fur-debug** | diagnostic | Diagnose unknown root cause with a phase-based debugging loop. |
+| **fur-session-handoff** | orchestrator | Produce a copy-paste-ready Turkish continuation prompt for a new conversation. |
+| **fur-ship** | orchestrator | Check branch/PR state, sanitize AI attribution from commit/PR text, and prepare GitHub PR flow with approval gates. |
 
 ## UI Skills
 
@@ -141,7 +144,7 @@ fur workspace doctor
 
 ## Question Levels
 
-`fur init` writes these settings to `.fur.planning/config.json`.
+`fur init` writes these settings to `docs/ai/config.json`.
 
 | Level | Behavior |
 |---|---|
@@ -182,9 +185,9 @@ Defaults:
 
 ## External Methodologies
 
-fur-skills is self-contained. The core loop does not invoke external methodology packages on its own.
+fur-skills can be combined with other skill systems and tools when the user invokes them. Treat external skill output as context, then return to the Fur skill that owns the current state transition. Fur remains responsible for `docs/ai` task files, plan manifests, progress snapshots, tracker routing, verification reporting, and final handoffs.
 
-If a user explicitly invokes another workflow in the same conversation, treat its output as user-provided context and return to the Fur skill that owns the current state transition. Fur remains responsible for task files, plan manifests, progress snapshots, tracker routing, verification reporting, and final handoffs.
+General response style should stay concise. Caveman-style output is preferred for Fur operations unless security, approval, or multi-step clarity needs full prose.
 
 Default config:
 
@@ -209,11 +212,11 @@ With this default, multi-task plans run through Fur's own task queue. `planLock`
 
 | Command | Purpose |
 |---|---|
-| `fur init` | Create `.fur.planning/`; TTY prompts, non-TTY uses safe defaults. |
+| `fur init` | Create `docs/ai/`; TTY prompts, non-TTY uses safe defaults. |
 | `fur init --gitignore --question-level high --project-maturity new --automation-mode guided` | Non-interactive init with explicit behavior. |
 | `fur workspace init` | Create `.fur.workspace/config.json` in the current folder. |
 | `fur workspace doctor` | Validate workspace repo/tracker config. |
-| `fur refresh` | Helper used by `fur-done`; create a progress snapshot and `.fur.planning/state.json`. |
+| `fur refresh` | Helper used by `fur-done`; create a progress snapshot and `docs/ai/state.json`. |
 | `fur progress` | Helper used by `fur-status`; print counts, plan completion, and latest snapshot. |
 | `fur compact` | Move old progress snapshots to `progress/archive/`. |
 | `fur doctor` | Check skill symlinks and CLI installation status on your machine. |
@@ -259,7 +262,7 @@ Workspace-level config routes external references:
 
 ## Reference Files
 
-- `src/references/planning-layout.md` — `.fur.planning` and `.fur.workspace` layout
+- `src/references/planning-layout.md` — `docs/ai` and `.fur.workspace` layout
 - `src/references/task-template.md` — task file template
 - `src/references/context-window.md` — context budget rules
 - `src/references/skill-spec-v2.md` — mandatory shared skill contract (frontmatter, sections, output schema)
